@@ -50,14 +50,14 @@ uphold the principles above.
 
 ### 1.3 Related Documents
 
-| Document                                             | Relevance                                                                                                                               |
-|------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------|
-| [ARCHITECTURE.md](./ARCHITECTURE.md)                 | Security stance ([§12](./ARCHITECTURE.md#12-security-architecture-high-level)), ports/adapters, cross-cutting concerns.                 |
-| [DATABASE.md](./DATABASE.md)                         | Ownership columns, password/token hashing, soft-delete, retention.                                                                      |
-| [API_SPEC.md](./API_SPEC.md)                         | Auth, status codes (incl. `404`-for-non-owned), RFC 7807, rate limiting.                                                                |
-| [SRS.md](../00-product/SRS.md)                       | Security NFRs ([§9](../00-product/SRS.md#9-non-functional-requirements)), business rules ([§5](../00-product/SRS.md#5-business-rules)). |
-| [AI_ARCHITECTURE.md](./AI_ARCHITECTURE.md)           | AI provider boundary, grounding, data minimization (downstream).                                                                        |
-| [ADR-001](./decisions/ADR-001-JWT-Authentication.md) | JWT authentication decision.                                                                                                            |
+| Document                                                  | Relevance                                                                                                                               |
+|-----------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------|
+| [ARCHITECTURE.md](./ARCHITECTURE.md)                      | Security stance ([§12](./ARCHITECTURE.md#12-security-architecture-high-level)), ports/adapters, cross-cutting concerns.                 |
+| [DATABASE.md](./DATABASE.md)                              | Ownership columns, password/token hashing, soft-delete, retention.                                                                      |
+| [API_SPEC.md](./API_SPEC.md)                              | Auth, status codes (incl. `404`-for-non-owned), RFC 7807, rate limiting.                                                                |
+| [SRS.md](../00-product/SRS.md)                            | Security NFRs ([§9](../00-product/SRS.md#9-non-functional-requirements)), business rules ([§5](../00-product/SRS.md#5-business-rules)). |
+| [AI_ARCHITECTURE.md](./AI_ARCHITECTURE.md)                | AI provider boundary, grounding, data minimization (downstream).                                                                        |
+| [ADR-001](./decisions/ADR-001-Authentication-Strategy.md) | JWT authentication decision.                                                                                                            |
 
 ---
 
@@ -153,7 +153,7 @@ High-level threats, their risk, and architectural mitigations. This is a living 
 
 LedgerAI authenticates with **JWT access tokens + refresh tokens
 ** ([PD-008](../00-product/PRODUCT_DECISIONS.md#3-accepted-product-decisions),
-[ADR-001](./decisions/ADR-001-JWT-Authentication.md)). Architecture only — no framework config.
+[ADR-001](./decisions/ADR-001-Authentication-Strategy.md)). Architecture only — no framework config.
 
 | Aspect                          | Requirement                                                                                                                                                                                                                             |
 |---------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -496,19 +496,19 @@ protect.
 
 ## 20. Security Decision Summary
 
-| Decision                  | Chosen Approach                                  | Alternatives                              | Rationale                                                                                                                         | Related ADR                                          |
-|---------------------------|--------------------------------------------------|-------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------|
-| **Authentication**        | Stateless **JWT access tokens**                  | Server-side sessions                      | Stateless scaling across the Vercel/Render split; PD-008 ([§4](#4-authentication)).                                               | [ADR-001](./decisions/ADR-001-JWT-Authentication.md) |
-| **Session renewal**       | **Refresh tokens** with rotation                 | Long-lived access tokens; sticky sessions | Short access lifetime + bounded refresh exposure ([§7](#7-token-security)).                                                       | ADR-001                                              |
-| **Authorization**         | **Ownership-based** checks in the service layer  | Role-only checks; URL-trust               | Per-user isolation is the core confidentiality control ([§5](#5-authorization), [BR-004](../00-product/SRS.md#5-business-rules)). | —                                                    |
-| **Non-owned resources**   | Return **`404`** (not `403`)                     | `403 Forbidden`                           | Avoids leaking resource existence ([§5](#5-authorization)).                                                                       | —                                                    |
-| **Password hashing**      | **BCrypt** (salted, adaptive)                    | Plaintext; fast hashes (SHA-only)         | Adaptive cost resists brute force ([§6](#6-password-policy), [BR-022](../00-product/SRS.md#5-business-rules)).                    | —                                                    |
-| **Transport**             | **HTTPS only**                                   | Mixed/plaintext                           | Confidentiality/integrity in transit ([§12](#12-data-security)).                                                                  | —                                                    |
-| **File storage**          | **External object storage**, DB stores reference | Store bytes in DB; on-host files          | Isolation, reduced surface, no DB bloat ([§9](#9-file-upload-security), [DATABASE §1.3](./DATABASE.md#13-related-documents)).     | [ADR-002](./decisions/ADR-002-Storage-Provider.md)   |
-| **AI trust model**        | **Human-reviewed**, assistive AI                 | AI as authority / auto-act                | Trust, accuracy, boundary preservation ([§10](#10-ai-security), [BR-031/032](../00-product/SRS.md#5-business-rules)).             | —                                                    |
-| **AI grounding**          | **Grounded** responses; decline over fabricate   | Ungrounded generation                     | Reduces hallucination harm ([§10](#10-ai-security), [BR-030/033](../00-product/SRS.md#5-business-rules)).                         | —                                                    |
-| **Error model**           | **RFC 7807**, no internals                       | Verbose/stack-trace errors                | Consistent, non-leaking errors ([§11](#11-api-security)).                                                                         | —                                                    |
-| **Refresh token storage** | Store **hash** + expiry + revocation             | Store raw token; stateless-only           | DB read cannot yield usable tokens; enables revocation ([§7](#7-token-security), [DATABASE §5.9](./DATABASE.md#59-refreshtoken)). | ADR-001                                              |
+| Decision                  | Chosen Approach                                  | Alternatives                              | Rationale                                                                                                                         | Related ADR                                               |
+|---------------------------|--------------------------------------------------|-------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------|
+| **Authentication**        | Stateless **JWT access tokens**                  | Server-side sessions                      | Stateless scaling across the Vercel/Render split; PD-008 ([§4](#4-authentication)).                                               | [ADR-001](./decisions/ADR-001-Authentication-Strategy.md) |
+| **Session renewal**       | **Refresh tokens** with rotation                 | Long-lived access tokens; sticky sessions | Short access lifetime + bounded refresh exposure ([§7](#7-token-security)).                                                       | ADR-001                                                   |
+| **Authorization**         | **Ownership-based** checks in the service layer  | Role-only checks; URL-trust               | Per-user isolation is the core confidentiality control ([§5](#5-authorization), [BR-004](../00-product/SRS.md#5-business-rules)). | —                                                         |
+| **Non-owned resources**   | Return **`404`** (not `403`)                     | `403 Forbidden`                           | Avoids leaking resource existence ([§5](#5-authorization)).                                                                       | —                                                         |
+| **Password hashing**      | **BCrypt** (salted, adaptive)                    | Plaintext; fast hashes (SHA-only)         | Adaptive cost resists brute force ([§6](#6-password-policy), [BR-022](../00-product/SRS.md#5-business-rules)).                    | —                                                         |
+| **Transport**             | **HTTPS only**                                   | Mixed/plaintext                           | Confidentiality/integrity in transit ([§12](#12-data-security)).                                                                  | —                                                         |
+| **File storage**          | **External object storage**, DB stores reference | Store bytes in DB; on-host files          | Isolation, reduced surface, no DB bloat ([§9](#9-file-upload-security), [DATABASE §1.3](./DATABASE.md#13-related-documents)).     | [ADR-002](./decisions/ADR-002-Storage-Provider.md)        |
+| **AI trust model**        | **Human-reviewed**, assistive AI                 | AI as authority / auto-act                | Trust, accuracy, boundary preservation ([§10](#10-ai-security), [BR-031/032](../00-product/SRS.md#5-business-rules)).             | —                                                         |
+| **AI grounding**          | **Grounded** responses; decline over fabricate   | Ungrounded generation                     | Reduces hallucination harm ([§10](#10-ai-security), [BR-030/033](../00-product/SRS.md#5-business-rules)).                         | —                                                         |
+| **Error model**           | **RFC 7807**, no internals                       | Verbose/stack-trace errors                | Consistent, non-leaking errors ([§11](#11-api-security)).                                                                         | —                                                         |
+| **Refresh token storage** | Store **hash** + expiry + revocation             | Store raw token; stateless-only           | DB read cannot yield usable tokens; enables revocation ([§7](#7-token-security), [DATABASE §5.9](./DATABASE.md#59-refreshtoken)). | ADR-001                                                   |
 
 ---
 

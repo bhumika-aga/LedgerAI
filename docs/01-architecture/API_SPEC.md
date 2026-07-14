@@ -257,7 +257,8 @@ module; each rule above closes a common path by which multi-module APIs quietly 
 
 LedgerAI uses **JWT access tokens + refresh tokens
 ** ([PD-008](../00-product/PRODUCT_DECISIONS.md#3-accepted-product-decisions),
-[ADR-001](./decisions/ADR-001-JWT-Authentication.md)). Full controls are in [SECURITY.md](./SECURITY.md); the contract:
+[ADR-001](./decisions/ADR-001-Authentication-Strategy.md)). Full controls are in [SECURITY.md](./SECURITY.md); the
+contract:
 
 | Aspect                   | Contract                                                                                                                                                |
 |--------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -966,7 +967,7 @@ None are implemented now ([boundaries](../00-product/PRODUCT_DECISIONS.md#2-prod
 | **API style**              | REST over HTTP/JSON                                              | GraphQL; RPC                 | Simplicity, discoverability, tooling, matches PD/architecture.                                                                | —             |
 | **Versioning**             | URI path (`/api/v1`)                                             | Header/media-type versioning | Discoverable, cache/log-friendly, explicit ([§20](#20-api-versioning-strategy)).                                              | ADR (pending) |
 | **Error model**            | RFC 7807 Problem Details                                         | Ad-hoc error JSON            | Standard, machine- and human-readable, consistent ([§2.12](#212-error-model--rfc-7807-problem-details)).                      | —             |
-| **Authentication**         | JWT access + refresh (`Bearer`)                                  | Server sessions              | Stateless across Vercel/Render; PD-008 ([ADR-001](./decisions/ADR-001-JWT-Authentication.md)).                                | ADR-001       |
+| **Authentication**         | JWT access + refresh (`Bearer`)                                  | Server sessions              | Stateless across Vercel/Render; PD-008 ([ADR-001](./decisions/ADR-001-Authentication-Strategy.md)).                           | ADR-001       |
 | **Pagination**             | `page`/`size`/`sort` + `PageResponse`                            | Cursor pagination            | Simple, sufficient for MVP volumes; cursor is a future additive option.                                                       | —             |
 | **Identifiers**            | UUIDs in paths/bodies                                            | Sequential ids               | Non-enumerable, matches [DATABASE §7](./DATABASE.md#7-primary-key-strategy).                                                  | ADR (pending) |
 | **Idempotency**            | Idempotent GET/PUT/DELETE; optional `Idempotency-Key` on creates | No idempotency guarantees    | Safe retries; duplicate protection without complexity ([§2.10](#210-idempotency)).                                            | —             |

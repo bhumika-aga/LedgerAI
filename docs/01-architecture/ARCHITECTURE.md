@@ -208,7 +208,7 @@ sequenceDiagram
 ```
 
 > Token specifics (lifetimes, storage, rotation, revocation) are defined in [SECURITY.md](./SECURITY.md) and
-> [ADR-001](./decisions/ADR-001-JWT-Authentication.md); this document fixes only the shape of the flow.
+> [ADR-001](./decisions/ADR-001-Authentication-Strategy.md); this document fixes only the shape of the flow.
 
 ---
 
@@ -224,7 +224,7 @@ areas ([SRS §4](../00-product/SRS.md#4-functional-requirements)),
 which keeps traceability direct.
 
 > Concrete package names are intentionally **not** fixed here (that is a downstream decision recorded in
-> [ADR-003](./decisions/ADR-003-Package-Structure.md)). This document fixes only the *philosophy*: organize by **domain
+> [ADR-006](./decisions/ADR-006-Architecture-Style.md)). This document fixes only the *philosophy*: organize by **domain
 > first**, by technical layer **second**.
 
 ### 5.2 Layer responsibilities
@@ -574,8 +574,8 @@ Major architectural decisions made in this document. Formal ADRs will be authore
 |-------------|-----------------------------|----------------------------------------------------------------------------------------------|------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------|
 | **ADS-001** | Overall architecture style  | **Modular Monolith** + pragmatic layering + ports/adapters at external boundaries            | Pure Layered; Clean; Hexagonal (full); Microservices | Best balance of simplicity, boundaries, and provider independence for a free-tier MVP; growth is additive ([§3](#3-architecture-style)). | ADR (pending)                                                |
 | **ADS-002** | External-service isolation  | **Ports & Adapters** for AI, OCR, Storage; config-selected adapters                          | Direct SDK calls in services                         | Provider independence and reversible deferred decisions (PD-010, TC-004).                                                                | [ADR-002](./decisions/ADR-002-Storage-Provider.md) (storage) |
-| **ADS-003** | Backend module organization | **Domain-first** modules, layered internally; boundaries via services                        | Layer-first (technical) packages                     | Traceability to SRS, onboarding, boundary integrity.                                                                                     | [ADR-003](./decisions/ADR-003-Package-Structure.md)          |
-| **ADS-004** | Authentication model        | **Stateless JWT** access + refresh tokens via a single security filter                       | Server-side sessions                                 | Stateless scaling across the Vercel/Render split; matches PD-008.                                                                        | [ADR-001](./decisions/ADR-001-JWT-Authentication.md)         |
+| **ADS-003** | Backend module organization | **Domain-first** modules, layered internally; boundaries via services                        | Layer-first (technical) packages                     | Traceability to SRS, onboarding, boundary integrity.                                                                                     | [ADR-006](./decisions/ADR-006-Architecture-Style.md)         |
+| **ADS-004** | Authentication model        | **Stateless JWT** access + refresh tokens via a single security filter                       | Server-side sessions                                 | Stateless scaling across the Vercel/Render split; matches PD-008.                                                                        | [ADR-001](./decisions/ADR-001-Authentication-Strategy.md)    |
 | **ADS-005** | Frontend state model        | **Server state via React Query**; minimal local UI state; no heavyweight global store in MVP | Global store (e.g., Redux) up front                  | Simplicity; non-blocking async status for AI/OCR ([NFR-002](../00-product/SRS.md#9-non-functional-requirements)).                        | —                                                            |
 | **ADS-006** | Long-running work           | **Explicit lifecycle** (state models), non-blocking, with a background-worker seam           | Block request threads; commit to a job framework now | Meets NFR-002 now; defers infra cost (DD-007).                                                                                           | —                                                            |
 | **ADS-007** | Deployment topology         | **Single backend deployable** (Render) + **SPA** (Vercel) + **PostgreSQL** (Neon)            | Multi-service from day one                           | Lowest operational cost/complexity for MVP (BG-5).                                                                                       | —                                                            |

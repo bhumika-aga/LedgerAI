@@ -305,11 +305,11 @@ Format:
 
 Examples:
 
-ADR-001-JWT-Authentication.md
+ADR-001-Authentication-Strategy.md
 
 ADR-002-Storage-Provider.md
 
-ADR-003-Package-Structure.md
+ADR-003-AI-Provider-Abstraction.md
 
 ---
 
