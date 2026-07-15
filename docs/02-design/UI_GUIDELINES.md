@@ -96,7 +96,7 @@ enforceable rules that follow.
   vocabulary is not, and leaking it makes the user pay to understand our internals (§4).*
 - **Empty states MUST explain what is missing and what to do next.** *A blank region is indistinguishable from a broken
   one. An empty state is often the user's first encounter with a feature and is therefore the cheapest place to teach
-  it.*
+  it ([USER_FLOWS §15](./USER_FLOWS.md#15-cross-flow-principles)).*
 - **Loading states MUST make progress or waiting explicit.** *OCR and AI generation take real time, and silence is
   indistinguishable from a hang. Long-running operations MUST show status and MUST NOT block the interface
   ([NFR-002](../00-product/SRS.md#9-non-functional-requirements)).*
@@ -104,7 +104,8 @@ enforceable rules that follow.
   dead end. Every failure carries recovery — retry, edit, or a clear exit
   ([SRS §8](../00-product/SRS.md#8-error-handling)).*
 - **Confirmation dialogs MUST state the consequence plainly.** *A confirmation the user cannot evaluate is a formality
-  that trains them to click through. The dialog states what will happen, in the words of the thing it happens to.*
+  that trains them to click through. The dialog states what will happen, in the words of the thing it happens to
+  ([USER_FLOWS §15](./USER_FLOWS.md#15-cross-flow-principles)).*
 - **AI-generated content MUST remain clearly identified and editable.** *The human-in-the-loop guarantee of
   [AI_ARCHITECTURE](../01-architecture/AI_ARCHITECTURE.md), expressed in words: output that is not visibly AI's, or not
   visibly the user's to change, invites acceptance without review ([BR-031](../00-product/SRS.md#5-business-rules)).*
