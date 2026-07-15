@@ -4,7 +4,7 @@
 > **Owner:** Founding Engineer / Product
 > **Last updated:** 2026-07-14
 > **Related:
-** [Product Vision](./PRODUCT_VISION.md) · [PRD](./PRD.md) · [SRS](./SRS.md) · [Roadmap](../03-engineering/ROADMAP.md) · [ADRs](../01-architecture/decisions/)
+** [Product Vision](./PRODUCT_VISION.md) · [PRD](./PRD.md) · [SRS](./SRS.md) · [ADRs](../01-architecture/decisions/)
 
 ---
 

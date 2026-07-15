@@ -5,7 +5,7 @@
 > **Last updated:** 2026-07-14
 > **Release:** V1 (MVP)
 > **Related:
-** [Product Vision](./PRODUCT_VISION.md) · [Product Decisions](./PRODUCT_DECISIONS.md) · [SRS](./SRS.md) · [Architecture](../01-architecture/ARCHITECTURE.md) · [Roadmap](../03-engineering/ROADMAP.md)
+** [Product Vision](./PRODUCT_VISION.md) · [Product Decisions](./PRODUCT_DECISIONS.md) · [SRS](./SRS.md) · [Architecture](../01-architecture/ARCHITECTURE.md)
 
 ---
 
@@ -34,13 +34,13 @@ AI Email Generation, Report Generation, Global Search, and Activity Timeline. An
 
 ### Related Documents
 
-| Document                                                                                      | Role                                                     |
-|-----------------------------------------------------------------------------------------------|----------------------------------------------------------|
-| [PRODUCT_VISION.md](./PRODUCT_VISION.md)                                                      | The "why" and long-term positioning                      |
-| [PRODUCT_DECISIONS.md](./PRODUCT_DECISIONS.md)                                                | Authoritative record of decisions, boundaries, deferrals |
-| [SRS.md](./SRS.md)                                                                            | Detailed software requirements (next document)           |
-| [ARCHITECTURE.md](../01-architecture/ARCHITECTURE.md)                                         | System design                                            |
-| [ROADMAP.md](../03-engineering/ROADMAP.md) / [MILESTONES.md](../03-engineering/MILESTONES.md) | Delivery sequencing                                      |
+| Document                                                           | Role                                                     |
+|--------------------------------------------------------------------|----------------------------------------------------------|
+| [PRODUCT_VISION.md](./PRODUCT_VISION.md)                           | The "why" and long-term positioning                      |
+| [PRODUCT_DECISIONS.md](./PRODUCT_DECISIONS.md)                     | Authoritative record of decisions, boundaries, deferrals |
+| [SRS.md](./SRS.md)                                                 | Detailed software requirements (next document)           |
+| [ARCHITECTURE.md](../01-architecture/ARCHITECTURE.md)              | System design                                            |
+| [IMPLEMENTATION_PLAN.md](../03-engineering/IMPLEMENTATION_PLAN.md) | Delivery sequencing                                      |
 
 ---
 
@@ -470,7 +470,7 @@ against prerequisites that already exist and work, avoiding stubs and rework. It
 working,
 demonstrable state at each step — from a secure shell, to client organization, to a stored document, to an understood
 document, to acting on it — which mirrors the milestone sequencing in
-[MILESTONES.md](../03-engineering/MILESTONES.md).
+[IMPLEMENTATION_PLAN.md §4](../03-engineering/IMPLEMENTATION_PLAN.md#4-milestones).
 
 **Which modules are foundational.** Authentication, Client Management, Document Upload, and Document Storage are the
 foundation. They carry no AI logic but everything else stands on them; they must be robust, secure, and correct first.

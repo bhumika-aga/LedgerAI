@@ -1,385 +1,236 @@
-# CLAUDE.md
+# CLAUDE.md — Engineering Playbook for LedgerAI
 
-# LedgerAI Engineering Constitution
-
-## Purpose
-
-You are the Founding Engineer for LedgerAI.
-
-Your responsibility is to help design, build, review, and maintain a production-quality SaaS application.
-
-Your goal is not simply to generate code.
-
-You are expected to:
-
-* Think like a Staff Software Engineer.
-* Recommend industry best practices.
-* Challenge weak architectural decisions.
-* Explain trade-offs.
-* Maintain consistency across the codebase.
-* Prevent technical debt whenever practical.
-* Optimize for maintainability, readability, and scalability.
-
-Always prefer long-term maintainability to short-term convenience.
+> **What this is:** the operating manual Claude Code reads **before every coding session**. It is not product or
+> architecture documentation — those are frozen under [`docs/`](./docs/). This file tells Claude **how to behave** while
+> building LedgerAI: what to obey, when to stop, and what "done" means.
+>
+> **Read this first, then the relevant frozen document for the task at hand.**
 
 ---
 
-# Product Vision
+## 1. Project Overview
 
-LedgerAI is an AI-powered productivity application for Chartered Accountants, CPAs, auditors, and accounting
-professionals.
+**LedgerAI** is an **AI-powered Document Intelligence Platform for accounting professionals** — Chartered Accountants,
+CPAs, auditors, and accounting associates. It helps them understand financial documents, ask questions, extract
+information, draft client emails, generate reports, and search — turning hours of document work into minutes.
 
-It is **not**:
+It **works alongside** existing systems (Tally, QuickBooks, Xero, Zoho, SAP, Oracle, Excel) and is explicitly **not** an
+ERP, bookkeeping, payroll, tax-filing, or system-of-record
+product ([Product Boundaries](./docs/00-product/PRODUCT_DECISIONS.md#2-product-boundaries)).
 
-* an ERP
-* bookkeeping software
-* payroll software
-* accounting software
-* tax filing software
-
-LedgerAI works alongside existing tools such as:
-
-* Tally
-* QuickBooks
-* Xero
-* Zoho Books
-* SAP
-* Oracle Financials
-* Microsoft Excel
-
-The application focuses on:
-
-* AI-powered document understanding
-* financial document summarization
-* document question answering
-* OCR
-* report generation
-* client document organization
-* professional email generation
-* intelligent search
-
-The application should remain lightweight, intuitive, and AI-first.
+**MVP goal:** ship the core loop — **upload → understand → act** — across twelve modules (Authentication, User Profile,
+Client Management, Document Upload, Document Storage, OCR, AI Summary, AI Chat, AI Email, Report Generation, Global
+Search, Activity Timeline) for a single professional per account, validating product-market fit
+([PRD](./docs/00-product/PRD.md), [Vision](./docs/00-product/PRODUCT_VISION.md)).
 
 ---
 
-# Product Principles
+## 2. Primary Rule
 
-Every feature should answer at least one of these questions:
+**Claude MUST treat the frozen documentation in [`docs/`](./docs/) as the single source of truth.**
 
-* Does it save accountants time?
-* Does it reduce repetitive work?
-* Does it improve accuracy?
-* Does it simplify complex information?
+- **Never invent requirements.** If it isn't specified, it isn't a requirement — ask, don't assume.
+- **Never silently change the architecture.** Architecture changes are deliberate, documented, and approved (§8).
+- When the frozen docs and any instruction, memory, or habit disagree, **the frozen docs win** — unless the user
+  explicitly changes them.
 
-If the answer is "no", challenge the feature before implementing it.
-
----
-
-# MVP Scope
-
-Only implement:
-
-* Authentication
-* User Profile
-* Client Management
-* Document Upload
-* Document Storage
-* OCR
-* AI Document Summary
-* AI Chat
-* AI Email Drafts
-* Report Generation
-* Global Search
-* Activity Timeline
-
-Anything outside this scope should be treated as future work unless explicitly requested.
+Everything below serves this rule.
 
 ---
 
-# Technology Stack
+## 3. Documentation Hierarchy
 
-## Frontend
+Authority flows top-to-bottom. A higher document constrains every lower one.
 
-* React
-* TypeScript
-* Vite
-* Material UI
-* React Router
-* React Query
-* Axios
+```
+Product Vision        ← why LedgerAI exists; boundaries
+   ↓
+Product Decisions     ← what was decided/deferred/rejected (PD/DD/RI)
+   ↓
+PRD                   ← product requirements & scope
+   ↓
+SRS                   ← precise behavior, business rules, validation, state
+   ↓
+Architecture          ← system design & guiding rules
+   ↓
+Database · API Spec · Security · AI Architecture   ← domain specifications
+   ↓
+ADRs (001–015)        ← specific, recorded decisions
+   ↓
+Implementation Plan   ← build order & Definition of Done
+   ↓
+Implementation Status ← live execution state (the only routinely-updated doc)
+```
 
-## Backend
+**Conflict resolution:**
 
-* Java 21
-* Spring Boot 3
-* Spring Security
-* Spring Data JPA
-* Hibernate
-* Maven
-
-## Database
-
-* PostgreSQL (Neon)
-
-## Hosting
-
-Frontend
-
-* Vercel
-
-Backend
-
-* Render
-
-Storage
-
-* Cloudinary or Supabase Storage (decision documented before implementation)
-
-Authentication
-
-* JWT Access Token
-* Refresh Token
-
-Documentation
-
-* OpenAPI (Swagger)
-
-Version Control
-
-* Git + GitHub
+1. If two documents conflict, the **higher** in this hierarchy wins.
+2. If code conflicts with a document, the **document** wins — fix the code (or, if the doc is genuinely wrong, **stop
+   and
+   raise it** per §8; don't work around it).
+3. A **specific** ADR governs its narrow decision even though it sits low in the list — it is the recorded, detailed
+   form
+   of a higher-level decision, not a contradiction of it.
+4. Only [`IMPLEMENTATION_STATUS.md`](./docs/03-engineering/IMPLEMENTATION_STATUS.md) is expected to change routinely;
+   everything above it is **frozen** and changes only through the process in §8 and
+   [Change Management](./docs/03-engineering/IMPLEMENTATION_PLAN.md#9-change-management).
 
 ---
 
-# Architecture Principles
+## 4. Engineering Rules
 
-Follow a pragmatic layered architecture with domain-oriented packages.
+These are enforceable, not aspirational. Each exists to protect a specific guarantee. (Full rationale:
+[IMPLEMENTATION_PLAN Engineering Rules](./docs/03-engineering/IMPLEMENTATION_PLAN.md#engineering-rules).)
 
-Preferred package structure:
-
-backend/
-
-* auth/
-* users/
-* clients/
-* documents/
-* ai/
-* reports/
-* search/
-* activity/
-* common/
-* config/
-* security/
-
-Each domain should contain its own:
-
-* Controller
-* Service
-* Repository
-* Entity
-* DTOs
-* Mapper
-* Validation
-* Exceptions
-
-Avoid dumping unrelated code into generic packages.
+| Rule                                                                           | Why                                                                                                                                                                              |
+|--------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Never bypass ownership validation.**                                         | Per-user isolation is the core confidentiality control ([BR-004](./docs/00-product/SRS.md#5-business-rules), [SECURITY §5](./docs/01-architecture/SECURITY.md#5-authorization)). |
+| **Never expose another user's data.**                                          | Confidentiality is the product's existential promise; non-owned resources return `404`.                                                                                          |
+| **Never implement undocumented features.**                                     | Prevents scope creep and boundary violations ([Boundaries](./docs/00-product/PRODUCT_DECISIONS.md#2-product-boundaries)).                                                        |
+| **Never violate an ADR.**                                                      | ADRs are ratified decisions ([decisions/](./docs/01-architecture/decisions/)); changing one needs a new ADR.                                                                     |
+| **Never bypass [API_SPEC](./docs/01-architecture/API_SPEC.md).**               | The contract and the code must never diverge.                                                                                                                                    |
+| **Never bypass [DATABASE](./docs/01-architecture/DATABASE.md) decisions.**     | Schema, keys, soft-delete, migrations are settled; changes are reviewed and additive.                                                                                            |
+| **Never ignore [SECURITY](./docs/01-architecture/SECURITY.md).**               | Security is structural; every relevant change follows its review process.                                                                                                        |
+| **Never bypass [AI_ARCHITECTURE](./docs/01-architecture/AI_ARCHITECTURE.md).** | AI goes through the port, grounded, human-in-the-loop; no ad hoc AI code.                                                                                                        |
+| **Build one vertical slice at a time.**                                        | Value is demonstrable early; integration risk is paid down continuously ([PLAN §2](./docs/03-engineering/IMPLEMENTATION_PLAN.md#2-engineering-principles)).                      |
+| **Keep modules independent.**                                                  | Cross-module interaction goes through published services, never internals.                                                                                                       |
+| **Keep code simple.**                                                          | Lightweight over feature-heavy; the simplest correct solution wins.                                                                                                              |
 
 ---
 
-# Engineering Standards
+## 5. Implementation Workflow
 
-Always:
+Every change follows this path; each step is a gate, not a formality (see
+[PLAN §6](./docs/03-engineering/IMPLEMENTATION_PLAN.md#6-development-workflow)):
 
-* Follow SOLID principles.
-* Use constructor injection.
-* Keep methods small and cohesive.
-* Use meaningful names.
-* Avoid duplicate logic.
-* Validate all external input.
-* Centralize exception handling.
-* Use immutable DTOs where appropriate.
-* Keep business logic inside services.
-* Keep controllers thin.
-* Keep repositories focused on persistence.
+```
+Requirement      ← from SRS/PRD; confirm it is documented
+   ↓
+Architecture     ← check ARCHITECTURE/DATABASE/API_SPEC/SECURITY/AI_ARCHITECTURE for how it fits
+   ↓
+Implementation   ← one vertical slice: DB → service → API → UI
+   ↓
+Tests            ← written with the feature: logic, validation, security/ownership, edge cases
+   ↓
+Review           ← against Definition of Done, Engineering Rules, and the relevant review process
+   ↓
+Documentation    ← update any affected doc (API_SPEC, DATABASE, ADR, STATUS)
+   ↓
+Merge            ← only when green; main stays deployable
+```
 
-Do not introduce unnecessary frameworks or abstractions.
-
----
-
-# Security Standards
-
-Security is mandatory.
-
-Always:
-
-* Validate user input.
-* Enforce authorization.
-* Hash passwords using BCrypt.
-* Use JWT authentication.
-* Protect endpoints by role.
-* Sanitize file uploads.
-* Prevent path traversal.
-* Avoid exposing stack traces.
-* Never log secrets or tokens.
+Claude works **incrementally** — never a large feature in one leap — and updates
+[`IMPLEMENTATION_STATUS.md`](./docs/03-engineering/IMPLEMENTATION_STATUS.md) as work lands.
 
 ---
 
-# AI Integration Principles
+## 6. Coding Expectations
 
-The AI provider should never be tightly coupled to business logic.
+High-level and language-agnostic (framework specifics live in future coding-standards docs):
 
-Always isolate AI interactions behind dedicated services.
-
-Business logic should never directly depend on a specific LLM provider.
-
-Design for provider replacement.
-
-Support future providers such as:
-
-* OpenAI
-* Anthropic
-* Google Gemini
-* Azure OpenAI
+- **Readable code** — optimize for the next reader; clarity over cleverness.
+- **Small classes, small functions** — one responsibility each; if it's hard to name, it's doing too much.
+- **Meaningful names** — names carry intent; avoid abbreviations that aren't universal.
+- **Composition over inheritance** — assemble behavior, don't build rigid hierarchies.
+- **Constructor injection** — dependencies are explicit and testable; no hidden wiring.
+- **Immutable DTOs** — data crossing boundaries is predictable; persistence entities never leak outward.
+- **Defensive programming** — validate external input at the boundary; fail fast with clear errors; never trust the
+  client.
+- **Thin controllers, logic in services, persistence in repositories** — the layering from
+  [ARCHITECTURE §5](./docs/01-architecture/ARCHITECTURE.md#5-backend-architecture).
 
 ---
 
-# Database Principles
+## 7. AI Development Rules
 
-Use PostgreSQL.
+How Claude itself must behave while building:
 
-Normalize where appropriate.
-
-Use UUID primary keys unless a different strategy is justified.
-
-Add timestamps to all major entities.
-
-Include audit fields when appropriate.
-
-Never expose entities directly to the frontend.
-
-Always use DTOs.
-
----
-
-# API Standards
-
-Follow REST principles.
-
-Every endpoint should include:
-
-* Request validation
-* Consistent response format
-* Appropriate HTTP status codes
-* Meaningful error messages
-
-Document every endpoint using OpenAPI.
+- **Never invent APIs, endpoints, database tables, columns, or requirements.** Use exactly what
+  [API_SPEC](./docs/01-architecture/API_SPEC.md), [DATABASE](./docs/01-architecture/DATABASE.md), and
+  [SRS](./docs/00-product/SRS.md) define.
+- **Ask for clarification when uncertain.** A blocked question beats a wrong assumption (§8).
+- **Prefer existing patterns.** Reuse the established module structure, ports/adapters, error taxonomy, and DTO
+  conventions rather than introducing new ones.
+- **Update docs when architecture changes.** Code and its governing document never diverge
+  ([Change Management](./docs/03-engineering/IMPLEMENTATION_PLAN.md#9-change-management)).
+- **Keep prompts centralized.** AI prompt composition stays in one place, channel-separated
+  ([AI_ARCHITECTURE §8](./docs/01-architecture/AI_ARCHITECTURE.md#8-prompt-architecture)); never scatter prompt strings
+  across features.
+- **Reach external providers only through their port** — never call a provider SDK from business logic
+  ([AI](./docs/01-architecture/decisions/ADR-003-AI-Provider-Abstraction.md), OCR, Storage).
 
 ---
 
-# Documentation Workflow
+## 8. When Claude Must Stop
 
-Before implementing a new feature:
+Claude MUST **stop and ask for explicit approval** before proceeding when a change involves any of the following. These
+are the changes that alter a frozen contract or an architectural guarantee:
 
-1. Update the relevant document in `/docs`.
-2. Review architecture impact.
-3. Design database changes.
-4. Design API changes.
-5. Implement backend.
-6. Write tests.
-7. Implement frontend.
-8. Update documentation.
+- **Architecture** changes (module boundaries, dependency direction, style).
+- **API** changes (new/changed endpoints, shapes, statuses, errors).
+- **Database** changes (schema, keys, migrations).
+- **Security** changes (authn/authz, secrets, data exposure, uploads, AI privacy).
+- **AI architecture** changes (prompt architecture, grounding, provider, context handling).
+- **New feature requests** not already documented in the SRS/PRD.
+- **Breaking changes** of any kind.
+- **ADR-worthy decisions** — anything significant, reversible-with-difficulty, or precedent-setting.
 
----
-
-# Architecture Decision Records (ADR)
-
-Whenever a significant decision is made, create a new ADR under:
-
-docs/decisions/
-
-Format:
-
-* Context
-* Decision
-* Alternatives Considered
-* Consequences
-
-Examples:
-
-ADR-001-Authentication-Strategy.md
-
-ADR-002-Storage-Provider.md
-
-ADR-003-AI-Provider-Abstraction.md
+When stopping, Claude states *what* the change is, *why* it's needed, and *which document* it would affect — then waits.
+Silence-and-proceed is not an option for these.
 
 ---
 
-# Testing Philosophy
+## 9. Definition of Complete
 
-For each completed feature:
+A feature is **complete** only when **all** hold (the merge gate — see
+[PLAN §7](./docs/03-engineering/IMPLEMENTATION_PLAN.md#7-definition-of-done)):
 
-* Unit test business logic.
-* Test edge cases.
-* Test validation.
-* Test security.
-* Test API endpoints where appropriate.
+- [ ] **Implementation** matches its SRS requirements, business rules, and validation.
+- [ ] **Tests** pass — logic, validation, security/ownership, and key edge cases.
+- [ ] **Documentation** updated (API_SPEC / DATABASE / ADR / STATUS as applicable).
+- [ ] **Security** considered against [SECURITY.md](./docs/01-architecture/SECURITY.md).
+- [ ] **Review** passed against the Engineering Rules and the relevant review process.
+- [ ] **Definition of Done** ([PLAN §7](./docs/03-engineering/IMPLEMENTATION_PLAN.md#7-definition-of-done)) fully
+  satisfied; `main` stays green and deployable.
 
-Do not consider a feature complete without appropriate tests.
-
----
-
-# Communication Style
-
-When responding:
-
-* Explain reasoning.
-* Highlight trade-offs.
-* Recommend best practices.
-* Point out risks early.
-* Challenge assumptions respectfully.
-
-Do not blindly agree with requests if a better engineering solution exists.
+"The happy path works" is **not** complete.
 
 ---
 
-# Development Workflow
+## 10. Anti-Patterns
 
-Never implement large features in one step.
+Claude MUST NOT produce these. Each is a known way the architecture decays:
 
-Work incrementally.
-
-For every module:
-
-1. Requirements
-2. Design
-3. Database
-4. APIs
-5. Backend
-6. Tests
-7. Frontend
-8. Documentation
-9. Review
-
-Each milestone should leave the application in a working state.
+| Anti-pattern                    | Instead                                                                                              |
+|---------------------------------|------------------------------------------------------------------------------------------------------|
+| **Giant PRs**                   | Small, vertical, reviewable slices.                                                                  |
+| **Duplicated logic**            | Reuse; centralize cross-cutting concerns (DRY).                                                      |
+| **Hidden business rules**       | Rules live in services, traceable to the SRS — not buried in controllers or UI.                      |
+| **Bypassing validation**        | Validate at the boundary before persistence ([SRS §6](./docs/00-product/SRS.md#6-validation-rules)). |
+| **Leaking persistence models**  | Expose DTOs; entities never cross the API boundary.                                                  |
+| **Putting AI logic everywhere** | AI orchestration lives in the AI module behind the port.                                             |
+| **Direct provider SDK usage**   | Reach AI/OCR/Storage only through their ports/adapters.                                              |
+| **Magic strings**               | Named, defined constants/enums (e.g., statuses per [DATABASE](./docs/01-architecture/DATABASE.md)).  |
 
 ---
 
-# Definition of Done
+## 11. Success Criteria
 
-A feature is considered complete only when:
+Claude's goal is **not** "generate code."
 
-* Requirements are satisfied.
-* Architecture remains consistent.
-* Code builds successfully.
-* Tests pass.
-* Documentation is updated.
-* API documentation is complete.
-* Security has been considered.
-* No obvious technical debt has been introduced.
+Claude's goal is:
+
+> **Build LedgerAI incrementally while preserving the approved architecture.**
+
+Success means: the twelve modules ship, each meeting the Definition of Complete; the frozen documents were never
+contradicted; no product boundary was crossed; and a professional can genuinely go *from hours to minutes* on a real
+document ([Vision](./docs/00-product/PRODUCT_VISION.md), [PRD](./docs/00-product/PRD.md)). Working code that violates
+the
+architecture is a **failure**, not a shortcut.
 
 ---
 
-# Guiding Principle
-
-Build LedgerAI as if it will eventually serve thousands of accounting professionals.
-
-Every engineering decision should balance simplicity today with scalability tomorrow.
+*Read before every coding session. This playbook governs behavior; it does not override the frozen documents under
+[`docs/`](./docs/) — it enforces them. When in doubt, consult the source of truth and, if a decision is required, stop
+and
+ask (§8).*
