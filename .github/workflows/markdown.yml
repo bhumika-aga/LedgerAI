@@ -1,0 +1,33 @@
+name: Markdown
+
+on:
+  push:
+    branches: [ main ]
+    paths: [ '**/*.md' ]
+  pull_request:
+    paths: [ '**/*.md' ]
+  workflow_dispatch:
+
+# Lints Markdown for structural quality. It reports only — it never rewrites files — and skips
+# generated or vendored directories. Rule tuning, if ever wanted, belongs in a markdownlint config
+# added later; this workflow starts from the tool's defaults.
+
+permissions:
+  contents: read
+
+jobs:
+  markdownlint:
+    name: Lint Markdown
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Lint Markdown (markdownlint-cli2)
+        uses: DavidAnson/markdownlint-cli2-action@v19
+        with:
+          globs: |
+            **/*.md
+            !**/node_modules/**
+            !backend/target/**
+            !frontend/dist/**
+            !**/build/**

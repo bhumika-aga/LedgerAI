@@ -1,0 +1,31 @@
+{
+  "version": "0.2",
+  "language": "en",
+  "words": [
+    "LedgerAI",
+    "OCR",
+    "ADR",
+    "ADRs",
+    "PRD",
+    "SRS",
+    "RAG",
+    "Copilot",
+    "QuickBooks",
+    "Xero",
+    "Zoho",
+    "Vercel",
+    "Vite"
+  ],
+  "ignoreRegExpList": [
+    "Urls",
+    "Email",
+    "/```[\\s\\S]*?```/g",
+    "/`[^`]+`/g"
+  ],
+  "ignorePaths": [
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/build/**",
+    "backend/target/**"
+  ]
+}

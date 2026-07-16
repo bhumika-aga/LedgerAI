@@ -1,0 +1,33 @@
+# Path-based labels for pull requests, applied by .github/workflows/labeler.yml.
+#
+# Every label here already exists in .github/labels.yml — this file only maps repository areas onto
+# that set; it invents nothing. Labels classify a PR by the area it touches; they carry no authority.
+
+documentation:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'docs/00-product/**'
+          - 'docs/05-releases/**'
+          - '.github/**'
+
+architecture:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'docs/01-architecture/**'
+
+design:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'docs/02-design/**'
+
+engineering:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'docs/03-engineering/**'
+          - 'backend/**'
+          - 'frontend/**'
+
+ai:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'docs/04-ai/**'

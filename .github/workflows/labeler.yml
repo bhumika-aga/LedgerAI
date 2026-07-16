@@ -1,0 +1,18 @@
+name: Labeler
+
+on:
+  pull_request_target:
+
+# Applies path-based labels from .github/labeler.yml to pull requests. It reads only the list of
+# changed paths, never checks out or runs PR code, and touches nothing but labels.
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  label:
+    name: Apply path labels
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/labeler@v5

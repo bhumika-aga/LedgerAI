@@ -1,0 +1,29 @@
+name: Spelling
+
+on:
+  push:
+    branches: [ main ]
+    paths: [ '**/*.md' ]
+  pull_request:
+    paths: [ '**/*.md' ]
+  workflow_dispatch:
+
+# Spell-checks documentation with cspell. Project terminology, ignored patterns (URLs, code) and paths
+# are configured in .github/cspell.json — new terms are added there, not encoded in this workflow.
+
+permissions:
+  contents: read
+
+jobs:
+  cspell:
+    name: Check spelling
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Spell check (cspell)
+        uses: streetsidesoftware/cspell-action@v6
+        with:
+          config: .github/cspell.json
+          files: '**/*.md'
+          incremental_files_only: true
