@@ -12,7 +12,12 @@ import axios from "axios";
  *
  * The base URL is environment-driven (no host is hard-coded); it falls back to the same-origin
  * {@code /api/v1} root (ADR-011) for local development behind a proxy.
+ *
+ * {@code withCredentials} is enabled so the browser sends and stores the httpOnly refresh-token
+ * cookie the backend issues (ADR-018); the access token is carried separately as a Bearer header by
+ * the auth slice's request interceptor.
  */
 export const apiClient: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL ?? "/api/v1",
+  withCredentials: true,
 });

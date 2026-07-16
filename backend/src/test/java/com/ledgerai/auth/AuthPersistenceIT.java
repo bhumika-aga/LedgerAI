@@ -3,7 +3,6 @@ package com.ledgerai.auth;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.Instant;
-import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,9 +18,12 @@ import com.ledgerai.auth.domain.RefreshToken;
 import com.ledgerai.auth.domain.UserAccount;
 
 /**
- * Repository tests for the auth persistence (DATABASE §5.1, §5.9) against a real PostgreSQL with the
- * Flyway schema (ADR-016, ADR-017). Verifies the finder queries and the case-insensitive email
- * uniqueness the {@code citext} column provides. Skipped where no Docker runtime is available.
+ * Repository tests for the auth persistence (DATABASE §5.1, §5.9) against a
+ * real PostgreSQL with the
+ * Flyway schema (ADR-016, ADR-017). Verifies the finder queries and the
+ * case-insensitive email
+ * uniqueness the {@code citext} column provides. Skipped where no Docker
+ * runtime is available.
  */
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
