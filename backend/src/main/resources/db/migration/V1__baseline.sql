@@ -1,0 +1,5 @@
+-- Baseline migration for LedgerAI.
+--
+-- Infrastructure only: this establishes the Flyway migration history for the database and confirms
+-- the migration pipeline is wired end to end. It intentionally creates NO tables. Each feature slice
+-- introduces its own schema in later, additive migrations (ADR-016, DATABASE.md).

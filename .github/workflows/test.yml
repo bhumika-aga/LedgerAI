@@ -8,13 +8,19 @@ on:
     paths: [ 'backend/**', 'frontend/**', '.github/workflows/test.yml' ]
   workflow_dispatch:
 
-# Inert until code exists; each job runs only when its manifest is present. What is tested and at which
-# level is owned by docs/03-engineering/TESTING_STRATEGY.md — this workflow runs the suites, it does not
-# define them. Toolchain follows README.md (Java 21 + Maven; Vite/npm).
+# Runs the test suites; what is tested and at which level is owned by
+# docs/03-engineering/TESTING_STRATEGY.md — this workflow runs them, it does not define them. Each job
+# stays inert (manifest guard) until its code exists.
+#
+# The fast/slow split mirrors the Maven setup: Surefire runs unit tests in the `test` phase (fast, no
+# Docker); Failsafe runs the `*IT` integration tests in `verify` (TESTING_STRATEGY §3). The persistence
+# smoke test uses a disposable PostgreSQL container via Testcontainers (ADR-017), so the integration job
+# needs only the Docker runtime that GitHub-hosted ubuntu runners already provide — no shared or service
+# database is used (TESTING_STRATEGY §13). Toolchain follows README.md (Java 21 + Maven; Vite/npm).
 
 jobs:
-  backend:
-    name: Backend tests
+  backend-unit:
+    name: Backend unit tests (fast)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -37,10 +43,58 @@ jobs:
           java-version: '21'
           cache: maven
 
-      - name: Run tests
+      - name: Unit tests (Surefire)
         if: steps.manifest.outputs.present == 'true'
         working-directory: backend
         run: mvn -B -ntp test
+
+      - name: Upload unit test reports
+        if: always() && steps.manifest.outputs.present == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-surefire-reports
+          path: backend/target/surefire-reports/
+          if-no-files-found: ignore
+
+  backend-integration:
+    name: Backend integration tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Check for backend manifest
+        id: manifest
+        run: |
+          if [ -f backend/pom.xml ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+            echo "No backend/pom.xml yet — no integration tests to run."
+          fi
+
+      - name: Set up JDK 21
+        if: steps.manifest.outputs.present == 'true'
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      # Docker is preinstalled and running on ubuntu-latest, so Testcontainers starts PostgreSQL and
+      # Flyway migrates it (ADR-016, ADR-017). Surefire is skipped here so unit tests stay in the fast
+      # job above; this job runs only the Failsafe integration tests and fails if any *IT fails.
+      - name: Integration tests (Failsafe + Testcontainers)
+        if: steps.manifest.outputs.present == 'true'
+        working-directory: backend
+        run: mvn -B -ntp verify -Dsurefire.skip=true
+
+      - name: Upload integration test reports
+        if: always() && steps.manifest.outputs.present == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-failsafe-reports
+          path: backend/target/failsafe-reports/
+          if-no-files-found: ignore
 
   frontend:
     name: Frontend tests

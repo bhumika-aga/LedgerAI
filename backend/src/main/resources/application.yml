@@ -2,6 +2,25 @@ spring:
   application:
     name: ledgerai-backend
 
+  # Datasource is fully externalized and environment-driven; no credentials live in source
+  # (SECURITY §13, BACKEND_CODING_STANDARDS §11). Values are supplied per environment; tests supply
+  # them from a disposable container (ADR-017), so no defaults are baked in here.
+  datasource:
+    url: ${DATABASE_URL:}
+    username: ${DATABASE_USERNAME:}
+    password: ${DATABASE_PASSWORD:}
+
+  jpa:
+    # The schema is owned entirely by migrations (ADR-016); Hibernate never creates or alters it.
+    hibernate:
+      ddl-auto: none
+    open-in-view: false
+
+  # Flyway is the sole schema authority (ADR-016) and runs before persistence initializes.
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
 # Baseline observability (ADR-015): expose only the health endpoint required by the Phase 0
 # foundation. Broader endpoints, metrics, and per-environment configuration are added by the
 # slices that introduce them. Secrets and environment-specific values are always externalized.
