@@ -17,7 +17,7 @@ jobs:
     name: Backend tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Check for backend manifest
         id: manifest
@@ -46,7 +46,7 @@ jobs:
     name: Frontend tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Check for frontend manifest
         id: manifest
