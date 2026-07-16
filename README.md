@@ -1,294 +1,193 @@
 # LedgerAI
 
-An AI-powered productivity platform for Chartered Accountants, CPAs, auditors, and accounting professionals.
-
-LedgerAI helps to account professionals understand financial documents, summarize reports, answer accounting-related
-questions, generate professional outputs, and automate repetitive work using AI.
-
-> **LedgerAI is not an ERP or accounting software.**
->
-> It works alongside existing accounting systems such as Tally, QuickBooks, Xero, Zoho Books, SAP, Oracle Financials,
-> and Microsoft Excel.
+LedgerAI is an AI-powered document intelligence platform for accounting professionals — Chartered Accountants, CPAs,
+auditors, and accounting associates. It helps them understand financial documents, ask questions, extract information,
+draft client emails, generate reports, and search across their work. It runs alongside existing systems (Tally,
+QuickBooks, Xero, Zoho, SAP, Oracle, Excel) and is deliberately **not** an ERP, bookkeeping, payroll, tax-filing, or
+system-of-record product. The product scope and boundaries are owned by
+[Product Vision](docs/00-product/PRODUCT_VISION.md) and
+[Product Decisions](docs/00-product/PRODUCT_DECISIONS.md).
 
 ---
 
-# Vision
+## Repository philosophy
 
-Accounting professionals spend countless hours reading documents, extracting information, drafting emails, comparing
-financial statements, and researching regulations.
+This repository is documentation-first and architecture-first. Documentation is written and approved before
+implementation, architecture precedes code, and every change must trace back to an approved document. The frozen
+documents under [`docs/`](docs/) are the single source of truth; code conforms to them, never the reverse.
 
-LedgerAI aims to reduce those manual tasks from hours to minutes through AI-assisted workflows.
-
-Our goal is to build the everyday AI workspace for accounting professionals.
-
----
-
-# MVP Features
-
-Version 1 includes:
-
-* Secure Authentication
-* User Profiles
-* Client Management
-* Document Upload
-* Document Storage
-* OCR for scanned documents
-* AI Document Summarization
-* AI Chat with uploaded documents
-* AI-generated Email Drafts
-* Report Generation
-* Global Search
-* Activity Timeline
+How Claude Code and contributors must operate inside this constraint — what to obey, when to stop, and what "done"
+means — is defined by [`CLAUDE.md`](CLAUDE.md). Read it before making any change. This README does not restate either;
+it points to them.
 
 ---
 
-# Technology Stack
-
-## Frontend
-
-* React
-* TypeScript
-* Vite
-* Material UI
-* React Router
-* React Query
-* Axios
-
-## Backend
-
-* Java 21
-* Spring Boot 3
-* Spring Security
-* Spring Data JPA
-* Hibernate
-* Maven
-
-## Database
-
-* PostgreSQL (Neon)
-
-## Storage
-
-* Cloudinary or Supabase Storage (TBD)
-
-## Documentation
-
-* OpenAPI (Swagger)
-
-## Authentication
-
-* JWT Access Tokens
-* Refresh Tokens
-
-## Hosting
-
-Frontend:
-
-* Vercel
-
-Backend:
-
-* Render
-
-Database:
-
-* Neon PostgreSQL
-
----
-
-# Repository Structure
+## Repository structure
 
 ```text
-ledger-ai/
-
-├── CLAUDE.md                 # Engineering constitution for Claude Code
-├── README.md
-│
-├── backend/                  # Spring Boot application
-│
-├── frontend/                 # React + TypeScript application
-│
-├── docs/
-│   ├── PRD.md
-│   ├── SRS.md
-│   ├── ARCHITECTURE.md
-│   ├── DATABASE.md
-│   ├── API_SPEC.md
-│   ├── SECURITY.md
-│   ├── UI_UX.md
-│   ├── ROADMAP.md
-│   └── decisions/
-│
-├── docker/
-│
-└── .github/
+LedgerAI/
+├── CLAUDE.md      # Engineering playbook: how to work inside this repository
+├── LICENSE        # Apache License 2.0
+├── README.md      # This file — the entry point
+├── docs/          # Frozen source of truth (product, architecture, design, engineering, AI, releases)
+├── .github/       # Repository governance and automation (issue/PR templates, CODEOWNERS, workflows)
+├── backend/       # Backend application — scaffold, not yet populated
+├── frontend/      # Frontend application — scaffold, not yet populated
+└── docker/        # Container configuration — scaffold, not yet populated
 ```
 
----
+The `docs/` tree is organized by concern:
 
-# Engineering Principles
+| Directory                                        | Concern                                                                 | 
+|--------------------------------------------------|-------------------------------------------------------------------------|
+| [`docs/00-product/`](docs/00-product/)           | Why the product exists, what was decided, and what it must do           |
+| [`docs/01-architecture/`](docs/01-architecture/) | System design, domain specifications, and Architecture Decision Records |
+| [`docs/02-design/`](docs/02-design/)             | Design system, components, UI guidelines, and user flows                |
+| [`docs/03-engineering/`](docs/03-engineering/)   | How the product is built, tested, contributed to, and deployed          |
+| [`docs/04-ai/`](docs/04-ai/)                     | AI providers, prompts, evaluation, and retrieval governance             |
+| [`docs/05-releases/`](docs/05-releases/)         | Changelog and release notes                                             |
 
-LedgerAI follows these principles:
-
-* Clean Architecture (applied pragmatically)
-* SOLID Principles
-* Layered Architecture
-* Domain-oriented package organization
-* RESTful APIs
-* Secure-by-default development
-* Testable code
-* Maintainable code
-* Clear documentation
-
-Every major engineering decision should be documented through an Architecture Decision Record (ADR).
+The `backend/`, `frontend/`, and `docker/` directories exist as scaffolds and are intentionally empty until
+implementation begins.
 
 ---
 
-# Development Workflow
+## Documentation roadmap
 
-Every feature should follow this sequence:
+New contributors should read in this order. Each item links to the document that owns the concern.
 
-1. Requirements
-2. Design
-3. Database Changes
-4. API Design
-5. Backend Implementation
-6. Unit Testing
-7. Frontend Implementation
-8. Documentation Update
-9. Code Review
-
-Features should be delivered in small, incremental milestones.
-
----
-
-# Coding Standards
-
-General Guidelines
-
-* Use meaningful naming.
-* Prefer readability to cleverness.
-* Keep controllers thin.
-* Keep business logic inside services.
-* Keep repositories focused on persistence.
-* Validate all external input.
-* Centralize exception handling.
-* Avoid duplicate logic.
-* Write self-documenting code.
+1. [Product Vision](docs/00-product/PRODUCT_VISION.md) — why LedgerAI exists and its boundaries.
+2. [Product Decisions](docs/00-product/PRODUCT_DECISIONS.md) — what was accepted, deferred, and rejected.
+3. [PRD](docs/00-product/PRD.md) — product requirements and scope.
+4. [SRS](docs/00-product/SRS.md) — precise behavior, business rules, validation, and state.
+5. [Architecture](docs/01-architecture/ARCHITECTURE.md) — system design and guiding rules, plus the domain
+   specifications ([Database](docs/01-architecture/DATABASE.md), [API Spec](docs/01-architecture/API_SPEC.md),
+   [Security](docs/01-architecture/SECURITY.md), [AI Architecture](docs/01-architecture/AI_ARCHITECTURE.md)) and the
+   [Architecture Decision Records](docs/01-architecture/decisions/).
+6. [Design](docs/02-design/) — [Design System](docs/02-design/DESIGN_SYSTEM.md),
+   [Components](docs/02-design/COMPONENTS.md), [UI Guidelines](docs/02-design/UI_GUIDELINES.md), and
+   [User Flows](docs/02-design/USER_FLOWS.md).
+7. [Engineering](docs/03-engineering/) — [Implementation Plan](docs/03-engineering/IMPLEMENTATION_PLAN.md),
+   [Implementation Status](docs/03-engineering/IMPLEMENTATION_STATUS.md),
+   [Contributing](docs/03-engineering/CONTRIBUTING.md), [Testing Strategy](docs/03-engineering/TESTING_STRATEGY.md),
+   and coding standards ([backend](docs/03-engineering/BACKEND_CODING_STANDARDS.md),
+   [frontend](docs/03-engineering/FRONTEND_CODING_STANDARDS.md)).
+8. [AI](docs/04-ai/) — [AI Providers](docs/04-ai/AI_PROVIDERS.md), [Prompts](docs/04-ai/PROMPTS.md),
+   [Evaluation](docs/04-ai/EVALUATION.md), and [RAG](docs/04-ai/RAG.md).
+9. [Releases](docs/05-releases/) — [Changelog](docs/05-releases/CHANGELOG.md) and
+   [Release Notes](docs/05-releases/RELEASE_NOTES.md).
 
 ---
 
-# Documentation
+## Technology stack
 
-Project documentation lives under the `docs` directory.
+The approved stack is fixed by the [Architecture](docs/01-architecture/ARCHITECTURE.md) and its Architecture Decision
+Records. This section lists only what has been decided; it defines nothing.
 
-Core documents include:
+| Layer          | Technology                                                                                                                        |
+|----------------|-----------------------------------------------------------------------------------------------------------------------------------|
+| Frontend       | React, TypeScript, Vite, Material UI                                                                                              |
+| Backend        | Java 21, Spring Boot 3, Spring Security, Spring Data JPA / Hibernate, Maven                                                       |
+| Database       | PostgreSQL                                                                                                                        |
+| API            | REST, documented with OpenAPI                                                                                                     |
+| Authentication | JWT access tokens with refresh tokens ([ADR-001](docs/01-architecture/decisions/ADR-001-Authentication-Strategy.md))              |
+| Hosting        | Vercel (frontend), Render (backend), Neon (PostgreSQL) — [ADR-012](docs/01-architecture/decisions/ADR-012-Deployment-Strategy.md) |
 
-* Product Requirements Document (PRD)
-* Software Requirements Specification (SRS)
-* System Architecture
-* Database Design
-* API Specification
-* Security Design
-* UI/UX Specification
-* Development Roadmap
+Some technologies are **deliberately deferred** and must not be assumed. These are recorded in
+[Product Decisions §4](docs/00-product/PRODUCT_DECISIONS.md#4-deferred-decisions):
 
-All architectural decisions should be captured as ADRs.
-
----
-
-# Branching Strategy
-
-Recommended Git workflow:
-
-* `main` – Production-ready code
-* `develop` – Integration branch
-* `feature/<feature-name>` – New features
-* `bugfix/<issue-name>` – Bug fixes
-* `hotfix/<issue-name>` – Production fixes
-
-Pull requests should target `develop` unless fixing a production issue.
+- **Storage provider** (DD-001) — to be resolved before Document Upload, in
+  [ADR-002](docs/01-architecture/decisions/ADR-002-Storage-Provider.md).
+- **AI / LLM provider** (DD-002) — the codebase commits to a provider-agnostic abstraction first; the concrete provider
+  choice follows.
+- **Vector database** (DD-003) and **RAG strategy** (DD-004) — deferred until retrieval earns its place.
 
 ---
 
-# Project Milestones
+## Development prerequisites
 
-## Milestone 0
+Only the tooling implied by the approved stack is listed. Precise versions beyond those fixed below are established by
+the build configuration as implementation begins.
 
-* Repository setup
-* Documentation
-* Architecture
-* CI/CD
-* Docker configuration
-
-## Milestone 1
-
-* Authentication
-* User Management
-
-## Milestone 2
-
-* Client Management
-
-## Milestone 3
-
-* Document Upload
-* File Storage
-
-## Milestone 4
-
-* AI Document Analysis
-
-## Milestone 5
-
-* AI Chat
-
-## Milestone 6
-
-* Reports
-* Search
-* Activity Timeline
-
-## Milestone 7
-
-* Production deployment
-* Beta release
+- **Java 21** — the backend language and runtime.
+- **Maven** — the backend build tool.
+- **Node.js and npm** — the frontend toolchain (React + Vite).
+- **Docker** — for the containerized local and deployment configuration.
+- **Git** — version control.
 
 ---
 
-# Long-Term Vision
+## Local development
 
-Future versions may include:
+Implementation has not started; the `backend/`, `frontend/`, and `docker/` directories are empty scaffolds. There are
+therefore no build or run commands to document yet, and none are invented here.
 
-* Tally integration
-* QuickBooks integration
-* Xero integration
-* Compliance reminders
-* Multi-document reasoning
-* Bank statement analysis
-* Financial statement comparison
-* AI audit workpapers
-* Multi-country accounting support
-* AI workflow automation
-
-These are intentionally out of scope for Version 1.
+The intended flow is the one the architecture prescribes: a modular Spring Boot backend, a feature-organized React SPA,
+PostgreSQL for persistence, and container configuration under `docker/`. Concrete setup and run instructions will be
+added to this section once the corresponding code lands, following the build order in the
+[Implementation Plan](docs/03-engineering/IMPLEMENTATION_PLAN.md). Until then, treat the documentation as the product
+and read it first.
 
 ---
 
-# Contributing
+## Repository workflow
 
-This project prioritizes:
+Every change follows the same path — **documentation first, then implementation, testing, review, and merge** — with
+each step acting as a gate. Changes that touch a frozen contract (architecture, API, database, security, or AI) require
+explicit approval before proceeding.
 
-* Simplicity
-* Maintainability
-* Scalability
-* Security
-* High-quality engineering practices
-
-Every contribution should improve the long-term health of the codebase rather than introducing unnecessary complexity.
+This is summarized, not defined, here. The authoritative process — how a change is routed, reviewed, and approved —
+lives in [Contributing](docs/03-engineering/CONTRIBUTING.md), and the behavioral rules that govern it live in
+[`CLAUDE.md`](CLAUDE.md).
 
 ---
 
-# License
+## Documentation ownership
 
-License to be decided before public release.
+Each concern is owned by exactly one area of `docs/`, and changes are routed to that owner:
+
+| Concern      | Owner                                            |
+|--------------|--------------------------------------------------|
+| Product      | [`docs/00-product/`](docs/00-product/)           |
+| Architecture | [`docs/01-architecture/`](docs/01-architecture/) |
+| Design       | [`docs/02-design/`](docs/02-design/)             |
+| Engineering  | [`docs/03-engineering/`](docs/03-engineering/)   |
+| AI           | [`docs/04-ai/`](docs/04-ai/)                     |
+| Release      | [`docs/05-releases/`](docs/05-releases/)         |
+
+Review routing for these areas is expressed in [`.github/CODEOWNERS`](.github/CODEOWNERS). The ownership model itself is
+defined by the documents; this table only points to them.
+
+---
+
+## Quality gates
+
+Repository automation enforces hygiene without restating any document. Documentation integrity (empty files, missing
+headings, broken relative links) is validated in CI; Markdown, spelling, and external links are checked; path-based
+labels and stale-item management run automatically. Review routing is expressed through
+[`.github/CODEOWNERS`](.github/CODEOWNERS), and every change is reviewed via the pull-request process before merge. The
+automation lives under [`.github/`](.github/); its configuration is the source, and it is not described in detail here.
+
+---
+
+## Security
+
+Two documents cover two different concerns. [`.github/SECURITY.md`](.github/SECURITY.md) is the responsible-disclosure
+policy — how to report a vulnerability in this repository. [
+`docs/01-architecture/SECURITY.md`](docs/01-architecture/SECURITY.md)
+is the product's security architecture — the controls, authorization model, and threat considerations that the
+implementation must satisfy. The first tells you how to report; the second defines what must be true.
+
+---
+
+## License
+
+Licensed under the Apache License 2.0. See [`LICENSE`](LICENSE) for the full text.
+
+---
+
+## Status
+
+Documentation is complete and frozen. Implementation has not yet started — the repository is at **Phase 0 (M0 — Project
+Setup), 0% complete**, as tracked in
+[Implementation Status](docs/03-engineering/IMPLEMENTATION_STATUS.md), the only routinely updated document.
