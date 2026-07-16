@@ -2,7 +2,7 @@
 
 > **Status:** Living document (engineering dashboard)
 > **Owner:** Founding Engineer / Engineering Manager
-> **Last updated:** 2026-07-14
+> **Last updated:** 2026-07-17
 > **Companion to:
 ** [IMPLEMENTATION_PLAN](./IMPLEMENTATION_PLAN.md)
 
@@ -27,14 +27,14 @@ It is operational, not architectural: it points at the plan and the frozen docs 
 
 ## 2. Project Summary
 
-| Field                 | Value                |
-|-----------------------|----------------------|
-| **Current Phase**     | Phase 0 — Foundation |
-| **Current Milestone** | M0 — Project Setup   |
-| **Overall Progress**  | 0%                   |
-| **Current Sprint**    | Sprint 1             |
-| **Status**            | Not Started          |
-| **Last Updated**      | 2026-07-14           |
+| Field                 | Value                              |
+|-----------------------|------------------------------------|
+| **Current Phase**     | Phase 1 — Authentication & Profile |
+| **Current Milestone** | M1 — Authentication complete       |
+| **Overall Progress**  | ~18%                               |
+| **Current Sprint**    | Sprint 1                           |
+| **Status**            | In Progress                        |
+| **Last Updated**      | 2026-07-17                         |
 
 ---
 
@@ -43,14 +43,14 @@ It is operational, not architectural: it points at the plan and the frozen docs 
 Phases per [IMPLEMENTATION_PLAN §3](./IMPLEMENTATION_PLAN.md#3-build-order). Status ∈ {Not Started, In Progress,
 Blocked, Completed}.
 
-| Phase                               | Status      | Progress | Notes                                                                                                       |
-|-------------------------------------|-------------|----------|-------------------------------------------------------------------------------------------------------------|
-| Phase 0 — Foundation                | Not Started | 0%       | Repo, scaffolds, Docker, CI, env/secrets, DB connectivity.                                                  |
-| Phase 1 — Authentication & Profile  | Not Started | 0%       | Auth, JWT + refresh, profile.                                                                               |
-| Phase 2 — Client Management         | Not Started | 0%       | Client CRUD, validation, ownership.                                                                         |
-| Phase 3 — Documents, Storage & OCR  | Not Started | 0%       | Blocked-until: [ADR-002](../01-architecture/decisions/ADR-002-Storage-Provider.md) + OCR provider resolved. |
-| Phase 4 — AI Capabilities           | Not Started | 0%       | Blocked-until: AI provider (DD-002) resolved.                                                               |
-| Phase 5 — Search, Timeline & Launch | Not Started | 0%       | Search, timeline, polish, deploy.                                                                           |
+| Phase                               | Status      | Progress | Notes                                                                                                                                                                                                                                                                                        |
+|-------------------------------------|-------------|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Phase 0 — Foundation                | In Progress | ~60%     | Done: backend + frontend scaffolds, CI, persistence infra (Flyway + Testcontainers), System Health slice. Remaining: Docker for local dev, env/secrets, OpenAPI wiring, live Neon connectivity.                                                                                              |
+| Phase 1 — Authentication & Profile  | In Progress | ~40%     | Done: authentication slice — register/login/refresh/logout/me, JWT access + rotated refresh (httpOnly cookie, ADR-018), BCrypt, RFC 7807 errors, security config; frontend sign-in + session bootstrap. Remaining: User Profile, protected-route guard, rate limiting (FR-AUTH-008, SHOULD). |
+| Phase 2 — Client Management         | Not Started | 0%       | Client CRUD, validation, ownership.                                                                                                                                                                                                                                                          |
+| Phase 3 — Documents, Storage & OCR  | Not Started | 0%       | Blocked-until: [ADR-002](../01-architecture/decisions/ADR-002-Storage-Provider.md) + OCR provider resolved.                                                                                                                                                                                  |
+| Phase 4 — AI Capabilities           | Not Started | 0%       | Blocked-until: AI provider (DD-002) resolved.                                                                                                                                                                                                                                                |
+| Phase 5 — Search, Timeline & Launch | Not Started | 0%       | Search, timeline, polish, deploy.                                                                                                                                                                                                                                                            |
 
 ---
 
@@ -58,20 +58,20 @@ Blocked, Completed}.
 
 All twelve MVP modules. Status ∈ {Not Started, In Progress, Blocked, Completed}.
 
-| Module            | Phase | Status      | Depends On                          | Notes                                      |
-|-------------------|-------|-------------|-------------------------------------|--------------------------------------------|
-| Authentication    | 1     | Not Started | Phase 0                             | Foundation of all access.                  |
-| User Profile      | 1     | Not Started | Authentication                      | Self-only access.                          |
-| Client Management | 2     | Not Started | Authentication                      | Ownership-scoped container.                |
-| Document Upload   | 3     | Not Started | Client Management, Document Storage | Entry point of the core loop.              |
-| Document Storage  | 3     | Not Started | Document Upload, ADR-002            | External object store; DB holds reference. |
-| OCR               | 3     | Not Started | Document Storage, OCR provider      | Native-first; drives Ready/Failed.         |
-| AI Summary        | 4     | Not Started | OCR, AI provider                    | Grounded, editable.                        |
-| AI Chat           | 4     | Not Started | OCR, AI provider                    | Document-scoped Q&A.                       |
-| AI Email          | 4     | Not Started | AI provider                         | Draft only — never sent.                   |
-| Report Generation | 4     | Not Started | AI Summary                          | Single-document.                           |
-| Global Search     | 5     | Not Started | Document Storage, OCR               | Owner-scoped; excludes deleted.            |
-| Activity Timeline | 5     | Not Started | All action-producing modules        | Read-only, immutable.                      |
+| Module            | Phase | Status      | Depends On                          | Notes                                                                                        |
+|-------------------|-------|-------------|-------------------------------------|----------------------------------------------------------------------------------------------|
+| Authentication    | 1     | In Progress | Phase 0                             | Register/login/refresh/logout/me implemented + tested; rate limiting (FR-AUTH-008) deferred. |
+| User Profile      | 1     | Not Started | Authentication                      | Self-only access.                                                                            |
+| Client Management | 2     | Not Started | Authentication                      | Ownership-scoped container.                                                                  |
+| Document Upload   | 3     | Not Started | Client Management, Document Storage | Entry point of the core loop.                                                                |
+| Document Storage  | 3     | Not Started | Document Upload, ADR-002            | External object store; DB holds reference.                                                   |
+| OCR               | 3     | Not Started | Document Storage, OCR provider      | Native-first; drives Ready/Failed.                                                           |
+| AI Summary        | 4     | Not Started | OCR, AI provider                    | Grounded, editable.                                                                          |
+| AI Chat           | 4     | Not Started | OCR, AI provider                    | Document-scoped Q&A.                                                                         |
+| AI Email          | 4     | Not Started | AI provider                         | Draft only — never sent.                                                                     |
+| Report Generation | 4     | Not Started | AI Summary                          | Single-document.                                                                             |
+| Global Search     | 5     | Not Started | Document Storage, OCR               | Owner-scoped; excludes deleted.                                                              |
+| Activity Timeline | 5     | Not Started | All action-producing modules        | Read-only, immutable.                                                                        |
 
 ---
 
@@ -109,13 +109,13 @@ Completed}.
 
 **Sprint 1**
 
-| Section               | Entries       |
-|-----------------------|---------------|
-| **Objective**         | _(to be set)_ |
-| **Planned Tasks**     | _(none yet)_  |
-| **Completed Tasks**   | _(none yet)_  |
-| **Blocked Tasks**     | _(none yet)_  |
-| **Engineering Notes** | _(none yet)_  |
+| Section               | Entries                                                                                                                                                                                                                                                                                                                                                                                      |
+|-----------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Objective**         | Establish the foundation and validate the full stack end to end.                                                                                                                                                                                                                                                                                                                             |
+| **Planned Tasks**     | Docker for local dev; env/secrets; OpenAPI wiring; live Neon connectivity.                                                                                                                                                                                                                                                                                                                   |
+| **Completed Tasks**   | Backend scaffold; frontend scaffold; CI (build/test/docs); persistence infra (ADR-016/017); System Health validation slice; Authentication slice (register/login/refresh/logout/me).                                                                                                                                                                                                         |
+| **Blocked Tasks**     | _(none yet)_                                                                                                                                                                                                                                                                                                                                                                                 |
+| **Engineering Notes** | System Health slice uses the existing Actuator `/actuator/health` (ADR-015); no first-party health API endpoint was added. Authentication follows ADR-018 (refresh token in httpOnly cookie, access token in body); logout requires the access token per API_SPEC §5.4, refresh does not per §5.3. Login rate limiting (FR-AUTH-008, `429`) is a SHOULD and is deferred to a hardening pass. |
 
 ---
 
@@ -149,9 +149,11 @@ Seeded from [IMPLEMENTATION_PLAN §8](./IMPLEMENTATION_PLAN.md#8-risks). Status 
 
 Chronological record of decisions made during implementation. _(Empty — no in-flight decisions logged yet.)_
 
-| Date     | Decision | Reference |
-|----------|----------|-----------|
-| _(none)_ |          |           |
+| Date       | Decision                                                          | Reference                                                                     |
+|------------|-------------------------------------------------------------------|-------------------------------------------------------------------------------|
+| 2026-07-16 | Adopted Flyway as the database migration tool                     | [ADR-016](../01-architecture/decisions/ADR-016-Database-Migration-Tooling.md) |
+| 2026-07-16 | Adopted Testcontainers as the integration-test database mechanism | [ADR-017](../01-architecture/decisions/ADR-017-Integration-Test-Database.md)  |
+| 2026-07-17 | Refresh token in httpOnly cookie, access token in response body   | [ADR-018](../01-architecture/decisions/ADR-018-Token-Transport.md)            |
 
 ---
 

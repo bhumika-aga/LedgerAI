@@ -3,3 +3,12 @@
 spring:
   application:
     name: ledgerai-backend-test
+
+# Test-only authentication configuration. The signing secret is a throwaway value that exists solely
+# to satisfy the HS256 minimum key length (>= 256 bits) — it is never a real credential. The cookie
+# is not Secure under test so it survives plain-HTTP MockMvc/TestRestTemplate exchanges.
+auth:
+  jwt:
+    secret: test-signing-secret-that-is-at-least-32-bytes-long-for-hs256
+  cookie:
+    secure: false
