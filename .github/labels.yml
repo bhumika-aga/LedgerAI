@@ -1,0 +1,47 @@
+# Repository labels for LedgerAI — the declarative set for issue and PR labels.
+#
+# This is the intended taxonomy, aligned to the repository's domains. It is applied through the GitHub
+# UI or a label-sync action; nothing consumes it automatically. Labels only classify issues and PRs —
+# routing and authority live in docs/ and CLAUDE.md, not here. Colors are hex without the leading '#'.
+
+# Type
+- name: bug
+  color: d73a4a
+  description: Incorrect or unexpected behavior
+
+- name: enhancement
+  color: a2eeef
+  description: A proposed change to what the product does
+
+- name: documentation
+  color: 0075ca
+  description: The documentation source of truth is wrong, unclear, or incomplete
+
+- name: security
+  color: b60205
+  description: Security-relevant issue or change
+
+# Domain (aligned to docs/ areas)
+- name: architecture
+  color: 5319e7
+  description: System design, boundaries, or an ADR (docs/01-architecture)
+
+- name: design
+  color: e99695
+  description: Visual language, components, or flows (docs/02-design)
+
+- name: ai
+  color: 1d76db
+  description: AI behavior, providers, prompts, evaluation, or retrieval (docs/04-ai)
+
+- name: engineering
+  color: c5def5
+  description: Coding standards, build, or repository engineering (docs/03-engineering)
+
+- name: testing
+  color: fbca04
+  description: Test strategy or coverage
+
+- name: deployment
+  color: 006b75
+  description: Promotion, rollback, or release delivery

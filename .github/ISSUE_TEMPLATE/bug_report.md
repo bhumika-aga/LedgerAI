@@ -13,7 +13,12 @@ labels: [ bug ]
 
 ## What you expected
 
-<!-- The expected behavior — and the document that defines it, if you know it (e.g. SRS, a user flow). -->
+<!-- The expected behavior. -->
+
+## Expected-behavior document (if known)
+
+<!-- The document that says what should happen — an SRS requirement, business rule, or user flow.
+     Naming it helps confirm this is a real defect against the source of truth, not a misunderstanding. -->
 
 ## Steps to reproduce
 

@@ -9,9 +9,19 @@ on:
   workflow_dispatch:
 
 # Guards the frozen documentation set (everything under docs/, plus CLAUDE.md).
-# Hard-fails on file-level integrity (empty files, missing top-level heading, broken relative links).
-# Reports heading-anchor mismatches as warnings, because slug computation is approximate and is not
-# a reason to block a merge. This workflow validates documents; it does not author or interpret them.
+#
+# Blocking (a broken document is a defect that must be fixed):
+#   - empty documentation files
+#   - a file with no top-level (#) heading
+#   - broken relative links (the target file or directory does not exist)
+#
+# Informational only (surfaced as ::warning:: — never blocks a merge, because these are either
+# approximate or may pre-exist in frozen documents this workflow is not allowed to change):
+#   - broken heading anchors, and stale anchors that look like the result of renumbering
+#   - duplicate heading anchors within a file (ambiguous)
+#   - documents referenced by no other document
+#
+# This workflow validates documents; it does not author, interpret, or edit them.
 
 jobs:
   integrity:
@@ -20,11 +30,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Check empty files, headings, links, and anchors
+      - name: Check documentation health
         run: |
           set -uo pipefail
-          hard="$(mktemp)"
-          warn="$(mktemp)"
+          hard="$(mktemp)"; warn="$(mktemp)"; refs="$(mktemp)"
 
           slug() { grep -E '^#+[[:space:]]' "$1" \
             | sed -E 's/^#+[[:space:]]+//; s/[[:space:]]+$//' \
@@ -33,37 +42,61 @@ jobs:
 
           count=0
           while IFS= read -r f; do
+            [ -n "$f" ] || continue
             count=$((count + 1))
-            if [ ! -s "$f" ]; then echo "EMPTY   $f" >> "$hard"; continue; fi
-            head -n 40 "$f" | grep -qE '^# ' || echo "NO-H1   $f" >> "$hard"
+
+            if [ ! -s "$f" ]; then echo "EMPTY        $f" >> "$hard"; continue; fi
+            head -n 40 "$f" | grep -qE '^# ' || echo "NO-HEADING   $f" >> "$hard"
+
+            # Duplicate heading anchors within the file (ambiguous) — informational.
+            slug "$f" | sort | uniq -d | while IFS= read -r d; do
+              [ -n "$d" ] && echo "DUP-ANCHOR   $f -> #$d" >> "$warn"
+            done
 
             dir="$(dirname "$f")"
             grep -oE '\]\([^)]+\)' "$f" | sed -E 's/^\]\(//; s/\)$//' | while IFS= read -r raw; do
               t="${raw%% *}"
-              case "$t" in
-                ''|http://*|https://*|mailto:*) : ;;
-                '#'*)
-                  a="${t#\#}"
-                  slug "$f" | grep -qx "$a" || echo "ANCHOR  $f -> $t" >> "$warn" ;;
-                *'#'*)
-                  p="${t%%#*}"; a="${t#*#}"
-                  if [ ! -e "$dir/$p" ]; then echo "LINK    $f -> $p" >> "$hard"
-                  elif [ -f "$dir/$p" ]; then slug "$dir/$p" | grep -qx "$a" || echo "ANCHOR  $f -> $t" >> "$warn"; fi ;;
-                *)
-                  [ -e "$dir/$t" ] || echo "LINK    $f -> $t" >> "$hard" ;;
-              esac
+              case "$t" in ''|http://*|https://*|mailto:*) continue ;; esac
+
+              path="${t%%#*}"; frag=""
+              case "$t" in *'#'*) frag="${t#*#}" ;; esac
+
+              if [ -z "$path" ]; then
+                tgt="$f"                                  # in-page anchor
+              else
+                tgt="$dir/$path"
+                if [ ! -e "$tgt" ]; then echo "LINK         $f -> $path" >> "$hard"; continue; fi
+                [ -f "$tgt" ] && realpath "$tgt" >> "$refs"
+              fi
+
+              if [ -n "$frag" ] && [ -f "$tgt" ]; then
+                if ! slug "$tgt" | grep -qx "$frag"; then
+                  num="${frag%%-*}"
+                  if printf '%s' "$num" | grep -qE '^[0-9]+$' && slug "$tgt" | grep -qE "^${num}-"; then
+                    echo "STALE-ANCHOR $f -> #$frag (target section $num was likely renumbered)" >> "$warn"
+                  else
+                    echo "ANCHOR       $f -> #$frag" >> "$warn"
+                  fi
+                fi
+              fi
             done
           done < <(find docs -type f -name '*.md'; echo CLAUDE.md)
 
+          # Orphan detection: a docs/ file referenced by no other document — informational.
+          sort -u "$refs" -o "$refs"
+          while IFS= read -r f; do
+            grep -qxF "$(realpath "$f")" "$refs" || echo "ORPHAN       $f (referenced by no other document)" >> "$warn"
+          done < <(find docs -type f -name '*.md')
+
           if [ -s "$warn" ]; then
-            echo "Anchor warnings (non-blocking):"
-            sort "$warn" | while IFS= read -r line; do echo "::warning::$line"; done
+            echo "Documentation warnings (non-blocking):"
+            sort -u "$warn" | while IFS= read -r l; do echo "::warning::$l"; done
             echo
           fi
 
           if [ -s "$hard" ]; then
             echo "Documentation integrity check FAILED:"
-            sort "$hard"
+            sort -u "$hard"
             exit 1
           fi
           echo "Documentation integrity check passed ($count files)."

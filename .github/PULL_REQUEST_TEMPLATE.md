@@ -51,6 +51,8 @@ docs/03-engineering/CONTRIBUTING.md — this template only asks you to confirm y
 ## Checklist
 
 - [ ] I identified the owning document for this change.
+- [ ] I checked that no existing document already owns this decision (I am not creating a parallel or duplicate
+  authority).
 - [ ] I did not introduce undocumented behavior.
 - [ ] I updated documentation where behavior changed.
 - [ ] I added or updated tests where relevant.

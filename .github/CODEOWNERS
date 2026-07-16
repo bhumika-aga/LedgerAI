@@ -1,8 +1,9 @@
 # CODEOWNERS — LedgerAI
 #
-# Assigns automatic review for each area of the repository. This file only routes GitHub review
-# requests; it does NOT define contribution process — that is owned by
-# docs/03-engineering/CONTRIBUTING.md.
+# Expresses domain ownership and review routing only. It assigns who is asked to review changes in
+# each area; it does NOT define contribution process, and it does NOT replace the authoritative
+# documents. The entire .github/ layer defers to docs/ and CLAUDE.md as the source of truth — for how
+# a change is routed, reviewed, and approved, see docs/03-engineering/CONTRIBUTING.md.
 #
 # Ownership is currently held by the single maintainer. As the team grows, replace the owner on any
 # line with a more specific person or team; the paths already reflect the repository's documentation
