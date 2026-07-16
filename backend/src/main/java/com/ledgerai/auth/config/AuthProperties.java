@@ -7,9 +7,12 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 
 /**
- * Externalized authentication configuration (SECURITY §13). Token lifetimes, cookie attributes,
- * allowed CORS origins, and the password-policy threshold are all configuration — never code
- * constants or product commitments. The JWT signing secret is supplied only via the environment.
+ * Externalized authentication configuration (SECURITY §13). Token lifetimes,
+ * cookie attributes,
+ * allowed CORS origins, and the password-policy threshold are all configuration
+ * — never code
+ * constants or product commitments. The JWT signing secret is supplied only via
+ * the environment.
  */
 @ConfigurationProperties(prefix = "auth")
 public record AuthProperties(

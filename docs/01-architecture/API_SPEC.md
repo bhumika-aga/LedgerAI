@@ -5,6 +5,7 @@
 > **Last updated:** 2026-07-14
 > **API version:** v1
 > **Upstream (frozen):
+>
 ** [Product Vision](../00-product/PRODUCT_VISION.md) · [Product Decisions](../00-product/PRODUCT_DECISIONS.md) · [PRD](../00-product/PRD.md) · [SRS](../00-product/SRS.md) · [Architecture](./ARCHITECTURE.md) · [Database](./DATABASE.md)
 > **Downstream:** [Security](./SECURITY.md) · [AI Architecture](./AI_ARCHITECTURE.md) · [ADRs](./decisions/)
 
@@ -33,7 +34,7 @@ and report generation is **single-document** ([BR-035](../00-product/SRS.md#5-bu
 
 ### 2.1 Base URL
 
-```
+```txt
 /api/v1
 ```
 
@@ -54,7 +55,7 @@ friendliness; the trade-off is recorded in [§22](#22-api-decision-summary).
 
 Examples:
 
-```
+```txt
 /clients
 /clients/{clientId}/documents
 /documents/{documentId}/summary
@@ -269,7 +270,7 @@ contract:
 | **Logout**               | `POST /auth/logout` revokes the presented refresh token ([FR-AUTH-005](../00-product/SRS.md#41-authentication-auth)).                                   |
 
 > The transport of the refresh token (e.g., httpOnly cookie vs. body) and access-token storage are **security decisions
-**
+> **
 > specified in [SECURITY.md](./SECURITY.md), not here. This contract references the tokens abstractly.
 
 ---
@@ -472,8 +473,8 @@ single document is addressed directly for read/delete.
 - **Success codes:** `201 Created`
 - **Error codes:** `401`, `404` (client not found/owned), `409` (client archived — optional policy), `413`/`422` (
   oversized/unsupported — see note), `422` (validation), `503` (storage unavailable)
-- **Validation:** [VR-005](../00-product/SRS.md#6-validation-rules) — allowed types and max size *
-  *[Assumption; finalized in SRS/architecture]**.
+- **Validation:** [VR-005](../00-product/SRS.md#6-validation-rules) — allowed types and max
+  size \* \*[Assumption; finalized in SRS/architecture]\*\*.
 - **Notes:** The binary goes to the Storage Provider; the DB stores a
   reference ([DATABASE §1.3](./DATABASE.md#13-related-documents)). Rejections use `422` with a Problem Details reason (a
   stricter `413 Payload Too Large` MAY be used for size). Emits `DOCUMENT_UPLOADED`. Processing/OCR proceed
@@ -930,7 +931,7 @@ This mirrors the additive-evolution discipline of [DATABASE](./DATABASE.md#datab
 
 The generated OpenAPI document groups operations by **tag**, one per module, in this order:
 
-```
+```txt
 Authentication · Users · Clients · Documents · OCR · AI · Reports · Search · Activity
 ```
 

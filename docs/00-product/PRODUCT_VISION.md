@@ -4,7 +4,7 @@
 > **Owner:** Founding Engineer / Product
 > **Last updated:** 2026-07-14
 > **Related:
-** [PRD](./PRD.md) · [SRS](./SRS.md) · [Product Decisions](./PRODUCT_DECISIONS.md)
+> ** [PRD](./PRD.md) · [SRS](./SRS.md) · [Product Decisions](./PRODUCT_DECISIONS.md)
 
 ---
 

@@ -5,8 +5,10 @@
 > **Last updated:** 2026-07-14
 > **Database:** PostgreSQL (Neon) — [PD-007](../00-product/PRODUCT_DECISIONS.md#3-accepted-product-decisions)
 > **Upstream (frozen):
+>
 ** [Product Vision](../00-product/PRODUCT_VISION.md) · [Product Decisions](../00-product/PRODUCT_DECISIONS.md) · [PRD](../00-product/PRD.md) · [SRS](../00-product/SRS.md) · [Architecture](./ARCHITECTURE.md)
 > **Downstream:
+>
 ** [API Spec](./API_SPEC.md) · [Security](./SECURITY.md) · [AI Architecture](./AI_ARCHITECTURE.md) · [ADRs](./decisions/)
 
 ---

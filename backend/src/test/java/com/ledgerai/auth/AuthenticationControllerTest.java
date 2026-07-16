@@ -33,9 +33,12 @@ import com.ledgerai.auth.exception.InvalidCredentialsException;
 import com.ledgerai.common.exception.GlobalExceptionHandler;
 
 /**
- * Web-layer tests for {@link AuthenticationController} (API_SPEC §5). Verifies the HTTP contract —
- * status codes, the httpOnly refresh cookie (ADR-018), request-body validation surfaced as RFC 7807
- * (API_SPEC §2.12), the public/authenticated split enforced by {@link SecurityConfig}, and the
+ * Web-layer tests for {@link AuthenticationController} (API_SPEC §5). Verifies
+ * the HTTP contract —
+ * status codes, the httpOnly refresh cookie (ADR-018), request-body validation
+ * surfaced as RFC 7807
+ * (API_SPEC §2.12), the public/authenticated split enforced by
+ * {@link SecurityConfig}, and the
  * {@code /me} projection from the JWT principal — with the service mocked.
  */
 @WebMvcTest(AuthenticationController.class)
@@ -129,7 +132,8 @@ class AuthenticationControllerTest {
     
     @Test
     void logoutReturns204AndClearsCookie() throws Exception {
-        // Logout requires authentication (API_SPEC §5.4) and revokes the token carried by the cookie.
+        // Logout requires authentication (API_SPEC §5.4) and revokes the token carried
+        // by the cookie.
         mockMvc.perform(post("/api/v1/auth/logout")
                             .with(jwt().jwt(builder -> builder.subject(UUID.randomUUID().toString())))
                             .cookie(new jakarta.servlet.http.Cookie(properties.cookie().name(), "raw-refresh")))

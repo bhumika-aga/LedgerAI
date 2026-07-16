@@ -33,9 +33,12 @@ import com.ledgerai.auth.exception.InvalidRefreshTokenException;
 import com.ledgerai.auth.exception.WeakPasswordException;
 
 /**
- * Unit tests for the authentication business rules (SRS §4.1, SECURITY §4). The collaborators are
- * mocked so every rule — password policy, duplicate email, non-revealing credential failure, refresh
- * rotation, idempotent logout — is asserted in isolation from HTTP and persistence.
+ * Unit tests for the authentication business rules (SRS §4.1, SECURITY §4). The
+ * collaborators are
+ * mocked so every rule — password policy, duplicate email, non-revealing
+ * credential failure, refresh
+ * rotation, idempotent logout — is asserted in isolation from HTTP and
+ * persistence.
  */
 @ExtendWith(MockitoExtension.class)
 class AuthenticationServiceTest {

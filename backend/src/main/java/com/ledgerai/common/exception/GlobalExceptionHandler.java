@@ -21,10 +21,14 @@ import com.ledgerai.auth.exception.WeakPasswordException;
 import jakarta.servlet.http.HttpServletRequest;
 
 /**
- * Central error handler (API_SPEC §2.12; SRS §8). Every failure surfaced to a client is rendered as an
- * RFC 7807 {@code application/problem+json} document with the exact fields the contract mandates —
- * {@code type}, {@code title}, {@code status}, {@code detail}, {@code instance}, {@code timestamp},
- * {@code traceId}, and (only for 422) {@code validationErrors}. No framework-specific fields or
+ * Central error handler (API_SPEC §2.12; SRS §8). Every failure surfaced to a
+ * client is rendered as an
+ * RFC 7807 {@code application/problem+json} document with the exact fields the
+ * contract mandates —
+ * {@code type}, {@code title}, {@code status}, {@code detail},
+ * {@code instance}, {@code timestamp},
+ * {@code traceId}, and (only for 422) {@code validationErrors}. No
+ * framework-specific fields or
  * internal details ever leak.
  */
 @RestControllerAdvice

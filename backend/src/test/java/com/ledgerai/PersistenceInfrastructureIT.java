@@ -22,12 +22,18 @@ import jakarta.persistence.EntityManagerFactory;
 /**
  * Persistence infrastructure smoke test (ADR-017).
  *
- * <p>Proves the persistence stack wires together against a real, disposable PostgreSQL container:
- * the Spring context starts, the datasource initializes and connects, Flyway applies the migration
- * history, and the {@link EntityManagerFactory} initializes. It exercises infrastructure only — no
+ * <p>
+ * Proves the persistence stack wires together against a real, disposable
+ * PostgreSQL container:
+ * the Spring context starts, the datasource initializes and connects, Flyway
+ * applies the migration
+ * history, and the {@link EntityManagerFactory} initializes. It exercises
+ * infrastructure only — no
  * entities, repositories, or business behavior.
  *
- * <p>The class is skipped automatically where no Docker runtime is available; it runs in full in CI
+ * <p>
+ * The class is skipped automatically where no Docker runtime is available; it
+ * runs in full in CI
  * and on any Docker-enabled machine (TESTING_STRATEGY §13).
  */
 @SpringBootTest

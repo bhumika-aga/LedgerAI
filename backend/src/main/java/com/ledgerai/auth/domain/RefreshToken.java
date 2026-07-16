@@ -9,10 +9,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 /**
- * Persisted refresh-token record enabling renewal, rotation, and revocation (DATABASE §5.9).
+ * Persisted refresh-token record enabling renewal, rotation, and revocation
+ * (DATABASE §5.9).
  *
- * <p>Stores only the <em>hash</em> of the refresh token, never the raw value (SECURITY §7). Records
- * are effectively immutable except for revocation, so there is no {@code updated_at}.
+ * <p>
+ * Stores only the <em>hash</em> of the refresh token, never the raw value
+ * (SECURITY §7). Records
+ * are effectively immutable except for revocation, so there is no
+ * {@code updated_at}.
  */
 @Entity
 @Table(name = "refresh_token")

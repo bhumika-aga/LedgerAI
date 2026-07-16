@@ -618,7 +618,7 @@ flowchart TD
     classDef gate fill: #e6f0ff, stroke: #3366cc, color: #11294d;
     classDef core fill: #fff2e6, stroke: #cc7a33, color: #4d2f11;
 class Auth, Dash gate;
-class Doc,Summary, Chat, Email, Report core;
+class Doc,Summary,Chat, Email, Report core;
 ```
 
 > **Reading the graph:** solid arrows are *enables / leads to*; dotted arrows to Activity are *records an event*.

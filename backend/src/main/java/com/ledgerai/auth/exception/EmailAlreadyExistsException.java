@@ -3,7 +3,8 @@ package com.ledgerai.auth.exception;
 import com.ledgerai.common.exception.LedgerAiException;
 
 /**
- * Registration with an email that already exists (BR-021). Maps to 409 (API_SPEC §5.1).
+ * Registration with an email that already exists (BR-021). Maps to 409
+ * (API_SPEC §5.1).
  */
 public class EmailAlreadyExistsException extends LedgerAiException {
     

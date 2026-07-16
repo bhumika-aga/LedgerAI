@@ -4,8 +4,10 @@
 > **Owner:** Founding Engineer / Principal Architect
 > **Last updated:** 2026-07-14
 > **Upstream (frozen):
+>
 ** [Product Vision](../00-product/PRODUCT_VISION.md) · [Product Decisions](../00-product/PRODUCT_DECISIONS.md) · [PRD](../00-product/PRD.md) · [SRS](../00-product/SRS.md)
 > **Downstream:
+>
 ** [Database](./DATABASE.md) · [API Spec](./API_SPEC.md) · [Security](./SECURITY.md) · [AI Architecture](./AI_ARCHITECTURE.md) · [ADRs](./decisions/)
 
 ---

@@ -177,7 +177,7 @@ closed.
 Authorization is **ownership-based**, mirroring the data model's ownership hierarchy
 ([DATABASE §4](./DATABASE.md#4-entity-relationship-diagram)):
 
-```
+```txt
 User ──owns──> Client ──owns──> Document ──owns──> { DocumentContent, AIRequest ──> AIOutput }
 User ──owns──> Report (via Document) · Activity · RefreshToken
 ```

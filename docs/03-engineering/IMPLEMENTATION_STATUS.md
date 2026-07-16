@@ -114,18 +114,18 @@ Completed}.
 | **Objective**         | Establish the foundation and validate the full stack end to end.                                                                                                                                                                                                                                                                                                                             |
 | **Planned Tasks**     | Docker for local dev; env/secrets; OpenAPI wiring; live Neon connectivity.                                                                                                                                                                                                                                                                                                                   |
 | **Completed Tasks**   | Backend scaffold; frontend scaffold; CI (build/test/docs); persistence infra (ADR-016/017); System Health validation slice; Authentication slice (register/login/refresh/logout/me).                                                                                                                                                                                                         |
-| **Blocked Tasks**     | _(none yet)_                                                                                                                                                                                                                                                                                                                                                                                 |
+| **Blocked Tasks**     | *(none yet)*                                                                                                                                                                                                                                                                                                                                                                                 |
 | **Engineering Notes** | System Health slice uses the existing Actuator `/actuator/health` (ADR-015); no first-party health API endpoint was added. Authentication follows ADR-018 (refresh token in httpOnly cookie, access token in body); logout requires the access token per API_SPEC §5.4, refresh does not per §5.3. Login rate limiting (FR-AUTH-008, `429`) is a SHOULD and is deferred to a hardening pass. |
 
 ---
 
 ## 8. Technical Debt
 
-Known shortcuts/issues to revisit. _(Empty — no debt recorded yet.)_
+Known shortcuts/issues to revisit. *(Empty — no debt recorded yet.)*
 
 | Issue    | Impact | Priority | Resolution |
 |----------|--------|----------|------------|
-| _(none)_ |        |          |            |
+| *(none)* |        |          |            |
 
 ---
 
@@ -147,7 +147,7 @@ Seeded from [IMPLEMENTATION_PLAN §8](./IMPLEMENTATION_PLAN.md#8-risks). Status 
 
 ## 10. Decision Log
 
-Chronological record of decisions made during implementation. _(Empty — no in-flight decisions logged yet.)_
+Chronological record of decisions made during implementation. *(Empty — no in-flight decisions logged yet.)*
 
 | Date       | Decision                                                          | Reference                                                                     |
 |------------|-------------------------------------------------------------------|-------------------------------------------------------------------------------|
@@ -159,11 +159,11 @@ Chronological record of decisions made during implementation. _(Empty — no in-
 
 ## 11. Weekly Progress Log
 
-_(Empty — add one row per week as work begins.)_
+*(Empty — add one row per week as work begins.)*
 
 | Week     | Achievements | Challenges | Next Goals |
 |----------|--------------|------------|------------|
-| _(none)_ |              |            |            |
+| *(none)* |              |            |            |
 
 ---
 

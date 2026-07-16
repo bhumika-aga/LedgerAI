@@ -10,8 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,8 +26,10 @@ import com.ledgerai.auth.dto.UserResponse;
 import jakarta.validation.Valid;
 
 /**
- * The authentication endpoints defined by API_SPEC §5 (`/auth`). This controller is thin: it
- * translates HTTP ↔ application calls, moves the refresh token between the service and an httpOnly
+ * The authentication endpoints defined by API_SPEC §5 (`/auth`). This
+ * controller is thin: it
+ * translates HTTP ↔ application calls, moves the refresh token between the
+ * service and an httpOnly
  * cookie (ADR-018), and delegates every rule to {@link AuthenticationService}.
  */
 @RestController

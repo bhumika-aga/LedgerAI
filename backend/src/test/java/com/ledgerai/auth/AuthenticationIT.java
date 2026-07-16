@@ -22,10 +22,14 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * End-to-end authentication test (API_SPEC §5, SECURITY §4, ADR-001, ADR-018) over real HTTP against a
- * real PostgreSQL. Exercises the whole slice through the security filter chain: the authenticated/public
- * split, the register → me → refresh → logout lifecycle with the httpOnly refresh cookie and rotation,
- * and the non-revealing credential failure (BR-020). Skipped where no Docker runtime is available.
+ * End-to-end authentication test (API_SPEC §5, SECURITY §4, ADR-001, ADR-018)
+ * over real HTTP against a
+ * real PostgreSQL. Exercises the whole slice through the security filter chain:
+ * the authenticated/public
+ * split, the register → me → refresh → logout lifecycle with the httpOnly
+ * refresh cookie and rotation,
+ * and the non-revealing credential failure (BR-020). Skipped where no Docker
+ * runtime is available.
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
@@ -81,7 +85,8 @@ class AuthenticationIT {
             "/api/v1/auth/refresh", HttpMethod.POST, cookie(refreshCookie), String.class);
         assertThat(reusedOld.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
         
-        // Logout requires authentication (API_SPEC §5.4) and revokes the token carried by the cookie.
+        // Logout requires authentication (API_SPEC §5.4) and revokes the token carried
+        // by the cookie.
         ResponseEntity<String> logout = restTemplate.exchange(
             "/api/v1/auth/logout", HttpMethod.POST, bearerWithCookie(rotatedAccessToken, rotatedCookie),
             String.class);
@@ -103,7 +108,8 @@ class AuthenticationIT {
         assertThat(wrongPassword.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
         assertThat(unknownEmail.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
         
-        // Identical response shape and message: a wrong password is indistinguishable from an unknown
+        // Identical response shape and message: a wrong password is indistinguishable
+        // from an unknown
         // account (BR-020).
         JsonNode wrongBody = objectMapper.readTree(wrongPassword.getBody());
         JsonNode unknownBody = objectMapper.readTree(unknownEmail.getBody());

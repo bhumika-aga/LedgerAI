@@ -30,11 +30,17 @@ import com.nimbusds.jose.jwk.source.ImmutableSecret;
 /**
  * Security configuration (SECURITY §4, §11, §15; ADR-001, ADR-018).
  *
- * <p>A single stateless filter validates the Bearer access token on protected requests; the public
- * endpoints are exactly registration, login, refresh, and the operational health check. Access tokens
- * are signed/validated with a symmetric key supplied only via configuration. CORS allows credentials
- * for the configured trusted origins so the refresh cookie can flow; CSRF is not token-based here —
- * the only cookie is the SameSite refresh cookie (ADR-018), and all other endpoints are Bearer-only.
+ * <p>
+ * A single stateless filter validates the Bearer access token on protected
+ * requests; the public
+ * endpoints are exactly registration, login, refresh, and the operational
+ * health check. Access tokens
+ * are signed/validated with a symmetric key supplied only via configuration.
+ * CORS allows credentials
+ * for the configured trusted origins so the refresh cookie can flow; CSRF is
+ * not token-based here —
+ * the only cookie is the SameSite refresh cookie (ADR-018), and all other
+ * endpoints are Bearer-only.
  */
 @Configuration
 @EnableConfigurationProperties(AuthProperties.class)
@@ -56,7 +62,8 @@ public class SecurityConfig {
                                                .requestMatchers(HttpMethod.POST,
                                                    "/api/v1/auth/register",
                                                    "/api/v1/auth/login",
-                                                   "/api/v1/auth/refresh").permitAll()
+                                                   "/api/v1/auth/refresh")
+                                               .permitAll()
                                                .requestMatchers(HttpMethod.GET, "/actuator/health", "/actuator/health/**").permitAll()
                                                .anyRequest().authenticated())
             .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.decoder(jwtDecoder())));

@@ -27,8 +27,10 @@ import com.ledgerai.auth.exception.InvalidRefreshTokenException;
 import com.ledgerai.auth.exception.WeakPasswordException;
 
 /**
- * Owns the authentication business rules (SECURITY §4, SRS §4.1): registration, credential
- * verification, session issuance, refresh-token rotation, and revocation. All rules live here, not in
+ * Owns the authentication business rules (SECURITY §4, SRS §4.1): registration,
+ * credential
+ * verification, session issuance, refresh-token rotation, and revocation. All
+ * rules live here, not in
  * the controller (BACKEND_CODING_STANDARDS §4).
  */
 @Service
@@ -101,7 +103,8 @@ public class AuthenticationService {
     
     @Transactional
     public void logout(String rawRefreshToken) {
-        // Idempotent (API_SPEC §5.4): an unknown or already-revoked token still succeeds.
+        // Idempotent (API_SPEC §5.4): an unknown or already-revoked token still
+        // succeeds.
         if (rawRefreshToken == null || rawRefreshToken.isBlank()) {
             return;
         }

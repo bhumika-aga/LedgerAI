@@ -9,9 +9,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 /**
- * The account owner (accounting professional) — the root of all ownership (DATABASE §5.1).
+ * The account owner (accounting professional) — the root of all ownership
+ * (DATABASE §5.1).
  *
- * <p>Maps to the reserved-word table {@code "user"}. This is a persistence entity only; it never
+ * <p>
+ * Maps to the reserved-word table {@code "user"}. This is a persistence entity
+ * only; it never
  * crosses the API boundary and never exposes the password hash outward.
  */
 @Entity

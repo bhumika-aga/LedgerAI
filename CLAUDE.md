@@ -42,7 +42,7 @@ Everything below serves this rule.
 
 Authority flows top-to-bottom. A higher document constrains every lower one.
 
-```
+```txt
 Product Vision        ← why LedgerAI exists; boundaries
    ↓
 Product Decisions     ← what was decided/deferred/rejected (PD/DD/RI)
@@ -103,7 +103,7 @@ These are enforceable, not aspirational. Each exists to protect a specific guara
 Every change follows this path; each step is a gate, not a formality (see
 [PLAN §6](./docs/03-engineering/IMPLEMENTATION_PLAN.md#6-development-workflow)):
 
-```
+```txt
 Requirement      ← from SRS/PRD; confirm it is documented
    ↓
 Architecture     ← check ARCHITECTURE/DATABASE/API_SPEC/SECURITY/AI_ARCHITECTURE for how it fits

@@ -5,7 +5,7 @@
 > **Last updated:** 2026-07-14
 > **Release:** V1 (MVP)
 > **Related (frozen):
-** [Product Vision](./PRODUCT_VISION.md) · [Product Decisions](./PRODUCT_DECISIONS.md) · [PRD](./PRD.md)
+> ** [Product Vision](./PRODUCT_VISION.md) · [Product Decisions](./PRODUCT_DECISIONS.md) · [PRD](./PRD.md)
 > **Downstream:
 ** [Architecture](../01-architecture/ARCHITECTURE.md) · [Security](../01-architecture/SECURITY.md) · [AI Architecture](../01-architecture/AI_ARCHITECTURE.md)
 

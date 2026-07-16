@@ -3,11 +3,11 @@ package com.ledgerai.auth;
 import java.time.Instant;
 import java.util.UUID;
 
+import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.JwsHeader;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
-import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.stereotype.Service;
 
 import com.ledgerai.auth.config.AuthProperties;
@@ -15,8 +15,11 @@ import com.ledgerai.auth.config.AuthProperties;
 /**
  * Issues short-lived access tokens (SECURITY §7, ADR-001).
  *
- * <p>The token carries only the minimal claim needed to identify the user — the subject is the user
- * id — plus issued/expiry timestamps. No roles, permissions, or PII are embedded.
+ * <p>
+ * The token carries only the minimal claim needed to identify the user — the
+ * subject is the user
+ * id — plus issued/expiry timestamps. No roles, permissions, or PII are
+ * embedded.
  */
 @Service
 public class JwtService {

@@ -6,8 +6,10 @@
 > **Stack:** Java 21 · Spring Boot 3 · Spring Security · Spring Data JPA · Hibernate ·
 > Maven ([PD-005](../00-product/PRODUCT_DECISIONS.md#3-accepted-product-decisions))
 > **Upstream (frozen):
+>
 ** [Architecture](../01-architecture/ARCHITECTURE.md) · [Database](../01-architecture/DATABASE.md) · [API Spec](../01-architecture/API_SPEC.md) · [Security](../01-architecture/SECURITY.md) · [AI Architecture](../01-architecture/AI_ARCHITECTURE.md) · [SRS](../00-product/SRS.md)
 > **Related:
+>
 ** [CLAUDE.md](../../CLAUDE.md) · [TESTING_STRATEGY](./TESTING_STRATEGY.md) · [IMPLEMENTATION_PLAN](./IMPLEMENTATION_PLAN.md)
 
 ---

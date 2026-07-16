@@ -6,8 +6,10 @@ import java.util.UUID;
 import com.ledgerai.auth.domain.UserAccount;
 
 /**
- * Outbound user representation (API_SPEC §17.1). Never includes the password hash. Profile fields
- * (professionalDetails, preferences) are owned by the future profile slice and omitted here.
+ * Outbound user representation (API_SPEC §17.1). Never includes the password
+ * hash. Profile fields
+ * (professionalDetails, preferences) are owned by the future profile slice and
+ * omitted here.
  */
 public record UserResponse(
     UUID id,
