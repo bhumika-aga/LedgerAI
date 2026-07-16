@@ -1,0 +1,5 @@
+# Test profile configuration. Isolated from other environments and never uses production data or
+# credentials. Test-specific settings are added here as the suite grows.
+spring:
+  application:
+    name: ledgerai-backend-test

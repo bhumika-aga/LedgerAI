@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: ledgerai-backend
+
+# Baseline observability (ADR-015): expose only the health endpoint required by the Phase 0
+# foundation. Broader endpoints, metrics, and per-environment configuration are added by the
+# slices that introduce them. Secrets and environment-specific values are always externalized.
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      probes:
+        enabled: true

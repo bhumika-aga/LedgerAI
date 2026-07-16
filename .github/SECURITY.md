@@ -10,7 +10,7 @@ Please report suspected vulnerabilities **privately**, and do **not** open a pub
 
 - **Preferred:** use GitHub's private vulnerability reporting — the *Report a vulnerability* button under this
   repository's **Security** tab.
-- **Alternatively:** email the maintainer privately at bhumika.aga@gmail.com.
+- **Alternatively:** email the maintainer privately at <bhumika.aga@gmail.com>.
 
 Please do not disclose the issue publicly until it has been confirmed and a resolution has been coordinated.
 
