@@ -1,0 +1,28 @@
+# CODEOWNERS — LedgerAI
+#
+# Assigns automatic review for each area of the repository. This file only routes GitHub review
+# requests; it does NOT define contribution process — that is owned by
+# docs/03-engineering/CONTRIBUTING.md.
+#
+# Ownership is currently held by the single maintainer. As the team grows, replace the owner on any
+# line with a more specific person or team; the paths already reflect the repository's documentation
+# and code domains, so reassignment is a one-line change per area.
+
+# Fallback — everything is owned by the maintainer unless a more specific rule matches below.
+*                        @bhumika-aga
+
+# Documentation domains (the frozen source of truth)
+/docs/00-product/        @bhumika-aga
+/docs/01-architecture/   @bhumika-aga
+/docs/02-design/         @bhumika-aga
+/docs/03-engineering/    @bhumika-aga
+/docs/04-ai/             @bhumika-aga
+/docs/05-releases/       @bhumika-aga
+
+# Governance & repository scaffolding
+/CLAUDE.md               @bhumika-aga
+/.github/                @bhumika-aga
+
+# Code domains (empty today; ownership applies as implementation lands)
+/backend/                @bhumika-aga
+/frontend/               @bhumika-aga

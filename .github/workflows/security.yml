@@ -1,0 +1,27 @@
+name: Security
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+  schedule:
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+
+# Repository-hygiene security only. The product's security architecture, controls, and threat model are
+# owned by docs/01-architecture/SECURITY.md; responsible disclosure is in .github/SECURITY.md. Neither is
+# restated or enforced here. This scan needs no application toolchain and runs on the repository as it is.
+
+jobs:
+  secret-scan:
+    name: Secret scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Scan for committed secrets (gitleaks)
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

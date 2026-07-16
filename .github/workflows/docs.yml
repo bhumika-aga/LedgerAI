@@ -1,0 +1,69 @@
+name: Docs
+
+on:
+  push:
+    branches: [ main ]
+    paths: [ 'docs/**', 'CLAUDE.md', '.github/workflows/docs.yml' ]
+  pull_request:
+    paths: [ 'docs/**', 'CLAUDE.md', '.github/workflows/docs.yml' ]
+  workflow_dispatch:
+
+# Guards the frozen documentation set (everything under docs/, plus CLAUDE.md).
+# Hard-fails on file-level integrity (empty files, missing top-level heading, broken relative links).
+# Reports heading-anchor mismatches as warnings, because slug computation is approximate and is not
+# a reason to block a merge. This workflow validates documents; it does not author or interpret them.
+
+jobs:
+  integrity:
+    name: Documentation integrity
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check empty files, headings, links, and anchors
+        run: |
+          set -uo pipefail
+          hard="$(mktemp)"
+          warn="$(mktemp)"
+
+          slug() { grep -E '^#+[[:space:]]' "$1" \
+            | sed -E 's/^#+[[:space:]]+//; s/[[:space:]]+$//' \
+            | tr '[:upper:]' '[:lower:]' \
+            | sed -E 's/[^a-z0-9 _-]//g; s/ /-/g'; }
+
+          count=0
+          while IFS= read -r f; do
+            count=$((count + 1))
+            if [ ! -s "$f" ]; then echo "EMPTY   $f" >> "$hard"; continue; fi
+            head -n 40 "$f" | grep -qE '^# ' || echo "NO-H1   $f" >> "$hard"
+
+            dir="$(dirname "$f")"
+            grep -oE '\]\([^)]+\)' "$f" | sed -E 's/^\]\(//; s/\)$//' | while IFS= read -r raw; do
+              t="${raw%% *}"
+              case "$t" in
+                ''|http://*|https://*|mailto:*) : ;;
+                '#'*)
+                  a="${t#\#}"
+                  slug "$f" | grep -qx "$a" || echo "ANCHOR  $f -> $t" >> "$warn" ;;
+                *'#'*)
+                  p="${t%%#*}"; a="${t#*#}"
+                  if [ ! -e "$dir/$p" ]; then echo "LINK    $f -> $p" >> "$hard"
+                  elif [ -f "$dir/$p" ]; then slug "$dir/$p" | grep -qx "$a" || echo "ANCHOR  $f -> $t" >> "$warn"; fi ;;
+                *)
+                  [ -e "$dir/$t" ] || echo "LINK    $f -> $t" >> "$hard" ;;
+              esac
+            done
+          done < <(find docs -type f -name '*.md'; echo CLAUDE.md)
+
+          if [ -s "$warn" ]; then
+            echo "Anchor warnings (non-blocking):"
+            sort "$warn" | while IFS= read -r line; do echo "::warning::$line"; done
+            echo
+          fi
+
+          if [ -s "$hard" ]; then
+            echo "Documentation integrity check FAILED:"
+            sort "$hard"
+            exit 1
+          fi
+          echo "Documentation integrity check passed ($count files)."

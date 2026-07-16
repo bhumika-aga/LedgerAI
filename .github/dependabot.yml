@@ -1,0 +1,20 @@
+version: 2
+updates:
+  # GitHub Actions used by the workflows in this repository — active now.
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+
+  # The ecosystems below activate once their manifests exist. Uncomment and adjust when backend and
+  # frontend code lands. Do not enable an ecosystem before its manifest is present.
+  #
+  # - package-ecosystem: "npm"
+  #   directory: "/frontend"
+  #   schedule:
+  #     interval: "weekly"
+  #
+  # - package-ecosystem: "maven"
+  #   directory: "/backend"
+  #   schedule:
+  #     interval: "weekly"

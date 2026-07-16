@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Contribution guide (source of truth)
+    url: https://github.com/bhumika-aga/LedgerAI/blob/main/docs/03-engineering/CONTRIBUTING.md
+    about: How changes are routed, reviewed, and documented. Read this before opening an issue.
+  - name: Report a security vulnerability
+    url: https://github.com/bhumika-aga/LedgerAI/security/policy
+    about: Report security issues privately — never in a public issue.

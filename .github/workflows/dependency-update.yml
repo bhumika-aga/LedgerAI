@@ -1,0 +1,34 @@
+name: Dependency Update Check
+
+on:
+  schedule:
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+
+# Advisory, and complementary to Dependabot: .github/dependabot.yml proposes version bumps, while this
+# job surfaces known vulnerabilities in already-installed dependencies. It is inert until manifests exist.
+
+jobs:
+  audit:
+    name: Dependency audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Frontend audit
+        run: |
+          if [ -f frontend/package.json ]; then
+            cd frontend
+            npm install --package-lock-only --ignore-scripts
+            npm audit --audit-level=high || true
+          else
+            echo "No frontend/package.json yet — nothing to audit."
+          fi
+
+      - name: Backend audit
+        run: |
+          if [ -f backend/pom.xml ]; then
+            echo "backend/pom.xml present — add the project's dependency-vulnerability check here."
+          else
+            echo "No backend/pom.xml yet — nothing to audit."
+          fi

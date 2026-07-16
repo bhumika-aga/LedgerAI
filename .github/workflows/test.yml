@@ -1,0 +1,72 @@
+name: Test
+
+on:
+  push:
+    branches: [ main ]
+    paths: [ 'backend/**', 'frontend/**', '.github/workflows/test.yml' ]
+  pull_request:
+    paths: [ 'backend/**', 'frontend/**', '.github/workflows/test.yml' ]
+  workflow_dispatch:
+
+# Inert until code exists; each job runs only when its manifest is present. What is tested and at which
+# level is owned by docs/03-engineering/TESTING_STRATEGY.md — this workflow runs the suites, it does not
+# define them. Toolchain follows README.md (Java 21 + Maven; Vite/npm).
+
+jobs:
+  backend:
+    name: Backend tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for backend manifest
+        id: manifest
+        run: |
+          if [ -f backend/pom.xml ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+            echo "No backend/pom.xml yet — no tests to run."
+          fi
+
+      - name: Set up JDK 21
+        if: steps.manifest.outputs.present == 'true'
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      - name: Run tests
+        if: steps.manifest.outputs.present == 'true'
+        working-directory: backend
+        run: mvn -B -ntp test
+
+  frontend:
+    name: Frontend tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for frontend manifest
+        id: manifest
+        run: |
+          if [ -f frontend/package.json ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+            echo "No frontend/package.json yet — no tests to run."
+          fi
+
+      - name: Set up Node
+        if: steps.manifest.outputs.present == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run tests
+        if: steps.manifest.outputs.present == 'true'
+        working-directory: frontend
+        run: |
+          npm ci
+          npm run test --if-present
