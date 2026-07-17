@@ -1,6 +1,9 @@
 /**
- * Clients feature boundary (FRONTEND_CODING_STANDARDS §3): client management views and interactions.
- * Owns its own pages, components, and hooks; other features never import its internals. Public
- * surface only — empty until the clients slice is implemented.
+ * Clients feature boundary (FRONTEND_CODING_STANDARDS §3): client management views and interactions —
+ * list, workspace/detail, create, and edit. Owns its pages, form, API layer, and server-state hooks;
+ * other features consume only this public surface.
  */
-export {};
+export { ClientCreatePage } from "./ClientCreatePage";
+export { ClientDetailPage } from "./ClientDetailPage";
+export { ClientEditPage } from "./ClientEditPage";
+export { ClientListPage } from "./ClientListPage";

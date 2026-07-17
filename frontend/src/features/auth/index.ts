@@ -7,3 +7,4 @@ export type { User } from "./authApi";
 export { AuthProvider, useAuth } from "./AuthContext";
 export type { AuthContextValue, AuthStatus } from "./AuthContext";
 export { LoginPage } from "./LoginPage";
+export { RequireAuth } from "./RequireAuth";

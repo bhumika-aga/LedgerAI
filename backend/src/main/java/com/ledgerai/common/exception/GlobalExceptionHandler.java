@@ -4,8 +4,8 @@ import com.ledgerai.auth.exception.EmailAlreadyExistsException;
 import com.ledgerai.auth.exception.InvalidCredentialsException;
 import com.ledgerai.auth.exception.InvalidRefreshTokenException;
 import com.ledgerai.auth.exception.WeakPasswordException;
-import com.ledgerai.users.exception.ProfileValidationException;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.security.access.AccessDeniedException;
@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.net.URI;
 import java.time.Instant;
@@ -90,12 +91,13 @@ public class GlobalExceptionHandler {
     }
     
     /**
-     * VR-003 profile failures. The limits are configured rather than annotated, so they are checked in
-     * the service and surface here with the same field-level shape as Bean Validation failures
-     * (API_SPEC §2.12) — one error model regardless of where validation ran.
+     * Business validation failures raised in a service (e.g. VR-003, VR-004). Limits that are
+     * configuration cannot be expressed as annotations, so they are checked in the service and surface
+     * here with the same field-level shape as Bean Validation failures (API_SPEC §2.12) — one error
+     * model regardless of where validation ran.
      */
-    @ExceptionHandler(ProfileValidationException.class)
-    public ProblemDetail handleProfileValidation(ProfileValidationException ex, HttpServletRequest request) {
+    @ExceptionHandler(ValidationFailedException.class)
+    public ProblemDetail handleValidationFailed(ValidationFailedException ex, HttpServletRequest request) {
         List<ValidationError> errors = ex.getFieldErrors().entrySet().stream()
                                            .map(entry -> new ValidationError(entry.getKey(), entry.getValue()))
                                            .toList();
@@ -114,6 +116,27 @@ public class GlobalExceptionHandler {
             "Validation failed", "One or more fields are invalid.", request);
         problem.setProperty("validationErrors", errors);
         return problem;
+    }
+    
+    /**
+     * A path variable or query param that cannot be bound to its declared type — most often a malformed
+     * UUID, which API_SPEC §2.9 requires to yield {@code 400}, and also a bad {@code status} filter
+     * value. §2.4 defines {@code 400} as "malformed request/syntax … wrong types".
+     */
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ProblemDetail handleTypeMismatch(MethodArgumentTypeMismatchException ex, HttpServletRequest request) {
+        return problem(HttpStatus.BAD_REQUEST, "/problems/bad-request",
+            "Bad request", "The request could not be understood.", request);
+    }
+    
+    /**
+     * A {@code sort} naming a field that does not exist (API_SPEC §2.5). Also, a malformed request rather
+     * than a server fault, so §2.4 puts it at {@code 400} — without this it would surface as a {@code 500}.
+     */
+    @ExceptionHandler(PropertyReferenceException.class)
+    public ProblemDetail handleUnknownSortProperty(PropertyReferenceException ex, HttpServletRequest request) {
+        return problem(HttpStatus.BAD_REQUEST, "/problems/bad-request",
+            "Bad request", "The request could not be understood.", request);
     }
     
     @ExceptionHandler(Exception.class)
