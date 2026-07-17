@@ -1,6 +1,7 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import { LoginPage } from "../features/auth";
+import { ProfilePage } from "../features/profile";
 import { AppLayout } from "../shared/layout/AppLayout";
 import { HealthPage } from "../system/health/HealthPage";
 
@@ -17,6 +18,7 @@ export function AppRouter() {
       <AppLayout>
         <Routes>
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
           <Route path="/system/health" element={<HealthPage />} />
         </Routes>
       </AppLayout>

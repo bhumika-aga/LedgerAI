@@ -53,7 +53,7 @@ class AuthenticationControllerTest {
     
     private AuthResponse sampleAuthResponse(UUID id) {
         Instant now = Instant.now();
-        UserResponse user = new UserResponse(id, "pro@example.com", "Ada Pro", now, now);
+        UserResponse user = new UserResponse(id, "pro@example.com", "Ada Pro", null, null, now, now);
         return new AuthResponse(user, AuthTokensResponse.bearer("access-token", 900L));
     }
     
@@ -154,7 +154,7 @@ class AuthenticationControllerTest {
         UUID id = UUID.randomUUID();
         Instant now = Instant.now();
         when(authenticationService.getCurrentUser(id))
-            .thenReturn(new UserResponse(id, "pro@example.com", "Ada Pro", now, now));
+            .thenReturn(new UserResponse(id, "pro@example.com", "Ada Pro", null, null, now, now));
         
         mockMvc.perform(get("/api/v1/auth/me").with(jwt().jwt(builder -> builder.subject(id.toString()))))
             .andExpect(status().isOk())

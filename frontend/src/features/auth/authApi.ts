@@ -8,11 +8,20 @@ import { getAccessToken } from "./tokenStore";
  * httpOnly cookie (ADR-018); the access token is attached as a Bearer header by the interceptor below.
  */
 
-/** Outbound user representation (API_SPEC §17.1). */
+/**
+ * Outbound user representation (API_SPEC §17.1):
+ * `{ id, email, fullName?, professionalDetails?, preferences?, createdAt, updatedAt }`.
+ *
+ * A shared schema — the API defines it once and both the Authentication (§5) and User (§6) endpoints
+ * return it, so it is published here and consumed by the profile feature rather than redeclared.
+ * `preferences` is free-form by design (DATABASE §5.1) and carries no documented keys.
+ */
 export interface User {
   id: string;
   email: string;
   fullName: string | null;
+  professionalDetails: string | null;
+  preferences: Record<string, unknown> | null;
   createdAt: string;
   updatedAt: string;
 }

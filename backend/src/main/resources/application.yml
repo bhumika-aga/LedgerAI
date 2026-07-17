@@ -40,6 +40,16 @@ auth:
     allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173}
   password-min-length: ${AUTH_PASSWORD_MIN_LENGTH:8}
 
+# Profile validation limits (VR-003). The SRS marks the concrete lengths as an [Assumption] and
+# API_SPEC §18 defers them to the SRS/architecture, where they are not yet finalized — so they live
+# here as tunable configuration rather than as product commitments baked into code, exactly as the
+# password threshold does above (SECURITY §6).
+users:
+  profile:
+    max-full-name-length: ${PROFILE_MAX_FULL_NAME_LENGTH:255}
+    max-professional-details-length: ${PROFILE_MAX_PROFESSIONAL_DETAILS_LENGTH:2000}
+    max-preferences-bytes: ${PROFILE_MAX_PREFERENCES_BYTES:8192}
+
 # Baseline observability (ADR-015): expose only the health endpoint required by the Phase 0
 # foundation. Broader endpoints, metrics, and per-environment configuration are added by the
 # slices that introduce them. Secrets and environment-specific values are always externalized.

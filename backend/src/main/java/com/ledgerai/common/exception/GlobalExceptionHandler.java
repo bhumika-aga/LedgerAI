@@ -4,6 +4,7 @@ import com.ledgerai.auth.exception.EmailAlreadyExistsException;
 import com.ledgerai.auth.exception.InvalidCredentialsException;
 import com.ledgerai.auth.exception.InvalidRefreshTokenException;
 import com.ledgerai.auth.exception.WeakPasswordException;
+import com.ledgerai.users.exception.ProfileValidationException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
@@ -85,6 +86,22 @@ public class GlobalExceptionHandler {
         ProblemDetail problem = problem(HttpStatus.UNPROCESSABLE_ENTITY, "/problems/validation-error",
             "Validation failed", "One or more fields are invalid.", request);
         problem.setProperty("validationErrors", List.of(new ValidationError("password", ex.getMessage())));
+        return problem;
+    }
+    
+    /**
+     * VR-003 profile failures. The limits are configured rather than annotated, so they are checked in
+     * the service and surface here with the same field-level shape as Bean Validation failures
+     * (API_SPEC §2.12) — one error model regardless of where validation ran.
+     */
+    @ExceptionHandler(ProfileValidationException.class)
+    public ProblemDetail handleProfileValidation(ProfileValidationException ex, HttpServletRequest request) {
+        List<ValidationError> errors = ex.getFieldErrors().entrySet().stream()
+                                           .map(entry -> new ValidationError(entry.getKey(), entry.getValue()))
+                                           .toList();
+        ProblemDetail problem = problem(HttpStatus.UNPROCESSABLE_ENTITY, "/problems/validation-error",
+            "Validation failed", ex.getMessage(), request);
+        problem.setProperty("validationErrors", errors);
         return problem;
     }
     

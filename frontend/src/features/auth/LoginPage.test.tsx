@@ -12,6 +12,8 @@ const user = {
   id: "11111111-1111-1111-1111-111111111111",
   email: "pro@example.com",
   fullName: "Ada Pro",
+  professionalDetails: null,
+  preferences: null,
   createdAt: "2026-07-17T00:00:00Z",
   updatedAt: "2026-07-17T00:00:00Z",
 };

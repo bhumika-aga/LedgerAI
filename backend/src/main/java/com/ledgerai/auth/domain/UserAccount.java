@@ -5,7 +5,13 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
 import java.time.Instant;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -33,6 +39,18 @@ public class UserAccount {
     @Column(name = "full_name")
     private String fullName;
     
+    @Column(name = "professional_details")
+    private String professionalDetails;
+    
+    /**
+     * Free-form preferences (DATABASE §5.1: jsonb, "Basic UI/app preferences"). No document defines the
+     * keys, so the shape is deliberately opaque — whatever object the owner stores is round-tripped
+     * unchanged. A future slice can define concrete keys additively without a schema change.
+     */
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "preferences")
+    private Map<String, Object> preferences;
+    
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
     
@@ -55,6 +73,32 @@ public class UserAccount {
         return user;
     }
     
+    /**
+     * Applies a partial profile edit (FR-PROF-002, FR-PROF-003). A {@code null} argument means "not
+     * supplied — leave unchanged"; a supplied value replaces the current one. {@code updated_at} moves
+     * only when something actually changed.
+     */
+    public void applyProfileUpdate(String fullName, String professionalDetails, Map<String, Object> preferences) {
+        boolean changed = false;
+        if (fullName != null && !fullName.equals(this.fullName)) {
+            this.fullName = fullName;
+            changed = true;
+        }
+        if (professionalDetails != null && !professionalDetails.equals(this.professionalDetails)) {
+            this.professionalDetails = professionalDetails;
+            changed = true;
+        }
+        if (preferences != null && !preferences.equals(this.preferences)) {
+            // A LinkedHashMap copy, not Map.copyOf: the blob is opaque, so a null value is legal JSON
+            // ({"theme": null}) and Map.copyOf would reject it.
+            this.preferences = new LinkedHashMap<>(preferences);
+            changed = true;
+        }
+        if (changed) {
+            this.updatedAt = Instant.now();
+        }
+    }
+    
     public UUID getId() {
         return id;
     }
@@ -69,6 +113,14 @@ public class UserAccount {
     
     public String getFullName() {
         return fullName;
+    }
+    
+    public String getProfessionalDetails() {
+        return professionalDetails;
+    }
+    
+    public Map<String, Object> getPreferences() {
+        return preferences == null ? null : Collections.unmodifiableMap(new LinkedHashMap<>(preferences));
     }
     
     public Instant getCreatedAt() {
