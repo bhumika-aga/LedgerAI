@@ -1,5 +1,17 @@
 package com.ledgerai.auth;
 
+import com.ledgerai.auth.config.AuthProperties;
+import com.ledgerai.auth.domain.RefreshToken;
+import com.ledgerai.auth.domain.UserAccount;
+import com.ledgerai.auth.dto.*;
+import com.ledgerai.auth.exception.EmailAlreadyExistsException;
+import com.ledgerai.auth.exception.InvalidCredentialsException;
+import com.ledgerai.auth.exception.InvalidRefreshTokenException;
+import com.ledgerai.auth.exception.WeakPasswordException;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -8,23 +20,6 @@ import java.time.Instant;
 import java.util.Base64;
 import java.util.HexFormat;
 import java.util.UUID;
-
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import com.ledgerai.auth.config.AuthProperties;
-import com.ledgerai.auth.domain.RefreshToken;
-import com.ledgerai.auth.domain.UserAccount;
-import com.ledgerai.auth.dto.AuthResponse;
-import com.ledgerai.auth.dto.AuthTokensResponse;
-import com.ledgerai.auth.dto.LoginRequest;
-import com.ledgerai.auth.dto.RegisterRequest;
-import com.ledgerai.auth.dto.UserResponse;
-import com.ledgerai.auth.exception.EmailAlreadyExistsException;
-import com.ledgerai.auth.exception.InvalidCredentialsException;
-import com.ledgerai.auth.exception.InvalidRefreshTokenException;
-import com.ledgerai.auth.exception.WeakPasswordException;
 
 /**
  * Owns the authentication business rules (SECURITY §4, SRS §4.1): registration,

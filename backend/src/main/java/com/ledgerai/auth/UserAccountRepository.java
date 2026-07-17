@@ -1,11 +1,10 @@
 package com.ledgerai.auth;
 
-import java.util.Optional;
-import java.util.UUID;
-
+import com.ledgerai.auth.domain.UserAccount;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.ledgerai.auth.domain.UserAccount;
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Persistence for {@link UserAccount}. Data access only — no business rules

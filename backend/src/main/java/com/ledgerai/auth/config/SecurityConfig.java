@@ -1,11 +1,7 @@
 package com.ledgerai.auth.config;
 
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
-
+import com.nimbusds.jose.jwk.source.ImmutableSecret;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,8 +20,12 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 
-import com.nimbusds.jose.jwk.source.ImmutableSecret;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 /**
  * Security configuration (SECURITY §4, §11, §15; ADR-001, ADR-018).
@@ -41,15 +41,27 @@ import com.nimbusds.jose.jwk.source.ImmutableSecret;
  * not token-based here —
  * the only cookie is the SameSite refresh cookie (ADR-018), and all other
  * endpoints are Bearer-only.
+ *
+ * <p>
+ * The filter chain establishes <em>authentication</em> only, and denies by default
+ * ({@code anyRequest().authenticated()}). <em>Authorization</em> is ownership-based
+ * and is enforced in the service layer via
+ * {@link com.ledgerai.common.security.OwnershipGuard} — never from URL structure
+ * (ARCHITECTURE §7.1, §9.2; SECURITY §5). There is intentionally no role or
+ * permission model here: LedgerAI's access control is ownership, and RBAC is an
+ * explicitly future concern (SECURITY §5, §19, §20).
  */
 @Configuration
 @EnableConfigurationProperties(AuthProperties.class)
 public class SecurityConfig {
     
     private final AuthProperties properties;
+    private final HandlerExceptionResolver handlerExceptionResolver;
     
-    public SecurityConfig(AuthProperties properties) {
+    public SecurityConfig(AuthProperties properties,
+                          @Qualifier("handlerExceptionResolver") HandlerExceptionResolver handlerExceptionResolver) {
         this.properties = properties;
+        this.handlerExceptionResolver = handlerExceptionResolver;
     }
     
     @Bean
@@ -66,7 +78,15 @@ public class SecurityConfig {
                                                .permitAll()
                                                .requestMatchers(HttpMethod.GET, "/actuator/health", "/actuator/health/**").permitAll()
                                                .anyRequest().authenticated())
-            .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.decoder(jwtDecoder())));
+            .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.decoder(jwtDecoder())))
+            // Failures raised inside the filter chain never reach @RestControllerAdvice on their own, so
+            // they would answer with an empty body. Routing them through the resolver renders them as the
+            // same RFC 7807 documents as everything else (API_SPEC §2.12) — one error model, no exceptions.
+            .exceptionHandling(exceptions -> exceptions
+                                                 .authenticationEntryPoint((request, response, ex) ->
+                                                                               handlerExceptionResolver.resolveException(request, response, null, ex))
+                                                 .accessDeniedHandler((request, response, ex) ->
+                                                                          handlerExceptionResolver.resolveException(request, response, null, ex)));
         return http.build();
     }
     

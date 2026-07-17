@@ -1,11 +1,10 @@
 package com.ledgerai.auth;
 
-import java.util.Optional;
-import java.util.UUID;
-
+import com.ledgerai.auth.domain.RefreshToken;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.ledgerai.auth.domain.RefreshToken;
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Persistence for {@link RefreshToken}. Data access only — no business rules

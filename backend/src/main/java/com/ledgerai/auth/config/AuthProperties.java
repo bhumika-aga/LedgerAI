@@ -1,10 +1,10 @@
 package com.ledgerai.auth.config;
 
-import java.time.Duration;
-import java.util.List;
-
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.bind.DefaultValue;
+
+import java.time.Duration;
+import java.util.List;
 
 /**
  * Externalized authentication configuration (SECURITY §13). Token lifetimes,

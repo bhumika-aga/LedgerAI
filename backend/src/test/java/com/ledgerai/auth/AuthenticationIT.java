@@ -1,25 +1,19 @@
 package com.ledgerai.auth;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * End-to-end authentication test (API_SPEC §5, SECURITY §4, ADR-001, ADR-018)
@@ -47,10 +41,20 @@ class AuthenticationIT {
     private ObjectMapper objectMapper;
     
     @Test
-    void meWithoutTokenIsUnauthorized() {
+    void meWithoutTokenIsUnauthorized() throws Exception {
         ResponseEntity<String> response = restTemplate.getForEntity("/api/v1/auth/me", String.class);
         
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+        // The whole error model is RFC 7807, including failures raised inside the filter chain
+        // (API_SPEC §2.12); the detail stays generic and non-revealing (BR-020).
+        assertThat(response.getHeaders().getContentType())
+            .isNotNull()
+            .satisfies(contentType -> assertThat(contentType.isCompatibleWith(MediaType.APPLICATION_PROBLEM_JSON))
+                                          .isTrue());
+        JsonNode problem = objectMapper.readTree(response.getBody());
+        assertThat(problem.at("/type").asText()).isEqualTo("/problems/authentication-failed");
+        assertThat(problem.at("/status").asInt()).isEqualTo(401);
+        assertThat(problem.at("/traceId").asText()).isNotBlank();
     }
     
     @Test

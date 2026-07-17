@@ -1,24 +1,24 @@
 package com.ledgerai.common.exception;
 
-import java.net.URI;
-import java.time.Instant;
-import java.util.List;
-import java.util.UUID;
-
+import com.ledgerai.auth.exception.EmailAlreadyExistsException;
+import com.ledgerai.auth.exception.InvalidCredentialsException;
+import com.ledgerai.auth.exception.InvalidRefreshTokenException;
+import com.ledgerai.auth.exception.WeakPasswordException;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import com.ledgerai.auth.exception.EmailAlreadyExistsException;
-import com.ledgerai.auth.exception.InvalidCredentialsException;
-import com.ledgerai.auth.exception.InvalidRefreshTokenException;
-import com.ledgerai.auth.exception.WeakPasswordException;
-
-import jakarta.servlet.http.HttpServletRequest;
+import java.net.URI;
+import java.time.Instant;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * Central error handler (API_SPEC §2.12; SRS §8). Every failure surfaced to a
@@ -44,6 +44,40 @@ public class GlobalExceptionHandler {
     public ProblemDetail handleUnauthorized(RuntimeException ex, HttpServletRequest request) {
         return problem(HttpStatus.UNAUTHORIZED, "/problems/authentication-failed",
             "Authentication failed", ex.getMessage(), request);
+    }
+    
+    /**
+     * Missing/invalid/expired authentication on a protected request. Covers both the application's own
+     * {@link UnauthenticatedException} and the filter chain's {@link AuthenticationException}, which
+     * SecurityConfig routes here so that unauthenticated requests answer with Problem Details rather
+     * than an empty body (API_SPEC §2.12). The detail is generic and non-revealing (BR-020).
+     */
+    @ExceptionHandler({UnauthenticatedException.class, AuthenticationException.class})
+    public ProblemDetail handleUnauthenticated(Exception ex, HttpServletRequest request) {
+        return problem(HttpStatus.UNAUTHORIZED, "/problems/authentication-failed",
+            "Authentication failed", "Authentication is required.", request);
+    }
+    
+    /**
+     * Authenticated but not permitted, where the resource's existence is already known to the caller.
+     * Covers the application's {@link ForbiddenException} and the filter chain's
+     * {@link AccessDeniedException}. Ordinary non-owned access does NOT arrive here — it is reported as
+     * {@code 404} by {@link #handleNotFound} (SECURITY §5).
+     */
+    @ExceptionHandler({ForbiddenException.class, AccessDeniedException.class})
+    public ProblemDetail handleForbidden(Exception ex, HttpServletRequest request) {
+        return problem(HttpStatus.FORBIDDEN, "/problems/access-denied",
+            "Access denied", "You do not have access to perform this action.", request);
+    }
+    
+    /**
+     * Unknown resource or one the caller does not own — reported identically so that neither can be
+     * distinguished from the other (SECURITY §5, API_SPEC §2.4). The detail is fixed, never per-cause.
+     */
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ProblemDetail handleNotFound(ResourceNotFoundException ex, HttpServletRequest request) {
+        return problem(HttpStatus.NOT_FOUND, "/problems/resource-not-found",
+            "Resource not found", ex.getMessage(), request);
     }
     
     @ExceptionHandler(WeakPasswordException.class)

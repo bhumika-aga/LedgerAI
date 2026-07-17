@@ -1,29 +1,18 @@
 package com.ledgerai.auth;
 
-import java.time.Duration;
-import java.util.UUID;
-
+import com.ledgerai.auth.config.AuthProperties;
+import com.ledgerai.auth.dto.*;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.ledgerai.auth.config.AuthProperties;
-import com.ledgerai.auth.dto.AuthResponse;
-import com.ledgerai.auth.dto.LoginRequest;
-import com.ledgerai.auth.dto.RegisterRequest;
-import com.ledgerai.auth.dto.TokenRefreshResponse;
-import com.ledgerai.auth.dto.UserResponse;
-
-import jakarta.validation.Valid;
+import java.time.Duration;
+import java.util.UUID;
 
 /**
  * The authentication endpoints defined by API_SPEC §5 (`/auth`). This

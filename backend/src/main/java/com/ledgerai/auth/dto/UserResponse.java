@@ -1,9 +1,9 @@
 package com.ledgerai.auth.dto;
 
+import com.ledgerai.auth.domain.UserAccount;
+
 import java.time.Instant;
 import java.util.UUID;
-
-import com.ledgerai.auth.domain.UserAccount;
 
 /**
  * Outbound user representation (API_SPEC §17.1). Never includes the password

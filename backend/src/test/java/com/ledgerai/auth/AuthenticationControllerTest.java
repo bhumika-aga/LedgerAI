@@ -1,18 +1,13 @@
 package com.ledgerai.auth;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.cookie;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.time.Instant;
-import java.util.UUID;
-
+import com.ledgerai.auth.config.AuthProperties;
+import com.ledgerai.auth.config.SecurityConfig;
+import com.ledgerai.auth.dto.AuthResponse;
+import com.ledgerai.auth.dto.AuthTokensResponse;
+import com.ledgerai.auth.dto.UserResponse;
+import com.ledgerai.auth.exception.EmailAlreadyExistsException;
+import com.ledgerai.auth.exception.InvalidCredentialsException;
+import com.ledgerai.common.exception.GlobalExceptionHandler;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -23,14 +18,15 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.ledgerai.auth.config.AuthProperties;
-import com.ledgerai.auth.config.SecurityConfig;
-import com.ledgerai.auth.dto.AuthResponse;
-import com.ledgerai.auth.dto.AuthTokensResponse;
-import com.ledgerai.auth.dto.UserResponse;
-import com.ledgerai.auth.exception.EmailAlreadyExistsException;
-import com.ledgerai.auth.exception.InvalidCredentialsException;
-import com.ledgerai.common.exception.GlobalExceptionHandler;
+import java.time.Instant;
+import java.util.UUID;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * Web-layer tests for {@link AuthenticationController} (API_SPEC §5). Verifies

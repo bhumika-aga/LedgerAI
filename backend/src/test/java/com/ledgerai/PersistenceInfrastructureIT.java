@@ -1,11 +1,7 @@
 package com.ledgerai;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.sql.Connection;
-
-import javax.sql.DataSource;
-
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
 import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +12,10 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
+import javax.sql.DataSource;
+import java.sql.Connection;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Persistence infrastructure smoke test (ADR-017).

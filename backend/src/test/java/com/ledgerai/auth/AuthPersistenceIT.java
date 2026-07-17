@@ -1,9 +1,7 @@
 package com.ledgerai.auth;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.time.Instant;
-
+import com.ledgerai.auth.domain.RefreshToken;
+import com.ledgerai.auth.domain.UserAccount;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -14,8 +12,9 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import com.ledgerai.auth.domain.RefreshToken;
-import com.ledgerai.auth.domain.UserAccount;
+import java.time.Instant;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Repository tests for the auth persistence (DATABASE §5.1, §5.9) against a
