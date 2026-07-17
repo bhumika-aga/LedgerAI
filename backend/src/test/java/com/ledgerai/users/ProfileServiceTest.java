@@ -101,7 +101,7 @@ class ProfileServiceTest {
             new UpdateProfileRequest("x".repeat(MAX_FULL_NAME + 1), null, null);
         
         ProfileValidationException thrown = catchThrowableOfType(
-            () -> service.updateProfile(userId, request), ProfileValidationException.class);
+            ProfileValidationException.class, () -> service.updateProfile(userId, request));
         
         assertThat(thrown.getFieldErrors()).containsOnlyKeys("fullName");
         verify(userAccountService, never()).updateProfile(any(), any());
@@ -112,7 +112,7 @@ class ProfileServiceTest {
         UpdateProfileRequest request = new UpdateProfileRequest(null, "y".repeat(MAX_DETAILS + 1), null);
         
         ProfileValidationException thrown = catchThrowableOfType(
-            () -> service.updateProfile(userId, request), ProfileValidationException.class);
+            ProfileValidationException.class, () -> service.updateProfile(userId, request));
         
         assertThat(thrown.getFieldErrors()).containsOnlyKeys("professionalDetails");
     }
@@ -123,7 +123,7 @@ class ProfileServiceTest {
             new UpdateProfileRequest(null, null, Map.of("key", "z".repeat(MAX_PREFERENCES_BYTES)));
         
         ProfileValidationException thrown = catchThrowableOfType(
-            () -> service.updateProfile(userId, request), ProfileValidationException.class);
+            ProfileValidationException.class, () -> service.updateProfile(userId, request));
         
         assertThat(thrown.getFieldErrors()).containsOnlyKeys("preferences");
     }
@@ -137,7 +137,7 @@ class ProfileServiceTest {
             null);
         
         ProfileValidationException thrown = catchThrowableOfType(
-            () -> service.updateProfile(userId, request), ProfileValidationException.class);
+            ProfileValidationException.class, () -> service.updateProfile(userId, request));
         
         assertThat(thrown.getFieldErrors()).containsOnlyKeys("fullName", "professionalDetails");
     }

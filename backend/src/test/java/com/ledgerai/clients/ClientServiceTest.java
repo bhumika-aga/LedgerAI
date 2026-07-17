@@ -104,8 +104,8 @@ class ClientServiceTest {
         signedIn();
         
         var thrown = catchThrowableOfType(
-            () -> service.create(new CreateClientRequest("   ", null, null)),
-            com.ledgerai.common.exception.ValidationFailedException.class);
+            com.ledgerai.common.exception.ValidationFailedException.class,
+            () -> service.create(new CreateClientRequest("   ", null, null)));
         
         assertThat(thrown.getFieldErrors()).containsOnlyKeys("name");
         verify(clientRepository, never()).save(any());
@@ -116,8 +116,8 @@ class ClientServiceTest {
         signedIn();
         
         var thrown = catchThrowableOfType(
-            () -> service.create(new CreateClientRequest("x".repeat(MAX_NAME + 1), null, null)),
-            com.ledgerai.common.exception.ValidationFailedException.class);
+            com.ledgerai.common.exception.ValidationFailedException.class,
+            () -> service.create(new CreateClientRequest("x".repeat(MAX_NAME + 1), null, null)));
         
         assertThat(thrown.getFieldErrors()).containsOnlyKeys("name");
     }
@@ -127,9 +127,9 @@ class ClientServiceTest {
         signedIn();
         
         var thrown = catchThrowableOfType(
+            com.ledgerai.common.exception.ValidationFailedException.class,
             () -> service.create(new CreateClientRequest(
-                "", "c".repeat(MAX_CONTACT + 1), "n".repeat(MAX_NOTES + 1))),
-            com.ledgerai.common.exception.ValidationFailedException.class);
+                "", "c".repeat(MAX_CONTACT + 1), "n".repeat(MAX_NOTES + 1))));
         
         assertThat(thrown.getFieldErrors()).containsOnlyKeys("name", "contactDetails", "notes");
     }
@@ -206,8 +206,8 @@ class ClientServiceTest {
         when(clientRepository.findById(someoneElses.getId())).thenReturn(Optional.of(someoneElses));
         
         // BR-004: not 403 — that would confirm the id is real (SECURITY §5).
-        assertThat(catchThrowableOfType(() -> service.get(someoneElses.getId()),
-            ResourceNotFoundException.class)).isNotNull();
+        assertThat(catchThrowableOfType(
+            ResourceNotFoundException.class, () -> service.get(someoneElses.getId()))).isNotNull();
     }
     
     @Test
@@ -216,7 +216,7 @@ class ClientServiceTest {
         UUID unknown = UUID.randomUUID();
         when(clientRepository.findById(unknown)).thenReturn(Optional.empty());
         
-        assertThat(catchThrowableOfType(() -> service.get(unknown), ResourceNotFoundException.class))
+        assertThat(catchThrowableOfType(ResourceNotFoundException.class, () -> service.get(unknown)))
             .isNotNull();
     }
     
@@ -255,8 +255,8 @@ class ClientServiceTest {
         
         // Present-but-blank is not the same as absent — VR-004 still requires a non-empty name.
         var thrown = catchThrowableOfType(
-            () -> service.update(client.getId(), new UpdateClientRequest("  ", null, null)),
-            com.ledgerai.common.exception.ValidationFailedException.class);
+            com.ledgerai.common.exception.ValidationFailedException.class,
+            () -> service.update(client.getId(), new UpdateClientRequest("  ", null, null)));
         
         assertThat(thrown.getFieldErrors()).containsOnlyKeys("name");
         verify(clientRepository, never()).save(any());
@@ -269,8 +269,8 @@ class ClientServiceTest {
         when(clientRepository.findById(someoneElses.getId())).thenReturn(Optional.of(someoneElses));
         
         assertThat(catchThrowableOfType(
-            () -> service.update(someoneElses.getId(), new UpdateClientRequest("Mine now", null, null)),
-            ResourceNotFoundException.class)).isNotNull();
+            ResourceNotFoundException.class,
+            () -> service.update(someoneElses.getId(), new UpdateClientRequest("Mine now", null, null)))).isNotNull();
         verify(clientRepository, never()).save(any());
     }
     
@@ -306,8 +306,8 @@ class ClientServiceTest {
         Client someoneElses = Client.create(UUID.randomUUID(), "Theirs", null, null);
         when(clientRepository.findById(someoneElses.getId())).thenReturn(Optional.of(someoneElses));
         
-        assertThat(catchThrowableOfType(() -> service.archive(someoneElses.getId()),
-            ResourceNotFoundException.class)).isNotNull();
+        assertThat(catchThrowableOfType(
+            ResourceNotFoundException.class, () -> service.archive(someoneElses.getId()))).isNotNull();
         assertThat(someoneElses.getStatus()).isEqualTo(ClientStatus.ACTIVE);
     }
     
