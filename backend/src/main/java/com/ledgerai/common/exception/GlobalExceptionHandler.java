@@ -4,6 +4,7 @@ import com.ledgerai.auth.exception.EmailAlreadyExistsException;
 import com.ledgerai.auth.exception.InvalidCredentialsException;
 import com.ledgerai.auth.exception.InvalidRefreshTokenException;
 import com.ledgerai.auth.exception.WeakPasswordException;
+import com.ledgerai.documents.port.StorageUnavailableException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
@@ -11,11 +12,14 @@ import org.springframework.http.ProblemDetail;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.multipart.support.MissingServletRequestPartException;
 
 import java.net.URI;
 import java.time.Instant;
@@ -137,6 +141,36 @@ public class GlobalExceptionHandler {
     public ProblemDetail handleUnknownSortProperty(PropertyReferenceException ex, HttpServletRequest request) {
         return problem(HttpStatus.BAD_REQUEST, "/problems/bad-request",
             "Bad request", "The request could not be understood.", request);
+    }
+    
+    /**
+     * A required request part or parameter is absent — e.g. an upload with no {@code file} part
+     * (API_SPEC §8.1). A malformed request, so {@code 400} (§2.4).
+     */
+    @ExceptionHandler({MissingServletRequestPartException.class, MissingServletRequestParameterException.class})
+    public ProblemDetail handleMissingPart(Exception ex, HttpServletRequest request) {
+        return problem(HttpStatus.BAD_REQUEST, "/problems/bad-request",
+            "Bad request", "A required part of the request is missing.", request);
+    }
+    
+    /**
+     * The storage provider was unavailable for a store/sign/delete (API_SPEC §8.1/§8.5). Maps to
+     * {@code 503}; the provider error is logged inside the adapter, never leaked.
+     */
+    @ExceptionHandler(StorageUnavailableException.class)
+    public ProblemDetail handleStorageUnavailable(StorageUnavailableException ex, HttpServletRequest request) {
+        return problem(HttpStatus.SERVICE_UNAVAILABLE, "/problems/service-unavailable",
+            "Service unavailable", ex.getMessage(), request);
+    }
+    
+    /**
+     * An upload larger than the container multipart ceiling (API_SPEC §8.1 permits {@code 413} for
+     * oversize; the finer VR-005 check produces a field-level {@code 422} for files under the ceiling).
+     */
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ProblemDetail handleMaxUploadSize(MaxUploadSizeExceededException ex, HttpServletRequest request) {
+        return problem(HttpStatus.PAYLOAD_TOO_LARGE, "/problems/payload-too-large",
+            "Payload too large", "The uploaded file is too large.", request);
     }
     
     @ExceptionHandler(Exception.class)

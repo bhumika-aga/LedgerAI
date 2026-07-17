@@ -7,6 +7,7 @@ import {
   ClientEditPage,
   ClientListPage,
 } from "../features/clients";
+import { DocumentDetailPage, DocumentListPage } from "../features/documents";
 import { ProfilePage } from "../features/profile";
 import { AppLayout } from "../shared/layout/AppLayout";
 import { HealthPage } from "../system/health/HealthPage";
@@ -62,6 +63,22 @@ export function AppRouter() {
             element={
               <RequireAuth>
                 <ClientEditPage />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/clients/:clientId/documents"
+            element={
+              <RequireAuth>
+                <DocumentListPage />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/documents/:documentId"
+            element={
+              <RequireAuth>
+                <DocumentDetailPage />
               </RequireAuth>
             }
           />

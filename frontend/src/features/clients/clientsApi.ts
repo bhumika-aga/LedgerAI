@@ -1,3 +1,4 @@
+import type { Page } from "../../shared";
 import { apiClient } from "../../shared";
 
 /**
@@ -5,6 +6,8 @@ import { apiClient } from "../../shared";
  * attaches the Bearer access token and carries credentials, so this layer only describes the five
  * documented operations (FRONTEND_CODING_STANDARDS §8). Types mirror the API_SPEC DTOs (§17.3, §17.9).
  */
+
+export type { Page };
 
 export type ClientStatus = "ACTIVE" | "ARCHIVED";
 
@@ -18,16 +21,6 @@ export interface Client {
   archivedAt: string | null;
   createdAt: string;
   updatedAt: string;
-}
-
-/** PageResponse<T> (API_SPEC §17.9, §2.5). */
-export interface Page<T> {
-  content: T[];
-  page: number;
-  size: number;
-  totalElements: number;
-  totalPages: number;
-  hasNext: boolean;
 }
 
 /** Create payload (API_SPEC §7.3). */

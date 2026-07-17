@@ -60,6 +60,13 @@ export function ClientDetailPage() {
         <Button
           variant="outlined"
           component={RouterLink}
+          to={`/clients/${client.id}/documents`}
+        >
+          Documents
+        </Button>
+        <Button
+          variant="outlined"
+          component={RouterLink}
           to={`/clients/${client.id}/edit`}
         >
           Edit

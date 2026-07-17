@@ -111,6 +111,20 @@ public class ClientService {
         requireOwnedClient(clientId).archive();
     }
     
+    /**
+     * <strong>Published</strong> for other modules (ARCHITECTURE §5.1, §5.4): verifies the current user
+     * owns {@code clientId}, throwing {@code 404} otherwise (non-revealing, SECURITY §5). Documents nest
+     * under a client (BR-001), so the documents module calls this to authorize document operations
+     * without reaching into this module's repository or entity — no ownership logic is duplicated.
+     *
+     * @throws com.ledgerai.common.exception.ResourceNotFoundException if the client is unknown or not owned
+     * @throws com.ledgerai.common.exception.UnauthenticatedException  if there is no authenticated user
+     */
+    @Transactional(readOnly = true)
+    public void requireOwnedByCurrentUser(UUID clientId) {
+        requireOwnedClient(clientId);
+    }
+    
     private Client requireOwnedClient(UUID clientId) {
         return ownershipGuard.requireOwned(clientRepository.findById(clientId), Client::getUserId);
     }

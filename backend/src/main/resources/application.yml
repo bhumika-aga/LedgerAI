@@ -21,6 +21,14 @@ spring:
     enabled: true
     locations: classpath:db/migration
 
+  # Multipart uploads (API_SPEC §8.1). The container ceiling sits above the app's VR-005 limit
+  # (documents.max-file-size) so the service produces a clean field-level 422; a request that exceeds
+  # this hard ceiling is rejected as 413 by the handler. Tunable per environment.
+  servlet:
+    multipart:
+      max-file-size: ${MULTIPART_MAX_FILE_SIZE:30MB}
+      max-request-size: ${MULTIPART_MAX_REQUEST_SIZE:30MB}
+
   # Pagination contract (API_SPEC §2.5): zero-based `page`, default `size` 20, max 100 [Assumption],
   # `sort` as `field,(asc|desc)`. Spring Data's resolver already speaks exactly this dialect, so the
   # contract is configured here rather than reimplemented. Per-resource default ordering is declared on
@@ -70,6 +78,23 @@ clients:
   max-name-length: ${CLIENT_MAX_NAME_LENGTH:200}
   max-contact-details-length: ${CLIENT_MAX_CONTACT_DETAILS_LENGTH:2000}
   max-notes-length: ${CLIENT_MAX_NOTES_LENGTH:5000}
+
+# Document upload validation limits (VR-005). The SRS marks allowed types and max size an
+# [Assumption, to be fixed in SRS/architecture] and they are not finalized, so — like the password
+# (VR-001), profile (VR-003) and client (VR-004) thresholds — they are tunable configuration, not
+# product commitments in code. The download-url TTL keeps signed links short-lived (SECURITY §9).
+documents:
+  max-file-size: ${DOCUMENT_MAX_FILE_SIZE:25MB}
+  allowed-mime-types: ${DOCUMENT_ALLOWED_MIME_TYPES:application/pdf,image/png,image/jpeg}
+  download-url-ttl: ${DOCUMENT_DOWNLOAD_URL_TTL:5m}
+
+# Storage provider (ADR-002 → Supabase Storage; ADR-008 pattern). All values are environment-driven and
+# server-held; the service key is a secret and has no default (SECURITY §13). Consumed only by the
+# Supabase Storage adapter, which is absent from the test profile.
+storage:
+  url: ${STORAGE_URL:}
+  bucket: ${STORAGE_BUCKET:}
+  service-key: ${STORAGE_SERVICE_KEY:}
 
 # Baseline observability (ADR-015): expose only the health endpoint required by the Phase 0
 # foundation. Broader endpoints, metrics, and per-environment configuration are added by the

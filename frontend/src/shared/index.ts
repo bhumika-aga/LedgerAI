@@ -7,6 +7,7 @@
  * module's public surface; feature slices import shared code from here, not from internal paths.
  */
 export { apiClient } from "./api/client";
+export type { Page } from "./api/pagination";
 export { extractValidationErrors } from "./api/problemDetails";
 export { ErrorBoundary } from "./error/ErrorBoundary";
 export { AppLayout } from "./layout/AppLayout";

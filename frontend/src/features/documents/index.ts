@@ -1,6 +1,7 @@
 /**
- * Documents feature boundary (FRONTEND_CODING_STANDARDS §3): upload, listing, status, and document
- * detail. Owns its own pages, components, and hooks; other features never import its internals.
- * Public surface only — empty until the documents slice is implemented.
+ * Documents feature boundary (FRONTEND_CODING_STANDARDS §3): upload, listing, and document detail
+ * (view, download, delete) within the owning client. Owns its pages, API layer, and server-state
+ * hooks; other features consume only this public surface.
  */
-export {};
+export { DocumentDetailPage } from "./DocumentDetailPage";
+export { DocumentListPage } from "./DocumentListPage";
