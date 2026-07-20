@@ -5,6 +5,7 @@ import com.ledgerai.common.exception.ValidationFailedException;
 import com.ledgerai.documents.domain.DocumentStatus;
 import com.ledgerai.documents.dto.DocumentDownloadResponse;
 import com.ledgerai.documents.dto.DocumentResponse;
+import com.ledgerai.documents.dto.OcrStatusResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.SortDefault;
@@ -59,6 +60,15 @@ public class DocumentController {
     @GetMapping("/api/v1/documents/{documentId}/download")
     public ResponseEntity<DocumentDownloadResponse> download(@PathVariable UUID documentId) {
         return ResponseEntity.ok(documentService.download(documentId));
+    }
+    
+    /**
+     * API_SPEC §9.1 — the OCR/processing status poll endpoint (there is no user-triggered OCR action;
+     * OCR runs automatically during processing, FR-OCR-001).
+     */
+    @GetMapping("/api/v1/documents/{documentId}/ocr-status")
+    public ResponseEntity<OcrStatusResponse> ocrStatus(@PathVariable UUID documentId) {
+        return ResponseEntity.ok(documentService.getOcrStatus(documentId));
     }
     
     @DeleteMapping("/api/v1/documents/{documentId}")

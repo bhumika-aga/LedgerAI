@@ -19,5 +19,9 @@ import java.util.List;
 public record DocumentProperties(
     @DefaultValue("25MB") DataSize maxFileSize,
     @DefaultValue({"application/pdf", "image/png", "image/jpeg"}) List<String> allowedMimeTypes,
-    @DefaultValue("5m") Duration downloadUrlTtl) {
+    @DefaultValue("5m") Duration downloadUrlTtl,
+    // Native-first threshold (ADR-009): the minimum embedded-text length that counts as "sufficient"
+    // native text, below which the document is routed to OCR. No document fixes this value, so it is
+    // tunable configuration, not a product commitment — like the other [Assumption] thresholds.
+    @DefaultValue("16") int nativeMinChars) {
 }

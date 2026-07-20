@@ -49,10 +49,16 @@ class DocumentServiceTest {
     private DocumentRepository documentRepository;
     
     @Mock
+    private DocumentContentRepository contentRepository;
+    
+    @Mock
     private ClientService clientService;
     
     @Mock
     private StoragePort storagePort;
+    
+    @Mock
+    private DocumentProcessingService processingService;
     
     private DocumentService service;
     private UUID clientId;
@@ -61,10 +67,10 @@ class DocumentServiceTest {
     void setUp() {
         DocumentProperties properties = new DocumentProperties(
             DataSize.ofMegabytes(25), List.of("application/pdf", "image/png", "image/jpeg"),
-            Duration.ofMinutes(5));
+            Duration.ofMinutes(5), 16);
         service = new DocumentService(
-            documentRepository, clientService, storagePort,
-            new DocumentFileValidator(properties), properties);
+            documentRepository, contentRepository, clientService, storagePort,
+            new DocumentFileValidator(properties), processingService, properties);
         clientId = UUID.randomUUID();
     }
     
@@ -83,14 +89,17 @@ class DocumentServiceTest {
         
         DocumentResponse response = service.upload(clientId, pdfUpload());
         
+        // The response reports the initial status (API_SPEC §8.1: UPLOADED), captured before processing.
         assertThat(response.clientId()).isEqualTo(clientId);
         assertThat(response.status()).isEqualTo(DocumentStatus.UPLOADED);
         assertThat(response.mimeType()).isEqualTo("application/pdf");
         assertThat(response.sizeBytes()).isEqualTo(PDF.length);
-        // Ownership checked before storing; storage happens before persistence.
+        // Ownership checked before storing; storage happens before persistence; processing is triggered
+        // synchronously after the row is stored (ADR-013).
         verify(clientService).requireOwnedByCurrentUser(clientId);
         verify(storagePort).store(any(StorageUpload.class));
         verify(documentRepository).save(any(Document.class));
+        verify(processingService).process(any(UUID.class), eq(PDF), eq("application/pdf"));
     }
     
     @Test

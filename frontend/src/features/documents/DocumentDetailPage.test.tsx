@@ -1,5 +1,5 @@
 import { fireEvent, screen, waitFor } from "@testing-library/react";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { renderWithProviders } from "../../test/renderWithProviders";
 import { DocumentDetailPage } from "./DocumentDetailPage";
@@ -13,11 +13,19 @@ const document: documentsApi.Document = {
   originalFilename: "statement.pdf",
   mimeType: "application/pdf",
   sizeBytes: 1234,
-  status: "UPLOADED",
-  extractionMethod: null,
+  status: "READY",
+  extractionMethod: "OCR",
   failureReason: null,
   createdAt: "2026-07-17T00:00:00Z",
   updatedAt: "2026-07-17T00:00:00Z",
+};
+
+const readyOcrStatus: documentsApi.OcrStatus = {
+  documentId: document.id,
+  status: "READY",
+  extractionMethod: "OCR",
+  extractionQuality: "HIGH",
+  failureReason: null,
 };
 
 function renderDetailPage() {
@@ -28,6 +36,11 @@ function renderDetailPage() {
 }
 
 describe("DocumentDetailPage", () => {
+  beforeEach(() => {
+    // Default OCR status so the detail page's status query resolves; individual tests override it.
+    vi.mocked(documentsApi.getOcrStatus).mockResolvedValue(readyOcrStatus);
+  });
+
   afterEach(() => {
     vi.clearAllMocks();
   });
@@ -110,6 +123,66 @@ describe("DocumentDetailPage", () => {
       await screen.findByText(
         "This document could not be deleted. Please try again.",
       ),
+    ).toBeInTheDocument();
+  });
+
+  it("shows a READY extraction status with method and quality", async () => {
+    vi.mocked(documentsApi.getOcrStatus).mockResolvedValue({
+      documentId: document.id,
+      status: "READY",
+      extractionMethod: "NATIVE",
+      extractionQuality: "HIGH",
+      failureReason: null,
+    });
+
+    renderDetailPage();
+
+    expect(await screen.findByText(/text extraction/i)).toBeInTheDocument();
+    expect(await screen.findByText(/embedded text/i)).toBeInTheDocument();
+    expect(screen.getByText(/HIGH/)).toBeInTheDocument();
+  });
+
+  it("shows the failure reason when extraction failed", async () => {
+    vi.mocked(documentsApi.getOcrStatus).mockResolvedValue({
+      documentId: document.id,
+      status: "FAILED",
+      extractionMethod: null,
+      extractionQuality: null,
+      failureReason: "No readable text could be extracted from the document.",
+    });
+
+    renderDetailPage();
+
+    expect(
+      await screen.findByText(
+        "No readable text could be extracted from the document.",
+      ),
+    ).toBeInTheDocument();
+  });
+
+  it("shows a processing status while extraction is in flight", async () => {
+    vi.mocked(documentsApi.getOcrStatus).mockResolvedValue({
+      documentId: document.id,
+      status: "OCR_PROCESSING",
+      extractionMethod: null,
+      extractionQuality: null,
+      failureReason: null,
+    });
+
+    renderDetailPage();
+
+    expect(await screen.findByText(/extracting text/i)).toBeInTheDocument();
+  });
+
+  it("shows an error when the extraction status cannot be loaded", async () => {
+    vi.mocked(documentsApi.getOcrStatus).mockRejectedValue(
+      new Error("Network Error"),
+    );
+
+    renderDetailPage();
+
+    expect(
+      await screen.findByText("The extraction status could not be loaded."),
     ).toBeInTheDocument();
   });
 });

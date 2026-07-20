@@ -4,6 +4,7 @@ import {
   deleteDocument,
   getDocument,
   getDownload,
+  getOcrStatus,
   listDocuments,
   uploadDocument,
 } from "./documentsApi";
@@ -110,5 +111,24 @@ describe("documentsApi", () => {
     await deleteDocument(document.id);
 
     expect(deleteSpy).toHaveBeenCalledWith(`/documents/${document.id}`);
+  });
+
+  it("gets the OCR status from /ocr-status", async () => {
+    const status = {
+      documentId: document.id,
+      status: "READY",
+      extractionMethod: "OCR",
+      extractionQuality: "HIGH",
+      failureReason: null,
+    };
+    const getSpy = vi
+      .spyOn(apiClient, "get")
+      .mockResolvedValue({ data: status });
+
+    const result = await getOcrStatus(document.id);
+
+    expect(getSpy).toHaveBeenCalledWith(`/documents/${document.id}/ocr-status`);
+    expect(result.status).toBe("READY");
+    expect(result.extractionMethod).toBe("OCR");
   });
 });

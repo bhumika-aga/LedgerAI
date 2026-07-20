@@ -2,7 +2,16 @@ import { Alert, Button, Chip, Stack, Typography } from "@mui/material";
 import { Link as RouterLink, useNavigate, useParams } from "react-router-dom";
 
 import { getDownload } from "./documentsApi";
-import { useDeleteDocument, useDocument } from "./useDocuments";
+import { useDeleteDocument, useDocument, useOcrStatus } from "./useDocuments";
+
+/** Human-readable label for each lifecycle state (SRS §7.1). */
+const STATUS_LABELS: Record<string, string> = {
+  UPLOADED: "Uploaded",
+  PROCESSING: "Processing…",
+  OCR_PROCESSING: "Extracting text…",
+  READY: "Ready",
+  FAILED: "Failed",
+};
 
 /**
  * Document detail (API_SPEC §8.3) — metadata, a download action (§8.5), and delete (§8.4). A document
@@ -16,6 +25,7 @@ export function DocumentDetailPage() {
   const { documentId = "" } = useParams();
   const navigate = useNavigate();
   const { data: document, isPending, isError } = useDocument(documentId);
+  const ocr = useOcrStatus(documentId);
   const deleteDocument = useDeleteDocument();
 
   if (isPending) {
@@ -46,9 +56,52 @@ export function DocumentDetailPage() {
       <Typography>
         <strong>Size:</strong> {document.sizeBytes} bytes
       </Typography>
-      {document.failureReason && (
-        <Alert severity="error">{document.failureReason}</Alert>
-      )}
+
+      {/* OCR / text-extraction status (API_SPEC §9.1). No extracted-text viewer: no endpoint exposes
+          the text. */}
+      <Stack spacing={1}>
+        <Typography variant="subtitle1" component="h2">
+          Text extraction
+        </Typography>
+        {ocr.isPending && <p role="status">Checking extraction status…</p>}
+        {ocr.isError && (
+          <Alert severity="error">
+            The extraction status could not be loaded.
+          </Alert>
+        )}
+        {ocr.data && (
+          <Stack spacing={1}>
+            <Typography>
+              <strong>Status:</strong>{" "}
+              {STATUS_LABELS[ocr.data.status] ?? ocr.data.status}
+            </Typography>
+            {ocr.data.status === "READY" && (
+              <>
+                <Typography>
+                  <strong>Method:</strong>{" "}
+                  {ocr.data.extractionMethod === "NATIVE"
+                    ? "Embedded text"
+                    : "Scanned (OCR)"}
+                </Typography>
+                {ocr.data.extractionQuality && (
+                  <Typography>
+                    <strong>Quality:</strong> {ocr.data.extractionQuality}
+                    {ocr.data.extractionQuality === "LOW" && (
+                      <> — the extraction may be unreliable.</>
+                    )}
+                  </Typography>
+                )}
+              </>
+            )}
+            {ocr.data.status === "FAILED" && (
+              <Alert severity="error">
+                {ocr.data.failureReason ??
+                  "Text could not be extracted from this document."}
+              </Alert>
+            )}
+          </Stack>
+        )}
+      </Stack>
 
       {deleteDocument.isError && (
         <Alert severity="error">

@@ -146,6 +146,35 @@ class DocumentControllerTest {
     }
     
     @Test
+    void ocrStatusReturnsTheDocumentedShape() throws Exception {
+        when(documentService.getOcrStatus(DOC_ID)).thenReturn(new com.ledgerai.documents.dto.OcrStatusResponse(
+            DOC_ID, DocumentStatus.READY, com.ledgerai.documents.domain.ExtractionMethod.OCR,
+            com.ledgerai.documents.domain.ExtractionQuality.HIGH, null));
+        
+        mockMvc.perform(get("/api/v1/documents/{id}/ocr-status", DOC_ID).with(signedIn()))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.documentId").value(DOC_ID.toString()))
+            .andExpect(jsonPath("$.status").value("READY"))
+            .andExpect(jsonPath("$.extractionMethod").value("OCR"))
+            .andExpect(jsonPath("$.extractionQuality").value("HIGH"))
+            // The status projection never carries the extracted text (no documented endpoint exposes it).
+            .andExpect(jsonPath("$.extractedText").doesNotExist());
+    }
+    
+    @Test
+    void ocrStatusForAnUnknownOrNonOwnedDocumentIs404() throws Exception {
+        when(documentService.getOcrStatus(DOC_ID)).thenThrow(new ResourceNotFoundException());
+        
+        mockMvc.perform(get("/api/v1/documents/{id}/ocr-status", DOC_ID).with(signedIn()))
+            .andExpect(status().isNotFound());
+    }
+    
+    @Test
+    void ocrStatusRequiresAuthentication() throws Exception {
+        mockMvc.perform(get("/api/v1/documents/{id}/ocr-status", DOC_ID)).andExpect(status().isUnauthorized());
+    }
+    
+    @Test
     void deleteReturns204() throws Exception {
         mockMvc.perform(delete("/api/v1/documents/{id}", DOC_ID).with(signedIn()))
             .andExpect(status().isNoContent());

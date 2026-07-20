@@ -24,7 +24,7 @@ class DocumentFileValidatorTest {
     private final DocumentFileValidator validator = new DocumentFileValidator(new DocumentProperties(
         DataSize.ofKilobytes(10),
         List.of("application/pdf", "image/png", "image/jpeg"),
-        java.time.Duration.ofMinutes(5)));
+        java.time.Duration.ofMinutes(5), 16));
     
     private ValidationFailedException reject(UploadCommand command) {
         return catchThrowableOfType(() -> validator.validateAndDetectType(command), ValidationFailedException.class);

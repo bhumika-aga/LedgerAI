@@ -66,6 +66,14 @@
             <artifactId>flyway-database-postgresql</artifactId>
         </dependency>
 
+        <!-- Native (embedded) text extraction for the native-first OCR strategy (ADR-009). Pure-JVM,
+             in-process; used before the OCR provider is invoked. -->
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox</artifactId>
+            <version>3.0.3</version>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>

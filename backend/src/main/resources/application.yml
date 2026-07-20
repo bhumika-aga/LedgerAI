@@ -87,6 +87,7 @@ documents:
   max-file-size: ${DOCUMENT_MAX_FILE_SIZE:25MB}
   allowed-mime-types: ${DOCUMENT_ALLOWED_MIME_TYPES:application/pdf,image/png,image/jpeg}
   download-url-ttl: ${DOCUMENT_DOWNLOAD_URL_TTL:5m}
+  native-min-chars: ${DOCUMENT_NATIVE_MIN_CHARS:16}
 
 # Storage provider (ADR-002 → Supabase Storage; ADR-008 pattern). All values are environment-driven and
 # server-held; the service key is a secret and has no default (SECURITY §13). Consumed only by the
@@ -95,6 +96,16 @@ storage:
   url: ${STORAGE_URL:}
   bucket: ${STORAGE_BUCKET:}
   service-key: ${STORAGE_SERVICE_KEY:}
+
+# OCR provider (ADR-009 → Google Cloud Vision). Environment-driven and server-held; the API key is a
+# secret with no default (SECURITY §13). Consumed only by the Google Vision adapter, which is absent
+# from the test profile (an in-memory OCR port stands in). The confidence threshold maps the provider's
+# score to the HIGH/LOW quality signal (DATABASE §5.4).
+ocr:
+  google-vision:
+    api-url: ${OCR_GOOGLE_VISION_API_URL:https://vision.googleapis.com}
+    api-key: ${OCR_GOOGLE_VISION_API_KEY:}
+    high-confidence-threshold: ${OCR_GOOGLE_VISION_HIGH_CONFIDENCE_THRESHOLD:0.8}
 
 # Baseline observability (ADR-015): expose only the health endpoint required by the Phase 0
 # foundation. Broader endpoints, metrics, and per-environment configuration are added by the

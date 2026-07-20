@@ -17,6 +17,20 @@ export type DocumentStatus =
 
 export type ExtractionMethod = "NATIVE" | "OCR";
 
+export type ExtractionQuality = "HIGH" | "LOW" | "UNKNOWN";
+
+/**
+ * OCR/processing status (API_SPEC §9.1) — the poll shape for upload/processing (§2.11). It carries no
+ * extracted text: no documented endpoint exposes the text itself.
+ */
+export interface OcrStatus {
+  documentId: string;
+  status: DocumentStatus;
+  extractionMethod: ExtractionMethod | null;
+  extractionQuality: ExtractionQuality | null;
+  failureReason: string | null;
+}
+
 /** DocumentResponse (API_SPEC §17.4). Never carries the internal `storageReference`. */
 export interface Document {
   id: string;
@@ -88,4 +102,12 @@ export async function getDownload(
 /** DELETE is the documented soft-delete (API_SPEC §8.4), not a hard delete. */
 export async function deleteDocument(documentId: string): Promise<void> {
   await apiClient.delete(`/documents/${documentId}`);
+}
+
+/** API_SPEC §9.1 — the OCR/processing status poll. */
+export async function getOcrStatus(documentId: string): Promise<OcrStatus> {
+  const { data } = await apiClient.get<OcrStatus>(
+    `/documents/${documentId}/ocr-status`,
+  );
+  return data;
 }

@@ -80,6 +80,60 @@ public class Document {
     }
     
     /**
+     * SRS §7.1: Uploaded → Processing (processing begins). Only legal from {@code UPLOADED}.
+     */
+    public void markProcessing() {
+        requireStatus(DocumentStatus.UPLOADED);
+        transitionTo(DocumentStatus.PROCESSING);
+    }
+    
+    /**
+     * SRS §7.1: Processing → OCRProcessing (a scan/image is routed to OCR). Only legal from
+     * {@code PROCESSING}.
+     */
+    public void markOcrProcessing() {
+        requireStatus(DocumentStatus.PROCESSING);
+        transitionTo(DocumentStatus.OCR_PROCESSING);
+    }
+    
+    /**
+     * SRS §7.1: Processing → Ready (native text extracted) or OCRProcessing → Ready (OCR succeeded).
+     * Records how the text was obtained (BR-014) and clears any prior failure reason.
+     */
+    public void markReady(ExtractionMethod method) {
+        requireStatus(DocumentStatus.PROCESSING, DocumentStatus.OCR_PROCESSING);
+        this.extractionMethod = method;
+        this.failureReason = null;
+        transitionTo(DocumentStatus.READY);
+    }
+    
+    /**
+     * SRS §7.1: Processing → Failed or OCRProcessing → Failed (extraction/processing error, FR-OCR-005).
+     * The reason is a clear, non-technical message; the document is never presented as Ready.
+     */
+    public void markFailed(String reason) {
+        requireStatus(DocumentStatus.PROCESSING, DocumentStatus.OCR_PROCESSING);
+        this.failureReason = reason;
+        transitionTo(DocumentStatus.FAILED);
+    }
+    
+    private void transitionTo(DocumentStatus target) {
+        this.status = target;
+        this.updatedAt = Instant.now();
+    }
+    
+    private void requireStatus(DocumentStatus... allowed) {
+        for (DocumentStatus s : allowed) {
+            if (this.status == s) {
+                return;
+            }
+        }
+        // Guards the documented state machine (SRS §7.1); an out-of-order transition is a bug, not a
+        // user error.
+        throw new IllegalStateException("Illegal transition from " + this.status);
+    }
+    
+    /**
      * FR-STOR-004: soft-delete (SRS §7.1 → Deleted, DATABASE §8). Idempotent (API_SPEC §8.4). The
      * storage reference is retained on the row; removing the external file is a separate best-effort
      * step in the service.

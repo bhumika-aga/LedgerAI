@@ -5,9 +5,11 @@ import com.ledgerai.common.dto.PageResponse;
 import com.ledgerai.common.exception.ResourceNotFoundException;
 import com.ledgerai.documents.config.DocumentProperties;
 import com.ledgerai.documents.domain.Document;
+import com.ledgerai.documents.domain.DocumentContent;
 import com.ledgerai.documents.domain.DocumentStatus;
 import com.ledgerai.documents.dto.DocumentDownloadResponse;
 import com.ledgerai.documents.dto.DocumentResponse;
+import com.ledgerai.documents.dto.OcrStatusResponse;
 import com.ledgerai.documents.port.SignedUrl;
 import com.ledgerai.documents.port.StoragePort;
 import com.ledgerai.documents.port.StorageUnavailableException;
@@ -43,18 +45,23 @@ public class DocumentService {
     private static final Logger log = LoggerFactory.getLogger(DocumentService.class);
     
     private final DocumentRepository documentRepository;
+    private final DocumentContentRepository contentRepository;
     private final ClientService clientService;
     private final StoragePort storagePort;
     private final DocumentFileValidator fileValidator;
+    private final DocumentProcessingService processingService;
     private final DocumentProperties properties;
     
-    public DocumentService(DocumentRepository documentRepository, ClientService clientService,
-                           StoragePort storagePort, DocumentFileValidator fileValidator,
+    public DocumentService(DocumentRepository documentRepository, DocumentContentRepository contentRepository,
+                           ClientService clientService, StoragePort storagePort,
+                           DocumentFileValidator fileValidator, DocumentProcessingService processingService,
                            DocumentProperties properties) {
         this.documentRepository = documentRepository;
+        this.contentRepository = contentRepository;
         this.clientService = clientService;
         this.storagePort = storagePort;
         this.fileValidator = fileValidator;
+        this.processingService = processingService;
         this.properties = properties;
     }
     
@@ -68,17 +75,26 @@ public class DocumentService {
         String detectedType = fileValidator.validateAndDetectType(command);
         
         String storageReference = storagePort.store(new StorageUpload(command.content(), detectedType));
+        Document saved;
         try {
             // repository.save is atomic on its own; kept outside a wrapping transaction so the storage
             // call above is never held inside a DB transaction (DATABASE §11).
-            Document saved = documentRepository.save(Document.create(
+            saved = documentRepository.save(Document.create(
                 clientId, command.originalFilename(), detectedType, command.content().length, storageReference));
-            return DocumentResponse.from(saved);
         } catch (RuntimeException persistFailure) {
             // Compensating cleanup: don't leave an orphaned object behind a failed row (DATABASE §11).
             safelyDeleteObject(storageReference);
             throw persistFailure;
         }
+        
+        // The upload response reports the initial status (API_SPEC §8.1: UPLOADED), captured before
+        // processing runs. Extraction then proceeds synchronously-with-status (ADR-013) using the bytes
+        // already in hand — no background worker — and the caller observes the result by polling the
+        // OCR-status endpoint (API_SPEC §9.1, §2.11). Processing never throws (it fails the document, not
+        // the upload), so the upload always succeeds once the row is stored.
+        DocumentResponse response = DocumentResponse.from(saved);
+        processingService.process(saved.getId(), command.content(), detectedType);
+        return response;
     }
     
     /**
@@ -138,6 +154,18 @@ public class DocumentService {
         if (wasActive && document.getStorageReference() != null) {
             safelyDeleteObject(document.getStorageReference());
         }
+    }
+    
+    /**
+     * API_SPEC §9.1: report extraction/processing status for a non-deleted document the caller owns.
+     * The poll endpoint for upload/processing (§2.11); a deleted/unknown/non-owned document is
+     * {@code 404} (FR-STOR-005, SECURITY §5).
+     */
+    @Transactional(readOnly = true)
+    public OcrStatusResponse getOcrStatus(UUID documentId) {
+        Document document = requireOwnedDocument(documentId);
+        DocumentContent content = contentRepository.findByDocumentId(documentId).orElse(null);
+        return OcrStatusResponse.of(document, content);
     }
     
     private Document requireOwnedDocument(UUID documentId) {
