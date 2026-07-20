@@ -107,6 +107,20 @@ ocr:
     api-key: ${OCR_GOOGLE_VISION_API_KEY:}
     high-confidence-threshold: ${OCR_GOOGLE_VISION_HIGH_CONFIDENCE_THRESHOLD:0.8}
 
+# AI provider (ADR-003 → Anthropic). Environment-driven and server-held; the API key is a secret with
+# no default (SECURITY §13). Consumed only by the Anthropic adapter, which is absent from the test
+# profile (an in-memory AI port stands in). The model is chosen behind the port (AI_ARCHITECTURE §7) and
+# is tunable, not a code constant; max-document-chars caps the extracted text sent per request to apply
+# the data/cost-minimization levers (AI_ARCHITECTURE §13, NFR-018) and keep within the context window.
+ai:
+  anthropic:
+    api-url: ${AI_ANTHROPIC_API_URL:https://api.anthropic.com}
+    api-version: ${AI_ANTHROPIC_API_VERSION:2023-06-01}
+    api-key: ${AI_ANTHROPIC_API_KEY:}
+    model: ${AI_ANTHROPIC_MODEL:claude-opus-4-8}
+    max-tokens: ${AI_ANTHROPIC_MAX_TOKENS:1024}
+    max-document-chars: ${AI_ANTHROPIC_MAX_DOCUMENT_CHARS:24000}
+
 # Baseline observability (ADR-015): expose only the health endpoint required by the Phase 0
 # foundation. Broader endpoints, metrics, and per-environment configuration are added by the
 # slices that introduce them. Secrets and environment-specific values are always externalized.

@@ -1,5 +1,8 @@
 package com.ledgerai.common.exception;
 
+import com.ledgerai.ai.DocumentNotReadyException;
+import com.ledgerai.ai.NoExtractableTextException;
+import com.ledgerai.ai.port.AiUnavailableException;
 import com.ledgerai.auth.exception.EmailAlreadyExistsException;
 import com.ledgerai.auth.exception.InvalidCredentialsException;
 import com.ledgerai.auth.exception.InvalidRefreshTokenException;
@@ -161,6 +164,37 @@ public class GlobalExceptionHandler {
     public ProblemDetail handleStorageUnavailable(StorageUnavailableException ex, HttpServletRequest request) {
         return problem(HttpStatus.SERVICE_UNAVAILABLE, "/problems/service-unavailable",
             "Service unavailable", ex.getMessage(), request);
+    }
+    
+    /**
+     * The AI provider was unavailable while generating a summary (API_SPEC §10.1). Maps to {@code 503};
+     * the provider error is logged inside the adapter, never leaked (AI_ARCHITECTURE §12).
+     */
+    @ExceptionHandler(AiUnavailableException.class)
+    public ProblemDetail handleAiUnavailable(AiUnavailableException ex, HttpServletRequest request) {
+        return problem(HttpStatus.SERVICE_UNAVAILABLE, "/problems/service-unavailable",
+            "Service unavailable", ex.getMessage(), request);
+    }
+    
+    /**
+     * An AI action was requested for a document that is not {@code READY} (API_SPEC §10.1, BR-010). Maps
+     * to {@code 409 Conflict}.
+     */
+    @ExceptionHandler(DocumentNotReadyException.class)
+    public ProblemDetail handleDocumentNotReady(DocumentNotReadyException ex, HttpServletRequest request) {
+        return problem(HttpStatus.CONFLICT, "/problems/conflict",
+            "Conflict", ex.getMessage(), request);
+    }
+    
+    /**
+     * A summary was requested for a {@code READY} document with no extractable text (API_SPEC §10.1).
+     * Maps to {@code 422}; unlike a field-validation failure it carries no {@code validationErrors} — it
+     * is a precondition on the resource, not the request body.
+     */
+    @ExceptionHandler(NoExtractableTextException.class)
+    public ProblemDetail handleNoExtractableText(NoExtractableTextException ex, HttpServletRequest request) {
+        return problem(HttpStatus.UNPROCESSABLE_ENTITY, "/problems/unprocessable-content",
+            "Unprocessable content", ex.getMessage(), request);
     }
     
     /**

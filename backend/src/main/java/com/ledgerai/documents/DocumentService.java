@@ -168,6 +168,25 @@ public class DocumentService {
         return OcrStatusResponse.of(document, content);
     }
     
+    /**
+     * Published cross-module access for grounded AI actions (AI Summary): the owned, non-deleted
+     * document's lifecycle status and its extracted text, as a {@link DocumentContentView}. Authorizes
+     * ownership exactly as every other read path — an unknown, deleted, or non-owned document is
+     * {@code 404} (BR-004, SECURITY §5, FR-STOR-005) — so the AI module reuses this module's ownership
+     * enforcement rather than duplicating it (CLAUDE.md — never bypass ownership validation). It does
+     * <strong>not</strong> enforce the {@code READY} precondition or a non-empty-text rule; that is the
+     * AI action's business rule (BR-010, AI_ARCHITECTURE §4), so it is decided by the caller from the
+     * returned status/text.
+     */
+    @Transactional(readOnly = true)
+    public DocumentContentView requireOwnedContentForAi(UUID documentId) {
+        Document document = requireOwnedDocument(documentId);
+        String extractedText = contentRepository.findByDocumentId(documentId)
+                                   .map(DocumentContent::getExtractedText)
+                                   .orElse(null);
+        return new DocumentContentView(document.getId(), document.getStatus(), extractedText);
+    }
+    
     private Document requireOwnedDocument(UUID documentId) {
         Document document = documentRepository
                                 .findByIdAndStatusNot(documentId, DocumentStatus.DELETED)

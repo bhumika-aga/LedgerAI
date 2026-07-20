@@ -1,6 +1,9 @@
 /**
- * AI feature boundary (FRONTEND_CODING_STANDARDS §3): AI interaction surfaces — summary, chat, and
- * email draft — consuming the AI endpoints. Owns its own pages, components, and hooks; other features
- * never import its internals. Public surface only — empty until the AI slice is implemented.
+ * AI feature boundary (FRONTEND_CODING_STANDARDS §3): AI interaction surfaces consuming the AI
+ * endpoints. Owns its own components, hooks, and API layer; other features import only this public
+ * surface, never its internals.
+ *
+ * <p>This slice implements <strong>AI Summary only</strong> (API_SPEC §10). Chat, email, and report
+ * surfaces are documented but not built here.
  */
-export {};
+export { DocumentSummaryPanel } from "./DocumentSummaryPanel";

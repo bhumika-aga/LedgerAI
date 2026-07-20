@@ -2,10 +2,14 @@ import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { renderWithProviders } from "../../test/renderWithProviders";
+import * as aiApi from "../ai/aiApi";
 import { DocumentDetailPage } from "./DocumentDetailPage";
 import * as documentsApi from "./documentsApi";
 
 vi.mock("./documentsApi");
+// The detail page embeds the AI summary panel (API_SPEC §10); stub its API so the page test stays
+// scoped to document behavior. Default: no summary yet (404), so the panel shows its "generate" state.
+vi.mock("../ai/aiApi");
 
 const document: documentsApi.Document = {
   id: "33333333-3333-3333-3333-333333333333",
@@ -39,6 +43,11 @@ describe("DocumentDetailPage", () => {
   beforeEach(() => {
     // Default OCR status so the detail page's status query resolves; individual tests override it.
     vi.mocked(documentsApi.getOcrStatus).mockResolvedValue(readyOcrStatus);
+    // Default: the document has no summary yet — the panel renders its "generate" state (404).
+    vi.mocked(aiApi.getSummary).mockRejectedValue({
+      isAxiosError: true,
+      response: { status: 404 },
+    });
   });
 
   afterEach(() => {
