@@ -1,5 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
+import { ActivityTimelinePage } from "../features/activity";
 import { LoginPage, RequireAuth } from "../features/auth";
 import {
   ClientCreatePage,
@@ -79,6 +80,14 @@ export function AppRouter() {
             element={
               <RequireAuth>
                 <DocumentDetailPage />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/activities"
+            element={
+              <RequireAuth>
+                <ActivityTimelinePage />
               </RequireAuth>
             }
           />

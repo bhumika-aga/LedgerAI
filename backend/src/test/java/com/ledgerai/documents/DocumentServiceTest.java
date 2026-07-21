@@ -60,6 +60,12 @@ class DocumentServiceTest {
     @Mock
     private DocumentProcessingService processingService;
     
+    @Mock
+    private com.ledgerai.common.security.CurrentUserProvider currentUserProvider;
+    
+    @Mock
+    private com.ledgerai.activity.ActivityService activityService;
+    
     private DocumentService service;
     private UUID clientId;
     
@@ -70,7 +76,8 @@ class DocumentServiceTest {
             Duration.ofMinutes(5), 16);
         service = new DocumentService(
             documentRepository, contentRepository, clientService, storagePort,
-            new DocumentFileValidator(properties), processingService, properties);
+            new DocumentFileValidator(properties), processingService, properties,
+            currentUserProvider, activityService);
         clientId = UUID.randomUUID();
     }
     

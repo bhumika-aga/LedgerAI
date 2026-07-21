@@ -1,5 +1,6 @@
 package com.ledgerai.ai;
 
+import com.ledgerai.activity.ActivityService;
 import com.ledgerai.ai.domain.AiOutput;
 import com.ledgerai.ai.domain.AiRequest;
 import com.ledgerai.ai.domain.AiRequestStatus;
@@ -60,11 +61,12 @@ public class AiSummaryService {
     private final SummaryPromptBuilder promptBuilder;
     private final AiPort aiPort;
     private final CurrentUserProvider currentUserProvider;
+    private final ActivityService activityService;
     
     public AiSummaryService(DocumentService documentService, AiRequestRepository requestRepository,
                             AiOutputRepository outputRepository, AiRequestLifecycleWriter lifecycleWriter,
                             SummaryPromptBuilder promptBuilder, AiPort aiPort,
-                            CurrentUserProvider currentUserProvider) {
+                            CurrentUserProvider currentUserProvider, ActivityService activityService) {
         this.documentService = documentService;
         this.requestRepository = requestRepository;
         this.outputRepository = outputRepository;
@@ -72,6 +74,7 @@ public class AiSummaryService {
         this.promptBuilder = promptBuilder;
         this.aiPort = aiPort;
         this.currentUserProvider = currentUserProvider;
+        this.activityService = activityService;
     }
     
     /**
@@ -111,6 +114,10 @@ public class AiSummaryService {
                 lifecycleWriter.markFailed(request.getId(), INVALID_OUTPUT_REASON);
             } else {
                 lifecycleWriter.completeWithOutput(request.getId(), content);
+                // API_SPEC §10.1: emit SUMMARY_GENERATED only on a successful generation (not on the
+                // existing-summary short-circuit, nor on a failed/empty attempt). The summary is
+                // document-scoped; client_id is left null (Activity §5.8 allows it).
+                activityService.recordSummaryGenerated(userId, null, documentId);
             }
         } catch (AiUnavailableException e) {
             // Record the failed attempt, then surface a 503 (graceful degradation, AI_ARCHITECTURE §12).

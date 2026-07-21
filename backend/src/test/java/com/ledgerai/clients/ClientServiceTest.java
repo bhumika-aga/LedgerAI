@@ -48,6 +48,9 @@ class ClientServiceTest {
     @Mock
     private CurrentUserProvider currentUserProvider;
     
+    @Mock
+    private com.ledgerai.activity.ActivityService activityService;
+    
     private ClientService service;
     private UUID userId;
     
@@ -58,7 +61,8 @@ class ClientServiceTest {
             clientRepository,
             currentUserProvider,
             new OwnershipGuard(currentUserProvider),
-            new ClientProperties(MAX_NAME, MAX_CONTACT, MAX_NOTES));
+            new ClientProperties(MAX_NAME, MAX_CONTACT, MAX_NOTES),
+            activityService);
     }
     
     private void signedIn() {

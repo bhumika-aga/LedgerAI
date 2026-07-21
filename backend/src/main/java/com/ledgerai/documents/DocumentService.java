@@ -1,8 +1,10 @@
 package com.ledgerai.documents;
 
+import com.ledgerai.activity.ActivityService;
 import com.ledgerai.clients.ClientService;
 import com.ledgerai.common.dto.PageResponse;
 import com.ledgerai.common.exception.ResourceNotFoundException;
+import com.ledgerai.common.security.CurrentUserProvider;
 import com.ledgerai.documents.config.DocumentProperties;
 import com.ledgerai.documents.domain.Document;
 import com.ledgerai.documents.domain.DocumentContent;
@@ -51,11 +53,14 @@ public class DocumentService {
     private final DocumentFileValidator fileValidator;
     private final DocumentProcessingService processingService;
     private final DocumentProperties properties;
+    private final CurrentUserProvider currentUserProvider;
+    private final ActivityService activityService;
     
     public DocumentService(DocumentRepository documentRepository, DocumentContentRepository contentRepository,
                            ClientService clientService, StoragePort storagePort,
                            DocumentFileValidator fileValidator, DocumentProcessingService processingService,
-                           DocumentProperties properties) {
+                           DocumentProperties properties, CurrentUserProvider currentUserProvider,
+                           ActivityService activityService) {
         this.documentRepository = documentRepository;
         this.contentRepository = contentRepository;
         this.clientService = clientService;
@@ -63,6 +68,8 @@ public class DocumentService {
         this.fileValidator = fileValidator;
         this.processingService = processingService;
         this.properties = properties;
+        this.currentUserProvider = currentUserProvider;
+        this.activityService = activityService;
     }
     
     /**
@@ -86,6 +93,13 @@ public class DocumentService {
             safelyDeleteObject(storageReference);
             throw persistFailure;
         }
+        
+        // API_SPEC §8.1 / DATABASE §11: record the timeline entry once the document row exists. The
+        // upload flow is intentionally not wrapped in one transaction (the storage call must stay outside
+        // a DB transaction), so this commits immediately after the row rather than atomically with it —
+        // consistent with the storage-first, non-transactional upload design.
+        activityService.recordDocumentUploaded(
+            currentUserProvider.requireUserId(), clientId, saved.getId(), saved.getOriginalFilename());
         
         // The upload response reports the initial status (API_SPEC §8.1: UPLOADED), captured before
         // processing runs. Extraction then proceeds synchronously-with-status (ADR-013) using the bytes
@@ -151,8 +165,14 @@ public class DocumentService {
         boolean wasActive = !document.isDeleted();
         document.markDeleted();
         documentRepository.save(document);
-        if (wasActive && document.getStorageReference() != null) {
-            safelyDeleteObject(document.getStorageReference());
+        if (wasActive) {
+            // API_SPEC §8.4 / DATABASE §11: record the delete within this transaction. Only on the first,
+            // effective delete — the operation is idempotent (a repeat delete records nothing new).
+            activityService.recordDocumentDeleted(currentUserProvider.requireUserId(),
+                document.getClientId(), document.getId(), document.getOriginalFilename());
+            if (document.getStorageReference() != null) {
+                safelyDeleteObject(document.getStorageReference());
+            }
         }
     }
     

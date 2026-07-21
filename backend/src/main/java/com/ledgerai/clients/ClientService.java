@@ -1,5 +1,6 @@
 package com.ledgerai.clients;
 
+import com.ledgerai.activity.ActivityService;
 import com.ledgerai.clients.config.ClientProperties;
 import com.ledgerai.clients.domain.Client;
 import com.ledgerai.clients.domain.ClientStatus;
@@ -38,13 +39,16 @@ public class ClientService {
     private final CurrentUserProvider currentUserProvider;
     private final OwnershipGuard ownershipGuard;
     private final ClientProperties properties;
+    private final ActivityService activityService;
     
     public ClientService(ClientRepository clientRepository, CurrentUserProvider currentUserProvider,
-                         OwnershipGuard ownershipGuard, ClientProperties properties) {
+                         OwnershipGuard ownershipGuard, ClientProperties properties,
+                         ActivityService activityService) {
         this.clientRepository = clientRepository;
         this.currentUserProvider = currentUserProvider;
         this.ownershipGuard = ownershipGuard;
         this.properties = properties;
+        this.activityService = activityService;
     }
     
     /**
@@ -85,7 +89,11 @@ public class ClientService {
         // Duplicate names are allowed and are not an error (BR-024, API_SPEC §7.3), so there is no
         // uniqueness check here — two real clients may legitimately share a name.
         Client client = Client.create(userId, request.name(), request.contactDetails(), request.notes());
-        return ClientResponse.from(clientRepository.save(client));
+        Client saved = clientRepository.save(client);
+        // API_SPEC §7.3 / DATABASE §11: the timeline entry commits together with the client (this method
+        // is transactional, so the shared ActivityService joins the same transaction).
+        activityService.recordClientCreated(userId, saved.getId(), saved.getName());
+        return ClientResponse.from(saved);
     }
     
     /**
