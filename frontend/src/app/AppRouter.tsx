@@ -10,6 +10,7 @@ import {
 } from "../features/clients";
 import { DocumentDetailPage, DocumentListPage } from "../features/documents";
 import { ProfilePage } from "../features/profile";
+import { SearchPage } from "../features/search";
 import { AppLayout } from "../shared/layout/AppLayout";
 import { HealthPage } from "../system/health/HealthPage";
 
@@ -88,6 +89,14 @@ export function AppRouter() {
             element={
               <RequireAuth>
                 <ActivityTimelinePage />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/search"
+            element={
+              <RequireAuth>
+                <SearchPage />
               </RequireAuth>
             }
           />

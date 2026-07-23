@@ -121,6 +121,14 @@ ai:
     max-tokens: ${AI_ANTHROPIC_MAX_TOKENS:1024}
     max-document-chars: ${AI_ANTHROPIC_MAX_DOCUMENT_CHARS:24000}
 
+# Global Search validation (VR-006). API_SPEC §14.1 rejects an invalid/oversized query with 422, but the
+# concrete maximum length is a VR-006 [Assumption] not finalized in the SRS/architecture — so, like the
+# password (VR-001), profile (VR-003), client (VR-004), and document (VR-005) limits, it is tunable
+# configuration rather than a product commitment in code. Search reuses the existing full-text GIN index
+# (DATABASE §9, migration V5); no new index or provider is introduced.
+search:
+  max-query-length: ${SEARCH_MAX_QUERY_LENGTH:256}
+
 # Baseline observability (ADR-015): expose only the health endpoint required by the Phase 0
 # foundation. Broader endpoints, metrics, and per-environment configuration are added by the
 # slices that introduce them. Secrets and environment-specific values are always externalized.
