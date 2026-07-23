@@ -4,9 +4,9 @@
 > **Owner:** Principal UX Architect
 > **Last updated:** 2026-07-15
 > **Upstream (frozen):
-** [PRD](../00-product/PRD.md) · [SRS](../00-product/SRS.md) · [AI_ARCHITECTURE](../01-architecture/AI_ARCHITECTURE.md) · [SECURITY](../01-architecture/SECURITY.md)
+> ** [PRD](../00-product/PRD.md) · [SRS](../00-product/SRS.md) · [AI_ARCHITECTURE](../01-architecture/AI_ARCHITECTURE.md) · [SECURITY](../01-architecture/SECURITY.md)
 > **Related:
-** [DESIGN_SYSTEM](./DESIGN_SYSTEM.md) · [COMPONENTS](./COMPONENTS.md) · [USER_FLOWS](./USER_FLOWS.md) · [FRONTEND_CODING_STANDARDS](../03-engineering/FRONTEND_CODING_STANDARDS.md) · [CLAUDE.md](../../CLAUDE.md)
+> ** [DESIGN_SYSTEM](./DESIGN_SYSTEM.md) · [COMPONENTS](./COMPONENTS.md) · [USER_FLOWS](./USER_FLOWS.md) · [FRONTEND_CODING_STANDARDS](../03-engineering/FRONTEND_CODING_STANDARDS.md) · [CLAUDE.md](../../CLAUDE.md)
 
 ---
 
@@ -98,14 +98,14 @@ enforceable rules that follow.
   one. An empty state is often the user's first encounter with a feature and is therefore the cheapest place to teach
   it ([USER_FLOWS §15](./USER_FLOWS.md#15-cross-flow-principles)).*
 - **Loading states MUST make progress or waiting explicit.** *OCR and AI generation take real time, and silence is
-  indistinguishable from a hang. Long-running operations MUST show status and MUST NOT block the interface
-  ([NFR-002](../00-product/SRS.md#9-non-functional-requirements)).*
+  indistinguishable from a hang. Long-running operations MUST show status and MUST NOT block the
+  interface ([NFR-002](../00-product/SRS.md#9-non-functional-requirements)).*
 - **Error states MUST explain the issue and the next action.** *An error that names a problem without a way forward is a
-  dead end. Every failure carries recovery — retry, edit, or a clear exit
-  ([SRS §8](../00-product/SRS.md#8-error-handling)).*
+  dead end. Every failure carries recovery — retry, edit, or a clear
+  exit ([SRS §8](../00-product/SRS.md#8-error-handling)).*
 - **Confirmation dialogs MUST state the consequence plainly.** *A confirmation the user cannot evaluate is a formality
-  that trains them to click through. The dialog states what will happen, in the words of the thing it happens to
-  ([USER_FLOWS §15](./USER_FLOWS.md#15-cross-flow-principles)).*
+  that trains them to click through. The dialog states what will happen, in the words of the thing it happens
+  to ([USER_FLOWS §15](./USER_FLOWS.md#15-cross-flow-principles)).*
 - **AI-generated content MUST remain clearly identified and editable.** *The human-in-the-loop guarantee of
   [AI_ARCHITECTURE](../01-architecture/AI_ARCHITECTURE.md), expressed in words: output that is not visibly AI's, or not
   visibly the user's to change, invites acceptance without review ([BR-031](../00-product/SRS.md#5-business-rules)).*
@@ -266,8 +266,8 @@ kind of message must communicate in words**, so the same situation is worded the
 
 ## 8. AI Presentation in Context
 
-**The visual obligations of AI presentation are owned by [DESIGN_SYSTEM §10](./DESIGN_SYSTEM.md#10-ai-presentation);
-the AI behavior itself is owned by [AI_ARCHITECTURE](../01-architecture/AI_ARCHITECTURE.md).** This section owns the
+**The visual obligations of AI presentation are owned by [DESIGN_SYSTEM §10](./DESIGN_SYSTEM.md#10-ai-presentation); the
+AI behavior itself is owned by [AI_ARCHITECTURE](../01-architecture/AI_ARCHITECTURE.md).** This section owns the
 **contextual and verbal** dimension only — what an AI surface says and how it conducts itself on a real screen. It
 defines no prompts and no models.
 
@@ -318,9 +318,9 @@ visual-language intent, [COMPONENTS §8](./COMPONENTS.md#8-accessibility) builds
 in code, and [TESTING_STRATEGY §8](../03-engineering/TESTING_STRATEGY.md#8-ui-testing-strategy) verifies it. The product
 target is WCAG 2.1 AA for core flows ([NFR-011](../00-product/SRS.md#9-non-functional-requirements)).
 
-This section restates none of that. It owns the one part the other four cannot cover: **accessibility decided in
-context rather than in a component** — the choices a screen makes about what it says and how it composes accessible
-parts. A product can be assembled entirely from accessible components and still be unusable.
+This section restates none of that. It owns the one part the other four cannot cover: **accessibility decided in context
+rather than in a component** — the choices a screen makes about what it says and how it composes accessible parts. A
+product can be assembled entirely from accessible components and still be unusable.
 
 | In context                 | What the screen is responsible for                                                                                                                                                                                              |
 |----------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|

@@ -66,16 +66,13 @@ rules that follow.
 - **Components MUST have a single responsibility.** *A component that does one thing is understandable, testable, and
   safely reusable; a multi-purpose component becomes a source of surprises and duplicated fixes.*
 - **Shared components MUST remain feature-agnostic.** *A shared component that knows about "clients" or "invoices" can
-  no
-  longer be reused elsewhere and drags feature logic into the common layer, which is how a design system rots.*
+  no longer be reused elsewhere and drags feature logic into the common layer, which is how a design system rots.*
 - **Components MUST be accessible.** *Accessibility is not an enhancement; a component that cannot be operated by
-  keyboard
-  or announced to assistive technology is incomplete,
+  keyboard or announced to assistive technology is incomplete,
   per [FRONTEND_CODING_STANDARDS](../03-engineering/FRONTEND_CODING_STANDARDS.md).*
 - **Components MUST support loading, disabled, and error states where those states are meaningful.** *Real screens wait
-  on
-  the network and can fail; a component that only models the happy path forces every screen to reinvent the unhappy ones
-  inconsistently. "The happy path works" is not complete ([CLAUDE.md §9](../../CLAUDE.md)).*
+  on the network and can fail; a component that only models the happy path forces every screen to reinvent the unhappy
+  ones inconsistently. "The happy path works" is not complete ([CLAUDE.md §9](../../CLAUDE.md)).*
 - **Components MUST expose consistent interaction patterns.** *The same interaction meaning the same thing everywhere is
   what makes the product learnable; divergent behavior for the same gesture erodes trust.*
 - **Components SHOULD compose smaller components.** *Building larger components from established smaller ones inherits
@@ -93,8 +90,7 @@ rules that follow.
 
 LedgerAI's vocabulary is organized into nine categories. The first six are **generic** — reusable in any product. The
 last three (**AI**, **Document**, **Dialogs**) are **LedgerAI-shaped**: still reusable, but composed specifically for
-the
-product's core loop of *upload → understand → act*. Component names below are conceptual, not code identifiers.
+the product's core loop of *upload → understand → act*. Component names below are conceptual, not code identifiers.
 
 ### Layout
 
@@ -204,8 +200,7 @@ behavior.
 
 Specifications are given **per category** — the shared contract every component in that category obeys. Individual
 components inherit their category's contract; where a single component adds obligations, they are noted. Descriptions
-are
-behavioral and implementation-independent by design.
+are behavioral and implementation-independent by design.
 
 ### Layout
 
@@ -240,8 +235,7 @@ behavioral and implementation-independent by design.
 - **Responsibilities:** Accept input; reflect value; surface validation state; pair with a clear label and, when
   invalid, an actionable message.
 - **Typical Usage:** Forms across Authentication, Profile, Client Management; Text Area for editing AI drafts; Search
-  Box
-  for Global Search.
+  Box for Global Search.
 - **Must:** Have an associated, programmatically-linked label; show error state with a message when validation fails
   ([SRS §6](../00-product/SRS.md#6-validation-rules)); support disabled state; validate at the boundary before
   submission.
@@ -266,16 +260,14 @@ behavioral and implementation-independent by design.
 ### Feedback
 
 - **Purpose:** Keep the user continuously informed of system state and action outcomes.
-- **Responsibilities:** Communicate progress, success, warning, and error conditions at the appropriate scope
-  (inline, transient, or page-level).
+- **Responsibilities:** Communicate progress, success, warning, and error conditions at the appropriate scope (inline,
+  transient, or page-level).
 - **Typical Usage:** Skeleton and Spinner while loading; Toast/Snackbar to confirm an action; Alert/Banner for
   persistent conditions; Progress for known-length operations such as upload.
 - **Must:** Match message scope to severity (transient for confirmations, persistent for conditions needing action);
-  pair
-  any status with text, not color alone; keep transient feedback available long enough to read.
+  pair any status with text, not color alone; keep transient feedback available long enough to read.
 - **Must Not:** Rely on color alone; steal focus for non-critical messages; expose internal or sensitive system detail
-  in
-  error text ([SECURITY](../01-architecture/SECURITY.md)).
+  in error text ([SECURITY](../01-architecture/SECURITY.md)).
 - **Accessibility:** Announce important status changes via live regions; ensure error and success are distinguishable
   without color.
 
@@ -285,17 +277,13 @@ behavioral and implementation-independent by design.
 - **Responsibilities:** Render entities and collections consistently; handle empty, loading, and error content states;
   offer consistent sorting/selection where applicable.
 - **Typical Usage:** Card in Grids of clients or documents; Table for structured lists; Timeline for the Activity
-  module;
-  Badge/Chip for status and tags.
+  module; Badge/Chip for status and tags.
 - **Must:** Provide an explicit empty state; show a loading state while data is pending; keep interactive display
-  elements
-  (sortable headers, row actions) keyboard-operable.
-- **Must Not:** Present another user's data — display is always ownership-scoped
-  upstream ([SECURITY §5](../01-architecture/SECURITY.md#5-authorization)); render a blank screen where an empty state
-  belongs.
+  elements (sortable headers, row actions) keyboard-operable.
+- **Must Not:** Present another user's data — display is always ownership-scoped upstream
+  ([SECURITY §5](../01-architecture/SECURITY.md#5-authorization)); render a blank screen where an empty state belongs.
 - **Accessibility:** Use correct semantics (a Table is a table, a List is a list); associate headers with cells; keep
-  row
-  actions reachable by keyboard.
+  row actions reachable by keyboard.
 
 ### AI Components
 
@@ -316,8 +304,7 @@ behavioral and implementation-independent by design.
 
 - **Purpose:** Support the document lifecycle — add, store, extract, view — the entry point of the core loop.
 - **Responsibilities:** Communicate accepted input and limits; reflect a document's processing and OCR state; present
-  the
-  document for reading alongside its derived output.
+  the document for reading alongside its derived output.
 - **Typical Usage:** Upload Zone to add documents; File Card in the document list; OCR Status on each document; PDF
   Viewer in the document view.
 - **Must:** State accepted types and size limits before upload; reflect the document/OCR state accurately from the
@@ -347,12 +334,10 @@ behavioral and implementation-independent by design.
 ## 5. Component Hierarchy
 
 Components form a strict layering. Dependencies point **upward only** — a lower layer never depends on a higher one.
-This
-is the same dependency-direction discipline the backend enforces, applied to the UI.
+This is the same dependency-direction discipline the backend enforces, applied to the UI.
 
 - **Atomic components** — the indivisible primitives (Button, Text Field, Badge, Spinner). They depend on nothing but
-  the
-  design system's tokens.
+  the design system's tokens.
 - **Composite components** — assemblies of atomics into a richer, still-generic unit (Card, Table, Dialog, Search Box).
   They compose atomics and remain feature-agnostic.
 - **Feature components** — components that bind generic pieces to a specific LedgerAI capability (AI Summary Card,
@@ -391,8 +376,8 @@ when something local becomes shared — rather than letting the shared library g
 - **Design** — the need is identified and checked against this document: does an existing component already serve it? A
   new component is proposed only when none fits.
 - **Implementation** — the component is built
-  to [FRONTEND_CODING_STANDARDS](../03-engineering/FRONTEND_CODING_STANDARDS.md),
-  with its states and accessibility included from the start.
+  to [FRONTEND_CODING_STANDARDS](../03-engineering/FRONTEND_CODING_STANDARDS.md), with its states and accessibility
+  included from the start.
 - **Review** — it is evaluated against the Review Checklist (§9) and the Component Review Process below.
 - **Reuse** — once proven, it is used wherever it applies instead of new one-off UI.
 - **Evolution** — it changes over time through review, never by silent divergence in one screen.
@@ -493,8 +478,7 @@ deliberately,
 **How the shared library evolves incrementally:** the library grows **one reviewed promotion at a time**, never by
 speculative up-front generalization. Components are born feature-local, earn reuse, and are promoted only when a second
 real need appears and feature knowledge can be shed. This keeps the shared vocabulary small, genuinely reusable, and
-free
-of premature abstraction — the same vertical, incremental discipline
+free of premature abstraction — the same vertical, incremental discipline
 the [IMPLEMENTATION_PLAN](../03-engineering/IMPLEMENTATION_PLAN.md)
 applies to features.
 

@@ -4,9 +4,9 @@
 > **Owner:** Principal Release / Deployment Architect
 > **Last updated:** 2026-07-16
 > **Upstream (frozen):
-** [CLAUDE.md](../../CLAUDE.md) · [IMPLEMENTATION_PLAN](./IMPLEMENTATION_PLAN.md) · [TESTING_STRATEGY](./TESTING_STRATEGY.md) · [SECURITY](../01-architecture/SECURITY.md) · [ARCHITECTURE](../01-architecture/ARCHITECTURE.md) · [ADR-012](../01-architecture/decisions/ADR-012-Deployment-Strategy.md) · [ADR-015](../01-architecture/decisions/ADR-015-Observability.md)
+> ** [CLAUDE.md](../../CLAUDE.md) · [IMPLEMENTATION_PLAN](./IMPLEMENTATION_PLAN.md) · [TESTING_STRATEGY](./TESTING_STRATEGY.md) · [SECURITY](../01-architecture/SECURITY.md) · [ARCHITECTURE](../01-architecture/ARCHITECTURE.md) · [ADR-012](../01-architecture/decisions/ADR-012-Deployment-Strategy.md) · [ADR-015](../01-architecture/decisions/ADR-015-Observability.md)
 > **Related:
-** [CONTRIBUTING](./CONTRIBUTING.md) · [IMPLEMENTATION_STATUS](./IMPLEMENTATION_STATUS.md) · [EVALUATION](../04-ai/EVALUATION.md) · [
+> ** [CONTRIBUTING](./CONTRIBUTING.md) · [IMPLEMENTATION_STATUS](./IMPLEMENTATION_STATUS.md) · [EVALUATION](../04-ai/EVALUATION.md) · [
 `docs/05-releases/`](../05-releases/)
 
 ---
@@ -27,9 +27,9 @@ this document names none of them and re-decides none of it. **What must be verif
 [CONTRIBUTING](./CONTRIBUTING.md)'s. **What is safe** is [SECURITY](../01-architecture/SECURITY.md)'s.
 
 What no document owns is the step between *merged* and *live*: **promotion** — the decision to move a verified change
-into an environment where someone real depends on it, what makes that decision safe, what happens when it was wrong,
-and what is watched afterward. [IMPLEMENTATION_PLAN](./IMPLEMENTATION_PLAN.md) explicitly defers this: *"Detailed
-testing, deployment, and contribution practices live in their own documents."* This document owns that, and only that.
+into an environment where someone real depends on it, what makes that decision safe, what happens when it was wrong, and
+what is watched afterward. [IMPLEMENTATION_PLAN](./IMPLEMENTATION_PLAN.md) explicitly defers this: *"Detailed testing,
+deployment, and contribution practices live in their own documents."* This document owns that, and only that.
 
 The governing principle of this document:
 
@@ -110,21 +110,22 @@ that follow.
 
 - **Every deployment MUST have a documented purpose.** *A promotion that cannot say what it delivers cannot be verified
   against anything, and cannot be reversed intelligently — because nobody can say what would be lost by reversing it.*
-- **Every deployment MUST trace back to frozen documents.** *What goes live is what the documents granted
-  ([CLAUDE.md §2](../../CLAUDE.md)). Anything else is production behavior with no source of truth — undocumented,
-  unreviewable, and discovered by whoever it surprises.*
+- **Every deployment MUST trace back to frozen documents.** *What goes live is what the documents
+  granted ([CLAUDE.md §2](../../CLAUDE.md)). Anything else is production behavior with no source of truth —
+  undocumented, unreviewable, and discovered by whoever it surprises.*
 - **A deployment MUST NOT introduce unreviewed behavior.** *Behavior that first appears at promotion has bypassed every
   review the repository owns ([CONTRIBUTING §7](./CONTRIBUTING.md#7-review-and-approval-rules)). It is not a shortcut
   through the process; it is the absence of one.*
-- **A deployment SHOULD be repeatable across environments.** *A promotion that behaves differently per environment
-  makes verification meaningless: the thing that passed is not the thing that shipped, and the difference is discovered
-  in production.*
+- **A deployment SHOULD be repeatable across environments.** *A promotion that behaves differently per environment makes
+  verification meaningless: the thing that passed is not the thing that shipped, and the difference is discovered in
+  production.*
 - **Deployment promotion MUST follow verified gates.** *The gates are [TESTING_STRATEGY](./TESTING_STRATEGY.md)'s and
-  [IMPLEMENTATION_PLAN §7](./IMPLEMENTATION_PLAN.md#7-definition-of-done)'s, and they are not negotiable by urgency.
-  A gate waived under pressure is not a gate; it is a formality that was never load-bearing.*
-- **Production deployment MUST respect security constraints.** *They are structural
-  ([SECURITY](../01-architecture/SECURITY.md)). Confidentiality is this product's existential promise
-  ([BR-004](../00-product/SRS.md#5-business-rules)); a release is never the reason to hold it loosely for an afternoon.*
+  [IMPLEMENTATION_PLAN §7](./IMPLEMENTATION_PLAN.md#7-definition-of-done)'s, and they are not negotiable by urgency. A
+  gate waived under pressure is not a gate; it is a formality that was never load-bearing.*
+- **Production deployment MUST respect security constraints.** *They are
+  structural ([SECURITY](../01-architecture/SECURITY.md)). Confidentiality is this product's existential
+  promise ([BR-004](../00-product/SRS.md#5-business-rules)); a release is never the reason to hold it loosely for an
+  afternoon.*
 - **Rollback MUST be possible for any deployment that can alter behavior.** *A change that cannot be withdrawn is a
   permanent decision disguised as a release. Where a way back is genuinely impossible, that fact is known and accepted
   **before** promoting, never discovered after (§7).*
@@ -134,15 +135,14 @@ that follow.
 - **A deployment SHOULD minimize blast radius.** *Exposure is the one variable still controllable once correctness is
   uncertain. Reducing it is not timidity; it is the difference between a finding and an incident.*
 - **A deployment MUST NOT become a substitute for product, architecture, or testing decisions.** *"We will see how it
-  behaves in production" is a decision to let users perform the review. Where a question is genuinely open, it is raised
-  ([CLAUDE.md §8](../../CLAUDE.md)) — not resolved by exposing a professional to the answer.*
+  behaves in production" is a decision to let users perform the review. Where a question is genuinely open, it is
+  raised ([CLAUDE.md §8](../../CLAUDE.md)) — not resolved by exposing a professional to the answer.*
 
 **Why these rules exist.** Deployment fails in ways nothing else catches, because everything else has already passed.
-The
-three failure modes are **silent production drift** (what runs and what the documents describe diverge, one promotion at
-a time, each individually fine), **unsafe promotion** (a gate skipped because the change was small, the fix was urgent,
-or the release was already announced), and **deployment becoming an authority it was never given** (a question settled
-at promotion because that was the moment someone had to choose).
+The three failure modes are **silent production drift** (what runs and what the documents describe diverge, one
+promotion at a time, each individually fine), **unsafe promotion** (a gate skipped because the change was small, the fix
+was urgent, or the release was already announced), and **deployment becoming an authority it was never given** (a
+question settled at promotion because that was the moment someone had to choose).
 
 Each is invisible from inside. Nobody experiences drift as drift; they experience a working system. Nobody skips a gate
 they believe is load-bearing; they skip the one that has never yet caught anything. And nobody announces that they are
@@ -155,8 +155,8 @@ reviewer sees. These rules exist because production is where the repository's cl
 
 **The verification environments are owned by
 [TESTING_STRATEGY §13](./TESTING_STRATEGY.md#13-test-environments)** — what each is for, and that none uses production
-data or credentials ([§12](./TESTING_STRATEGY.md#12-test-data-strategy)). This section restates none of it and
-**MUST NOT redefine, rename, merge, or add an environment**. **Where each environment runs** is
+data or credentials ([§12](./TESTING_STRATEGY.md#12-test-data-strategy)). This section restates none of it and **MUST
+NOT redefine, rename, merge, or add an environment**. **Where each environment runs** is
 [ADR-012](../01-architecture/decisions/ADR-012-Deployment-Strategy.md)'s and is not named here.
 
 What this section adds is the **promotion view**: what each environment is worth as evidence, and what crossing into it
@@ -171,8 +171,8 @@ costs.
 
 **Environments are separated so that being wrong is survivable.** The separation is not procedural tidiness: it is the
 mechanism that keeps the cost of a mistake proportional to how far it travelled. An environment that borrows
-production's data, credentials, or trust has quietly removed that protection while still appearing to provide it —
-which is worse than not having the environment at all, because the confidence remains.
+production's data, credentials, or trust has quietly removed that protection while still appearing to provide it — which
+is worse than not having the environment at all, because the confidence remains.
 
 ---
 
@@ -251,8 +251,7 @@ lowers any bar; it requires that each has been answered before exposure.
 | **Operational risk understood**     | What could go wrong, who would notice, and how ([§8](#8-deployment-observability), [ARCHITECTURE §14](../01-architecture/ARCHITECTURE.md#14-architecture-risks)). "Nothing should go wrong" is a prediction, not an understanding — and it is the one always made before the ones that do. |
 
 **Safety is a precondition, not a judgement made at the moment of promoting.** Each criterion is decidable in advance
-and
-cheap to check then. Assessed *while* promoting — with the change ready, the reviewer waiting, and the release
+and cheap to check then. Assessed *while* promoting — with the change ready, the reviewer waiting, and the release
 announced — every one of them is answered by whoever wants to proceed, and every answer is yes.
 
 ---
@@ -291,18 +290,18 @@ why, and what it reverted to ([ADR-015](../01-architecture/decisions/ADR-015-Obs
 longer running — the same drift as an unrecorded promotion, in the opposite direction and with less attention on it.
 
 **Rollback after AI-related changes.** Withdrawing a prompt, provider, or retrieval change restores prior *behavior*,
-not prior *outputs* — AI output is
-non-deterministic ([TESTING_STRATEGY §7](./TESTING_STRATEGY.md#7-ai-testing-strategy)),
-and what a professional already received, acted on, or sent does not roll back at all. The rollback restores the
-version; it does not unsay what was said ([EVALUATION §7](../04-ai/EVALUATION.md#7-baselines-and-regression) is how the
-behavioral difference is judged, and what is running is a fact its baselines depend on).
+not prior *outputs* — AI output is non-deterministic
+([TESTING_STRATEGY §7](./TESTING_STRATEGY.md#7-ai-testing-strategy)), and what a professional already received, acted
+on, or sent does not roll back at all. The rollback restores the version; it does not unsay what was said
+([EVALUATION §7](../04-ai/EVALUATION.md#7-baselines-and-regression) is how the behavioral difference is judged, and what
+is running is a fact its baselines depend on).
 
 **Rollback after data-related changes.** Bounded by
-the [Migration Strategy](../01-architecture/DATABASE.md#database-migration-strategy),
-which requires that a rolling deployment tolerates both versions during a migration. **Code rolls back; data that has
-already been written does not un-write itself.** This asymmetry is why schema change is incremental and reversible by
-design there rather than by heroics here — and why a rollback path for a data change is confirmed before promotion (§6),
-when it is still a design question instead of an emergency.
+the [Migration Strategy](../01-architecture/DATABASE.md#database-migration-strategy), which requires that a rolling
+deployment tolerates both versions during a migration. **Code rolls back; data that has already been written does not
+un-write itself.** This asymmetry is why schema change is incremental and reversible by design there rather than by
+heroics here — and why a rollback path for a data change is confirmed before promotion (§6), when it is still a design
+question instead of an emergency.
 
 ---
 
@@ -350,15 +349,14 @@ defer.
 - [ ] **Security implications reviewed?** — No constraint relaxed to ship; no security concern outstanding
   ([SECURITY](../01-architecture/SECURITY.md#security-review-process)).
 - [ ] **AI implications reviewed?** — Prompt, provider, or retrieval changes approved by their own processes, and their
-  evaluation obtained where the change warranted it (
-  §4, [EVALUATION](../04-ai/EVALUATION.md#evaluation-review-process)).
-- [ ] **Release impact understood?** — What this delivers, and what it changes for someone already using the product
-  ([`docs/05-releases/`](../05-releases/) where relevant).
+  evaluation obtained where the change warranted it
+  (§4, [EVALUATION](../04-ai/EVALUATION.md#evaluation-review-process)).
+- [ ] **Release impact understood?** — What this delivers, and what it changes for someone already using the product ([
+  `docs/05-releases/`](../05-releases/) where relevant).
 - [ ] **Rollback path known?** — The way back is identified and believed, its owner named — or its absence is recorded
   and accepted (§7).
 - [ ] **Observability considered?** — The signals that would reveal this promotion was wrong exist, and someone would
-  act
-  on them (§8).
+  act on them (§8).
 - [ ] **Traceability preserved?** — What is running can be walked back to what granted it, afterward and under pressure
   (§6).
 - [ ] **Safe to promote?** — Every criterion in §6 holds, and no conflict is unresolved
@@ -381,8 +379,8 @@ defer.
 - **A rollback rule change** — anything altering what can be withdrawn, or by whom (§7).
 - **A security concern** — anything touching secrets, exposure, or the constraints deployment operates inside
   ([SECURITY](../01-architecture/SECURITY.md#10-ai-security)).
-- **A release-impacting change** — anything altering what a release contains or claims
-  ([`docs/05-releases/`](../05-releases/)).
+- **A release-impacting change** — anything altering what a release contains or claims ([
+  `docs/05-releases/`](../05-releases/)).
 - **An AI-related change** — a prompt, provider, model, or retrieval change reaching an environment (§4).
 - **A database-related change** — any migration, per the
   [Migration Strategy](../01-architecture/DATABASE.md#database-migration-strategy).
@@ -406,9 +404,8 @@ defer.
 - **Testing review required** — it bears on what must be verified or where; routed to the
   [Test Review Process](./TESTING_STRATEGY.md#test-review-process). **A gate is never relaxed by a deployment decision.
   **
-- **Release review required** — it bears on what a release contains or claims; routed to the release documents
-  ([`docs/05-releases/`](../05-releases/), **not yet authored** — while they do not exist, such a change owes no
-  separate
+- **Release review required** — it bears on what a release contains or claims; routed to the release documents ([
+  `docs/05-releases/`](../05-releases/), **not yet authored** — while they do not exist, such a change owes no separate
   release review and waits for none; it owes the reviews its content already owed).
 - **ADR required** — the decision is significant, precedent-setting, or hard to reverse
   ([CLAUDE.md §8](../../CLAUDE.md)).

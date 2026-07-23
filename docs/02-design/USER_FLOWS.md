@@ -4,9 +4,9 @@
 > **Owner:** Principal UX Architect / Frontend Principal Engineer
 > **Last updated:** 2026-07-14
 > **Upstream (frozen):
-** [PRD](../00-product/PRD.md) · [SRS](../00-product/SRS.md) · [API_SPEC](../01-architecture/API_SPEC.md) · [AI_ARCHITECTURE](../01-architecture/AI_ARCHITECTURE.md) · [SECURITY](../01-architecture/SECURITY.md)
+> ** [PRD](../00-product/PRD.md) · [SRS](../00-product/SRS.md) · [API_SPEC](../01-architecture/API_SPEC.md) · [AI_ARCHITECTURE](../01-architecture/AI_ARCHITECTURE.md) · [SECURITY](../01-architecture/SECURITY.md)
 > **Related:
-** [COMPONENTS](./COMPONENTS.md) · [DESIGN_SYSTEM](./DESIGN_SYSTEM.md) · [UI_GUIDELINES](./UI_GUIDELINES.md) · [CLAUDE.md](../../CLAUDE.md)
+> ** [COMPONENTS](./COMPONENTS.md) · [DESIGN_SYSTEM](./DESIGN_SYSTEM.md) · [UI_GUIDELINES](./UI_GUIDELINES.md) · [CLAUDE.md](../../CLAUDE.md)
 
 ---
 
@@ -47,8 +47,7 @@ The distinction that governs the design layer:
 ## 2. User Flow Philosophy
 
 These principles explain *why* the flows are shaped the way they are. They are the reasoning behind the enforceable
-rules
-that follow.
+rules that follow.
 
 | Principle                           | Why it exists                                                                                                                                                                                     |
 |-------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -70,8 +69,8 @@ that follow.
 
 - **Every flow MUST begin with a clear user goal.** *A flow without a goal has no way to be "done"; naming the goal is
   what lets us judge whether the flow succeeds and where it wastes the user's time.*
-- **Every flow MUST have a successful completion.** *The user must always be able to reach the outcome they came for;
-  a flow with no defined success state cannot deliver the "hours to minutes" value.*
+- **Every flow MUST have a successful completion.** *The user must always be able to reach the outcome they came for; a
+  flow with no defined success state cannot deliver the "hours to minutes" value.*
 - **Every flow MUST define failure paths.** *Real operations fail; an undefined failure path becomes a dead end or a
   confusing blank screen. "The happy path works" is not complete ([CLAUDE.md §9](../../CLAUDE.md)).*
 - **Every flow MUST support cancellation where appropriate.** *A user who cannot back out of a multi-step or destructive
@@ -87,11 +86,9 @@ that follow.
 - **Navigation MUST remain predictable.** *The same navigational gesture behaves the same way in every flow, so the user
   never has to relearn how to move around.*
 - **Long-running operations MUST communicate progress.** *OCR and AI generation take time; a flow that goes silent
-  leaves
-  the user unsure whether the system is working, stalled, or broken. Progress must always be visible.*
+  leaves the user unsure whether the system is working, stalled, or broken. Progress must always be visible.*
 - **Users MUST never lose work silently.** *If work cannot be saved, the flow says so and offers recovery; silent loss
-  is
-  never acceptable, no matter the underlying cause.*
+  is never acceptable, no matter the underlying cause.*
 
 ---
 
@@ -197,12 +194,10 @@ container for all downstream work.
 
 **Create.** The user opens the create form (an Edit Dialog or dedicated page), enters client details, and submits.
 Validation runs at the boundary ([SRS §6](../00-product/SRS.md#6-validation-rules)); on success the client is created
-and
-appears in the owner's client list.
+and appears in the owner's client list.
 
 **View.** The client list shows only the authenticated user's clients (ownership-scoped). Selecting one opens its
-detail,
-from which its documents and actions are reachable.
+detail, from which its documents and actions are reachable.
 
 **Edit.** The user updates fields in an Edit Dialog; the same validation applies; on success the record updates and the
 change is reflected immediately.
@@ -215,8 +210,8 @@ their data is not destroyed.
 data preserved — never discarded.
 
 **Ownership failures.** Any attempt to view or act on a client the user does not own resolves as **not found (404)** —
-the resource is indistinguishable from one that never
-existed ([SECURITY §5](../01-architecture/SECURITY.md#5-authorization)).
+the resource is indistinguishable from one that never existed
+([SECURITY §5](../01-architecture/SECURITY.md#5-authorization)).
 
 **Success outcome.** A created, updated, or archived client, with the client list reflecting the current state.
 
@@ -255,15 +250,13 @@ accepted types and size limits up front.
 
 **Storage.** A valid file is persisted to external object storage
 ([ADR-002](../01-architecture/decisions/ADR-002-Storage-Provider.md), deferred provider) with the database holding only
-a
-reference. If storage fails, the flow surfaces the failure and does not leave a half-created record.
+a reference. If storage fails, the flow surfaces the failure and does not leave a half-created record.
 
 **OCR.** Once stored, the document enters extraction. This is a **long-running operation**, so its progress is
 communicated (Skeleton/Progress + OCR Status) rather than leaving the user waiting in silence.
 
 **Ready.** When extraction succeeds, the document reaches a **Ready** state — its content is available and all
-downstream
-actions (Summary, Chat, Email, Report) become enabled.
+downstream actions (Summary, Chat, Email, Report) become enabled.
 
 **Failure.** When extraction fails, the document reaches a **Failed** state that is surfaced honestly with the reason,
 never hidden. Downstream AI actions remain disabled until the document is Ready.
@@ -468,8 +461,8 @@ Confirm -->|Confirm|Deleted([Soft-deleted])
 **Purpose.** Let the professional find a client or document quickly across their own data.
 
 - **Search.** The user enters a query in the Search Box (from the header). Search is **owner-scoped** and excludes
-  soft-deleted
-  resources ([SECURITY §5](../01-architecture/SECURITY.md#5-authorization), [DATABASE](../01-architecture/DATABASE.md)).
+  soft-deleted resources
+  ([SECURITY §5](../01-architecture/SECURITY.md#5-authorization), [DATABASE](../01-architecture/DATABASE.md)).
 - **Filtering.** The user can narrow results by the documented facets (e.g. resource type).
 - **Results.** Matches are presented in a consistent, navigable List; each result leads to its subject.
 - **No results.** An explicit, informative empty state is shown ("no matches for …") — never a blank area.
@@ -568,14 +561,12 @@ realized with the shared vocabulary in [COMPONENTS.md](./COMPONENTS.md) — flow
 - **Error handling.** Failures surface a clear, non-technical, non-leaking message (Alert/Toast/Banner) with a way
   forward; no dead ends and no exposure of internal detail ([SECURITY](../01-architecture/SECURITY.md)).
 - **Empty states.** Any list, result, or timeline with no data shows an explicit, informative empty state — never a
-  blank
-  region.
+  blank region.
 - **Confirmation dialogs.** Consequential and destructive actions are confirmed (Confirmation/Delete Dialog) with their
   consequence stated plainly.
 - **Navigation consistency.** Sidebar, Breadcrumb, and Tabs behave identically across flows, so movement is predictable.
 - **Ownership enforcement.** Every flow shows and acts on only the user's own resources; non-owned access resolves as
-  404
-  ([SECURITY §5](../01-architecture/SECURITY.md#5-authorization)).
+  404 ([SECURITY §5](../01-architecture/SECURITY.md#5-authorization)).
 - **Accessibility.** Every step is keyboard-operable, focus-visible, and announced as required — inherited from
   accessible components and enforced by [FRONTEND_CODING_STANDARDS](../03-engineering/FRONTEND_CODING_STANDARDS.md).
 - **AI transparency.** Wherever AI appears, its output is marked as AI-generated, grounded/cited, editable, and never
@@ -618,7 +609,7 @@ flowchart TD
     classDef gate fill: #e6f0ff, stroke: #3366cc, color: #11294d;
     classDef core fill: #fff2e6, stroke: #cc7a33, color: #4d2f11;
 class Auth, Dash gate;
-class Doc,Summary,Chat, Email, Report core;
+class Doc,Summary, Chat, Email, Report core;
 ```
 
 > **Reading the graph:** solid arrows are *enables / leads to*; dotted arrows to Activity are *records an event*.
@@ -655,8 +646,8 @@ so that a change to a flow has an obvious place to be reviewed.
 **Ownership is architectural only.** It records which module answers for a flow's behavior — its steps, failure paths,
 and outcomes — and nothing more. It implies **no UI boundary**: it does not divide the interface, dictate page
 structure, or imply that a flow occupies a screen of its own. A single screen MAY express flows owned by several
-modules, and a single flow MAY span several screens. How any of this is laid out remains outside this document's
-scope (§1).
+modules, and a single flow MAY span several screens. How any of this is laid out remains outside this document's scope
+(§1).
 
 The owning module keeps its flow aligned with the [PRD](../00-product/PRD.md), [SRS](../00-product/SRS.md), and the
 frozen architecture. A change that crosses module boundaries is a **cross-module change** and requires coordination
@@ -727,8 +718,7 @@ Every flow — new or changed — is evaluated against this checklist before acc
 
 This policy exists to keep flow references **stable**, the documentation **consistent**, and the product's journey
 history **traceable** over the long term: identifiers that never move, refinements that stay attached to the journey
-they
-belong to, and deprecated journeys that remain on record until they are truly gone.
+they belong to, and deprecated journeys that remain on record until they are truly gone.
 
 ---
 

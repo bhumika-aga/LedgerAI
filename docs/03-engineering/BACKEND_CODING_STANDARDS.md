@@ -20,9 +20,8 @@
 
 This document defines **how LedgerAI's Java + Spring Boot backend code should be written** so the codebase stays
 consistent, maintainable, testable, secure, and faithful to the approved architecture. It is **not** a general Java
-style
-guide and **not** an architecture document — it is the bridge between the two: the concrete engineering standards that
-make the architecture real in code. It contains **no code examples, no framework configuration, and no annotation
+style guide and **not** an architecture document — it is the bridge between the two: the concrete engineering standards
+that make the architecture real in code. It contains **no code examples, no framework configuration, and no annotation
 discussion**.
 
 ### Relationship to the frozen documents
@@ -68,8 +67,8 @@ Non-negotiable rules. Each enforces a boundary defined in the architecture; a vi
 - **Entities MUST model persistence only.** They map to the schema ([DATABASE](../01-architecture/DATABASE.md)); they
   are never exposed outward and hold no cross-cutting behavior.
 - **Dependencies MUST point inward** — toward the domain service; controllers depend on services, services on
-  repositories and on *ports*, never the
-  reverse ([ARCHITECTURE §5.3](../01-architecture/ARCHITECTURE.md#5-backend-architecture)).
+  repositories and on *ports*, never the reverse
+  ([ARCHITECTURE §5.3](../01-architecture/ARCHITECTURE.md#5-backend-architecture)).
 - **Constructor injection MUST be used.** Dependencies are explicit, final, and testable; no field/setter injection.
 - **Circular dependencies MUST NOT exist** — between classes or modules. They signal a boundary violation and must be
   resolved by redesign, not worked around.
@@ -87,8 +86,7 @@ Non-negotiable rules. Each enforces a boundary defined in the architecture; a vi
 ## 3. Package Organization
 
 The backend is organized **domain-first**: one package per domain module, each self-contained, plus a small set of
-shared
-infrastructure packages ([ARCHITECTURE §5.1](../01-architecture/ARCHITECTURE.md#5-backend-architecture),
+shared infrastructure packages ([ARCHITECTURE §5.1](../01-architecture/ARCHITECTURE.md#5-backend-architecture),
 [ADR-006](../01-architecture/decisions/ADR-006-Architecture-Style.md)). This document describes **responsibilities and
 boundaries only** — not an exact folder tree (that is an implementation detail).
 
@@ -133,16 +131,16 @@ Within each module, responsibilities are strictly separated. For each layer: wha
 
 - **Responsibilities:** Own business rules, orchestration, ownership authorization, transaction boundaries; call
   repositories and ports.
-- **Must:** Enforce business rules ([SRS §5](../00-product/SRS.md#5-business-rules)) and
-  ownership ([BR-004](../00-product/SRS.md#5-business-rules)); define transactions ([§9](#9-transaction-guidelines));
-  depend on ports for external work.
+- **Must:** Enforce business rules ([SRS §5](../00-product/SRS.md#5-business-rules)) and ownership
+  ([BR-004](../00-product/SRS.md#5-business-rules)); define transactions ([§9](#9-transaction-guidelines)); depend on
+  ports for external work.
 - **Must not:** Depend on web/HTTP types; depend on a concrete provider SDK; leak entities outward.
 
 ### Repository
 
 - **Responsibilities:** Persist and retrieve entities.
-- **Must:** Contain only data access; produce owner-scoped queries that exclude soft-deleted rows by
-  default ([DATABASE §8](../01-architecture/DATABASE.md#8-soft-delete-strategy)).
+- **Must:** Contain only data access; produce owner-scoped queries that exclude soft-deleted rows by default
+  ([DATABASE §8](../01-architecture/DATABASE.md#8-soft-delete-strategy)).
 - **Must not:** Contain business rules or orchestration.
 
 ### Domain (entities + domain types)
@@ -154,8 +152,8 @@ Within each module, responsibilities are strictly separated. For each layer: wha
 ### DTO
 
 - **Responsibilities:** Carry data across the API boundary (requests and responses).
-- **Must:** Be immutable where practical; expose only intended
-  fields ([API_SPEC §17](../01-architecture/API_SPEC.md#17-common-dtos)).
+- **Must:** Be immutable where practical; expose only intended fields
+  ([API_SPEC §17](../01-architecture/API_SPEC.md#17-common-dtos)).
 - **Must not:** Contain business logic; expose sensitive/internal fields (`passwordHash`, raw tokens,
   `storageReference`).
 
@@ -168,17 +166,17 @@ Within each module, responsibilities are strictly separated. For each layer: wha
 ### Configuration
 
 - **Responsibilities:** Wire the application and externalize environment/provider settings.
-- **Must:** Keep secrets
-  externalized ([§11](#11-configuration-standards), [SECURITY §13](../01-architecture/SECURITY.md#13-secrets-management));
-  select adapters by configuration.
+- **Must:** Keep secrets externalized
+  ([§11](#11-configuration-standards), [SECURITY §13](../01-architecture/SECURITY.md#13-secrets-management)); select
+  adapters by configuration.
 - **Must not:** Contain business logic or hard-coded secrets.
 
 ### External Adapter
 
 - **Responsibilities:** Implement a domain **port** for one external provider (AI/OCR/Storage); map
   requests/responses/errors.
-- **Must:** Be the *only* code aware of provider specifics; translate provider errors into the domain error
-  taxonomy ([SRS §8](../00-product/SRS.md#8-error-handling)).
+- **Must:** Be the *only* code aware of provider specifics; translate provider errors into the domain error taxonomy
+  ([SRS §8](../00-product/SRS.md#8-error-handling)).
 - **Must not:** Leak provider types into the domain; hold business rules.
 
 ---
@@ -244,8 +242,7 @@ Validation happens in **distinct layers**, each with a clear home:
 | **Ownership validation**     | Service             | The caller **owns** the target resource and its parent chain ([BR-004](../00-product/SRS.md#5-business-rules)); non-owned → `404` ([SECURITY §5](../01-architecture/SECURITY.md#5-authorization)). This is mandatory on every data-bearing operation. |
 
 **Fail fast:** reject invalid input at the earliest appropriate layer with a clear, specific error. Input validation
-never
-substitutes for business/ownership validation — the server is always authoritative, never the client.
+never substitutes for business/ownership validation — the server is always authoritative, never the client.
 
 ---
 
@@ -278,19 +275,18 @@ Transactions wrap **local persistence only** ([DATABASE §11](../01-architecture
   manage transactions.
 - **External provider calls outside transactions:** AI/OCR/Storage calls are network I/O and **MUST NOT** be held inside
   a database transaction — only the *persistence of their result* is transactional. Reconcile external state via
-  explicit
-  success/failure states and compensating
-  actions ([DATABASE §11](../01-architecture/DATABASE.md#11-transaction-boundaries)).
-- **Rollback philosophy:** a failed atomic unit rolls back entirely — no partial writes presented as
-  success ([NFR-005/006](../00-product/SRS.md#9-non-functional-requirements)). Orphaned external artifacts (e.g., an
-  uploaded file whose DB write failed) are cleaned up by compensating logic.
+  explicit success/failure states and compensating actions
+  ([DATABASE §11](../01-architecture/DATABASE.md#11-transaction-boundaries)).
+- **Rollback philosophy:** a failed atomic unit rolls back entirely — no partial writes presented as success
+  ([NFR-005/006](../00-product/SRS.md#9-non-functional-requirements)). Orphaned external artifacts (e.g., an uploaded
+  file whose DB write failed) are cleaned up by compensating logic.
 
 ---
 
 ## 10. Logging Standards
 
-Logging serves diagnosis and observability **without** exposing confidential
-content ([SECURITY §16](../01-architecture/SECURITY.md#16-logging-and-audit), [NFR-013](../00-product/SRS.md#9-non-functional-requirements)).
+Logging serves diagnosis and observability **without** exposing confidential content
+([SECURITY §16](../01-architecture/SECURITY.md#16-logging-and-audit), [NFR-013](../00-product/SRS.md#9-non-functional-requirements)).
 
 | Aspect                      | Standard                                                                                                                                                                                                                                                                           |
 |-----------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -324,8 +320,8 @@ the [Definition of Done](./IMPLEMENTATION_PLAN.md#7-definition-of-done)):
 
 - [ ] **Architecture respected** — layering, module boundaries, dependency direction, ports honored.
 - [ ] **Tests included** — appropriate layers per [TESTING_STRATEGY](./TESTING_STRATEGY.md); green.
-- [ ] **Security considered** — ownership enforced; nothing sensitive
-  logged/exposed ([SECURITY](../01-architecture/SECURITY.md)).
+- [ ] **Security considered** — ownership enforced; nothing sensitive logged/exposed
+  ([SECURITY](../01-architecture/SECURITY.md)).
 - [ ] **Documentation updated** — API_SPEC / DATABASE / ADR / STATUS as applicable.
 - [ ] **No duplication** — logic lives once; shared concerns centralized.
 - [ ] **No dead code** — no unused classes, methods, or commented-out blocks.
@@ -375,5 +371,4 @@ deviations never accumulate into drift.
 
 *These standards make the approved architecture real in backend code — they enforce it, never redefine it. They MUST
 remain consistent with the frozen Architecture, Database, API Spec, Security, AI Architecture, and SRS. Frontend
-standards
-are defined separately under [`03-engineering/`](.).*
+standards are defined separately under [`03-engineering/`](.).*

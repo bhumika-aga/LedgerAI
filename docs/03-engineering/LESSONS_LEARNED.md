@@ -4,9 +4,9 @@
 > **Owner:** Principal Engineer — Engineering Knowledge
 > **Last updated:** 2026-07-16
 > **Upstream (frozen):
-** [CLAUDE.md](../../CLAUDE.md) · [IMPLEMENTATION_PLAN](./IMPLEMENTATION_PLAN.md) · [IMPLEMENTATION_STATUS](./IMPLEMENTATION_STATUS.md) · [PRODUCT_DECISIONS](../00-product/PRODUCT_DECISIONS.md) · [SECURITY](../01-architecture/SECURITY.md)
+> ** [CLAUDE.md](../../CLAUDE.md) · [IMPLEMENTATION_PLAN](./IMPLEMENTATION_PLAN.md) · [IMPLEMENTATION_STATUS](./IMPLEMENTATION_STATUS.md) · [PRODUCT_DECISIONS](../00-product/PRODUCT_DECISIONS.md) · [SECURITY](../01-architecture/SECURITY.md)
 > **Related:
-** [CONTRIBUTING](./CONTRIBUTING.md) · [DEPLOYMENT](./DEPLOYMENT.md) · [TESTING_STRATEGY](./TESTING_STRATEGY.md) · [
+> ** [CONTRIBUTING](./CONTRIBUTING.md) · [DEPLOYMENT](./DEPLOYMENT.md) · [TESTING_STRATEGY](./TESTING_STRATEGY.md) · [
 `docs/05-releases/`](../05-releases/)
 
 ---
@@ -113,8 +113,8 @@ that follow.
 > rationale follows each rule.*
 
 - **Lessons MUST come from completed work.** *Learning drawn from work still in flight is a prediction wearing the
-  credibility of experience. The thing that looked like the lesson at the midpoint is routinely not the lesson —
-  and it is quoted forever with the authority of hindsight it never had.*
+  credibility of experience. The thing that looked like the lesson at the midpoint is routinely not the lesson — and it
+  is quoted forever with the authority of hindsight it never had.*
 - **Lessons MUST be supported by evidence.** *Without it, a lesson is a preference that survived long enough to be
   quoted. Evidence is also the only thing that lets a lesson be **refuted** later; an unevidenced lesson cannot be
   removed, because there is nothing to show has changed (§8).*
@@ -136,11 +136,11 @@ that follow.
 - **Lessons SHOULD improve future work.** *A lesson nobody could act on is a memoir. The test is not whether it is true
   or interesting — it is whether a future contributor would do something differently for having read it (§6).*
 - **Lessons SHOULD remain generally applicable.** *Knowledge that only applies to the exact situation that produced it
-  is that situation's record, not a lesson — and it belongs to whatever tracks that situation
-  ([STATUS §8](./IMPLEMENTATION_STATUS.md#8-technical-debt)), not here (§3).*
+  is that situation's record, not a lesson — and it belongs to whatever tracks that
+  situation ([STATUS §8](./IMPLEMENTATION_STATUS.md#8-technical-debt)), not here (§3).*
 - **Lessons MUST remain traceable.** *A lesson cited without what it came from cannot be checked, dated, or challenged —
-  and stale knowledge is most persuasive exactly when it is most wrong, because it has been true for so long that
-  nobody remembers testing it (§8).*
+  and stale knowledge is most persuasive exactly when it is most wrong, because it has been true for so long that nobody
+  remembers testing it (§8).*
 
 **Why these rules exist.** Lessons preserve knowledge; they do not create authority. That distinction is the entire
 document, and it fails in three ways. **A lesson becomes a rule nobody ratified** — quoted in review, obeyed, never
@@ -342,9 +342,9 @@ defer.
 - **A significant implementation finding** — completed work revealed something that generalizes (§4).
 - **A testing discovery** — something the tests missed, or caught in a way that says more about the strategy than the
   defect ([TESTING_STRATEGY](./TESTING_STRATEGY.md#test-review-process)).
-- **A deployment incident** — a promotion, observation, or withdrawal taught
-  something ([DEPLOYMENT](./DEPLOYMENT.md#deployment-review-process)).
-  The event is that document's; only the generalization is examined here.
+- **A deployment incident** — a promotion, observation, or withdrawal taught something
+  ([DEPLOYMENT](./DEPLOYMENT.md#deployment-review-process)). The event is that document's; only the generalization is
+  examined here.
 - **A security finding** — routed from [SECURITY §18](../01-architecture/SECURITY.md#18-incident-response), **stripped
   of timeline and identity**. Controls and the threat model are updated first; the lesson never substitutes for either.
 - **An architecture review** — a boundary or dependency cost something that was not predicted
@@ -416,7 +416,7 @@ retired; it does not override the frozen documents under [`docs/`](../), and **i
 requirement, not an architecture, not a decision, and not a rule — it is the reasoning that may persuade the document
 that owns one. It holds no history ([IMPLEMENTATION_STATUS](./IMPLEMENTATION_STATUS.md) and the release documents do),
 no rejected ideas ([PRODUCT_DECISIONS §5](../00-product/PRODUCT_DECISIONS.md#5-rejected-ideas) does), no ratified
-decisions (the [ADRs](../01-architecture/decisions/) do), and no incidents
-([SECURITY §18](../01-architecture/SECURITY.md#18-incident-response) does). When a lesson would change a requirement,
-an architecture, or a ratified decision, stop and raise it per [CLAUDE.md §8](../../CLAUDE.md) — a lesson that stays a
-lesson has not been learned.*
+decisions (the [ADRs](../01-architecture/decisions/) do), and no
+incidents ([SECURITY §18](../01-architecture/SECURITY.md#18-incident-response) does). When a lesson would change a
+requirement, an architecture, or a ratified decision, stop and raise it per [CLAUDE.md §8](../../CLAUDE.md) — a lesson
+that stays a lesson has not been learned.*

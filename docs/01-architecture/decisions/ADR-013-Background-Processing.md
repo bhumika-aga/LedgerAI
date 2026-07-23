@@ -1,8 +1,6 @@
 # ADR-013 — Background Processing
 
-**Status:** Deferred
-**Date:** 2026-07-14
-**Owner:** Founding Engineer / Principal Architect
+**Status:** Deferred **Date:** 2026-07-14 **Owner:** Founding Engineer / Principal Architect
 **Related Documents:
 ** [PRODUCT_DECISIONS DD-007](../../00-product/PRODUCT_DECISIONS.md#4-deferred-decisions) · [ARCHITECTURE §9.10](../ARCHITECTURE.md#9-cross-cutting-concerns) · [ADR-010 (AI Request Lifecycle)](./ADR-010-AI-Request-Lifecycle.md) · [API_SPEC §2.11](../API_SPEC.md#211-async-ready-behavior)
 
@@ -22,8 +20,8 @@ contract ([API_SPEC §2.11](../API_SPEC.md#211-async-ready-behavior)) — so the
 **Deferred.** The concrete background-processing mechanism (e.g., in-process async, a job table with workers, or an
 external queue) is **not** selected for the MVP. The MVP MAY process synchronously-with-status behind the existing
 service boundaries; a background-worker mechanism can be introduced later **without** changing the API contract or
-business logic, because the async-ready seam already
-exists ([ARCHITECTURE §9.10](../ARCHITECTURE.md#9-cross-cutting-concerns)).
+business logic, because the async-ready seam already exists
+([ARCHITECTURE §9.10](../ARCHITECTURE.md#9-cross-cutting-concerns)).
 
 ---
 
@@ -53,8 +51,7 @@ exists ([ARCHITECTURE §9.10](../ARCHITECTURE.md#9-cross-cutting-concerns)).
 ### Trade-offs
 
 - We accept the ceiling of synchronous processing for the MVP in exchange for simplicity, knowing the seam to add
-  workers
-  is already in place.
+  workers is already in place.
 
 ---
 
@@ -62,8 +59,7 @@ exists ([ARCHITECTURE §9.10](../ARCHITECTURE.md#9-cross-cutting-concerns)).
 
 Resolve when processing latency, throughput, or free-tier request limits become real constraints — likely early in the
 "Growing SaaS" stage ([ARCHITECTURE §11](../ARCHITECTURE.md#11-scalability-strategy)). A database-backed job table is
-the
-expected first step. Selecting the mechanism will produce an updated (Accepted) ADR.
+the expected first step. Selecting the mechanism will produce an updated (Accepted) ADR.
 
 ---
 

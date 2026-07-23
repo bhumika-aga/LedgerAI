@@ -15,8 +15,8 @@ CPAs, auditors, and accounting associates. It helps them understand financial do
 information, draft client emails, generate reports, and search — turning hours of document work into minutes.
 
 It **works alongside** existing systems (Tally, QuickBooks, Xero, Zoho, SAP, Oracle, Excel) and is explicitly **not** an
-ERP, bookkeeping, payroll, tax-filing, or system-of-record
-product ([Product Boundaries](./docs/00-product/PRODUCT_DECISIONS.md#2-product-boundaries)).
+ERP, bookkeeping, payroll, tax-filing, or system-of-record product
+([Product Boundaries](./docs/00-product/PRODUCT_DECISIONS.md#2-product-boundaries)).
 
 **MVP goal:** ship the core loop — **upload → understand → act** — across twelve modules (Authentication, User Profile,
 Client Management, Document Upload, Document Storage, OCR, AI Summary, AI Chat, AI Email, Report Generation, Global
@@ -66,11 +66,9 @@ Implementation Status ← live execution state (the only routinely-updated doc)
 
 1. If two documents conflict, the **higher** in this hierarchy wins.
 2. If code conflicts with a document, the **document** wins — fix the code (or, if the doc is genuinely wrong, **stop
-   and
-   raise it** per §8; don't work around it).
+   and raise it** per §8; don't work around it).
 3. A **specific** ADR governs its narrow decision even though it sits low in the list — it is the recorded, detailed
-   form
-   of a higher-level decision, not a contradiction of it.
+   form of a higher-level decision, not a contradiction of it.
 4. Only [`IMPLEMENTATION_STATUS.md`](./docs/03-engineering/IMPLEMENTATION_STATUS.md) is expected to change routinely;
    everything above it is **frozen** and changes only through the process in §8 and
    [Change Management](./docs/03-engineering/IMPLEMENTATION_PLAN.md#9-change-management).
@@ -225,12 +223,10 @@ Claude's goal is:
 Success means: the twelve modules ship, each meeting the Definition of Complete; the frozen documents were never
 contradicted; no product boundary was crossed; and a professional can genuinely go *from hours to minutes* on a real
 document ([Vision](./docs/00-product/PRODUCT_VISION.md), [PRD](./docs/00-product/PRD.md)). Working code that violates
-the
-architecture is a **failure**, not a shortcut.
+the architecture is a **failure**, not a shortcut.
 
 ---
 
 *Read before every coding session. This playbook governs behavior; it does not override the frozen documents under
 [`docs/`](./docs/) — it enforces them. When in doubt, consult the source of truth and, if a decision is required, stop
-and
-ask (§8).*
+and ask (§8).*

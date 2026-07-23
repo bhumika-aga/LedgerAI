@@ -1,8 +1,6 @@
 # ADR-008 — Object Storage for Documents
 
-**Status:** Accepted
-**Date:** 2026-07-14
-**Owner:** Founding Engineer / Principal Architect
+**Status:** Accepted **Date:** 2026-07-14 **Owner:** Founding Engineer / Principal Architect
 **Related Documents:
 ** [DATABASE §1.3](../DATABASE.md#13-related-documents) · [DATABASE §14](../DATABASE.md#14-risks) · [SECURITY §9](../SECURITY.md#9-file-upload-security) · [ADR-002 (provider)](./ADR-002-Storage-Provider.md)
 
@@ -20,11 +18,9 @@ live** and how the application references them. This is distinct from *which ven
 
 Store document **binaries in an external object store**; the PostgreSQL database holds only an **opaque storage
 reference** plus metadata (filename, MIME type, size, status). Files are owner-scoped and accessed through *
-*short-lived,
-authorized references** (e.g., signed/expiring URLs), never public or enumerable
-URLs ([SECURITY §9](../SECURITY.md#9-file-upload-security)).
-The concrete provider is deferred to [ADR-002](./ADR-002-Storage-Provider.md); this pattern is provider-independent via
-the domain's **Storage port**.
+*short-lived, authorized references** (e.g., signed/expiring URLs), never public or enumerable URLs
+([SECURITY §9](../SECURITY.md#9-file-upload-security)). The concrete provider is deferred
+to [ADR-002](./ADR-002-Storage-Provider.md); this pattern is provider-independent via the domain's **Storage port**.
 
 ---
 
@@ -35,8 +31,8 @@ the domain's **Storage port**.
 - **Store files on the application host's filesystem.** Rejected: ephemeral on Render, not durable or shared across
   instances, and complicates scaling.
 - **Serve files by streaming raw bytes through the API.** Rejected as the default: wastes backend bandwidth/compute;
-  returning a short-lived access reference is cheaper and scales
-  better ([API_SPEC §8.5](../API_SPEC.md#85-download-metadata--access-link)).
+  returning a short-lived access reference is cheaper and scales better
+  ([API_SPEC §8.5](../API_SPEC.md#85-download-metadata--access-link)).
 
 ---
 
@@ -51,8 +47,8 @@ the domain's **Storage port**.
 ### Disadvantages
 
 - Two systems (DB + object store) must be kept consistent — risk of orphaned files.
-- Requires compensating cleanup on failed uploads and on
-  delete ([DATABASE §11](../DATABASE.md#11-transaction-boundaries)).
+- Requires compensating cleanup on failed uploads and on delete
+  ([DATABASE §11](../DATABASE.md#11-transaction-boundaries)).
 
 ### Trade-offs
 
@@ -63,11 +59,10 @@ the domain's **Storage port**.
 
 ## Future Reconsideration
 
-The pattern is durable. Revisit only if requirements demand in-DB storage (they should not) or if a future feature (
-e.g.,
-document versioning) changes reference semantics — handled
-additively ([DATABASE §13](../DATABASE.md#13-future-database-evolution)).
-Provider selection is tracked separately in [ADR-002](./ADR-002-Storage-Provider.md).
+The pattern is durable. Revisit only if requirements demand in-DB storage (they should not) or if a future feature
+(e.g., document versioning) changes reference semantics — handled additively
+([DATABASE §13](../DATABASE.md#13-future-database-evolution)). Provider selection is tracked separately
+in [ADR-002](./ADR-002-Storage-Provider.md).
 
 ---
 

@@ -1,8 +1,6 @@
 # ADR-011 — API Versioning (URI Path)
 
-**Status:** Accepted
-**Date:** 2026-07-14
-**Owner:** Founding Engineer / Principal API Architect
+**Status:** Accepted **Date:** 2026-07-14 **Owner:** Founding Engineer / Principal API Architect
 **Related Documents:
 ** [API_SPEC §2.1](../API_SPEC.md#21-base-url) · [API_SPEC §20](../API_SPEC.md#20-api-versioning-strategy) · [API_SPEC §API Lifecycle](../API_SPEC.md#api-lifecycle)
 

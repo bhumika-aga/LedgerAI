@@ -5,11 +5,12 @@
 > **Last updated:** 2026-07-14
 > **Stack:** React 19 · TypeScript 5 · Vite · Material UI · React Query ·
 >
-Axios ([PD-006](../00-product/PRODUCT_DECISIONS.md#3-accepted-product-decisions), [ADR-007](../01-architecture/decisions/ADR-007-Frontend-Architecture.md))
+Axios
+([PD-006](../00-product/PRODUCT_DECISIONS.md#3-accepted-product-decisions), [ADR-007](../01-architecture/decisions/ADR-007-Frontend-Architecture.md))
 > **Upstream (frozen):
-** [Architecture](../01-architecture/ARCHITECTURE.md) · [API Spec](../01-architecture/API_SPEC.md) · [Security](../01-architecture/SECURITY.md) · [SRS](../00-product/SRS.md)
+> ** [Architecture](../01-architecture/ARCHITECTURE.md) · [API Spec](../01-architecture/API_SPEC.md) · [Security](../01-architecture/SECURITY.md) · [SRS](../00-product/SRS.md)
 > **Related:
-** [CLAUDE.md](../../CLAUDE.md) · [TESTING_STRATEGY](./TESTING_STRATEGY.md) · [BACKEND_CODING_STANDARDS](./BACKEND_CODING_STANDARDS.md) · [IMPLEMENTATION_PLAN](./IMPLEMENTATION_PLAN.md)
+> ** [CLAUDE.md](../../CLAUDE.md) · [TESTING_STRATEGY](./TESTING_STRATEGY.md) · [BACKEND_CODING_STANDARDS](./BACKEND_CODING_STANDARDS.md) · [IMPLEMENTATION_PLAN](./IMPLEMENTATION_PLAN.md)
 
 ---
 
@@ -61,20 +62,20 @@ Non-negotiable rules. Each protects predictability, reuse, or the architecture's
   more.
 - **Business logic MUST remain outside presentational components** — presentational components render props and emit
   events; they hold no domain logic.
-- **API calls MUST go through the centralized API client** — never raw fetch/HTTP scattered in
-  components ([§8](#8-api-integration-standards)).
+- **API calls MUST go through the centralized API client** — never raw fetch/HTTP scattered in components
+  ([§8](#8-api-integration-standards)).
 - **Shared UI components MUST remain generic** — no feature-specific assumptions in `shared`.
 - **Feature modules MUST remain isolated** — a feature does not import another feature's internals; genuinely shared
   code moves to `shared`.
 - **State duplication MUST be avoided** — one source of truth per piece of state ([§6](#6-state-management-rules)).
 - **Server state MUST remain the source of truth** — cached and read via the server-state layer, not copied into local
   state.
-- **Accessibility MUST be considered by default** — every interactive element is keyboard- and
-  screen-reader-usable ([§11](#11-accessibility-standards)).
+- **Accessibility MUST be considered by default** — every interactive element is keyboard- and screen-reader-usable
+  ([§11](#11-accessibility-standards)).
 - **Components SHOULD be composable rather than configurable** — prefer composing small pieces over a mega-component
   with many flags.
-- **Styling SHOULD remain consistent** — shared tokens/components, not ad hoc one-off
-  styles ([§12](#12-styling-standards)).
+- **Styling SHOULD remain consistent** — shared tokens/components, not ad hoc one-off styles
+  ([§12](#12-styling-standards)).
 
 > **Why these are rules:** they keep the frontend predictable and
 > the [feature-first architecture](../01-architecture/ARCHITECTURE.md#6-frontend-architecture)
@@ -86,9 +87,9 @@ Non-negotiable rules. Each protects predictability, reuse, or the architecture's
 ## 3. Feature Organization
 
 The frontend is organized **feature-first**: one module per capability, each self-contained, plus a `shared` module for
-genuinely cross-cutting UI and
-utilities ([ARCHITECTURE §6.1](../01-architecture/ARCHITECTURE.md#6-frontend-architecture)).
-This document describes **responsibilities and boundaries only** — not a folder tree.
+genuinely cross-cutting UI and utilities
+([ARCHITECTURE §6.1](../01-architecture/ARCHITECTURE.md#6-frontend-architecture)). This document describes
+**responsibilities and boundaries only** — not a folder tree.
 
 | Feature     | Responsibility                                                                                                                  |
 |-------------|---------------------------------------------------------------------------------------------------------------------------------|
@@ -108,11 +109,10 @@ This document describes **responsibilities and boundaries only** — not a folde
 - Features **do not import each other's internals**; cross-feature reuse goes through `shared`, and cross-feature data
   goes through the API layer, not shared component state.
 - `shared` components carry **no feature-specific logic** — if a component "knows" about clients or documents, it
-  belongs
-  in that feature, not `shared`.
-- This mirrors the backend's module
-  isolation ([BACKEND_CODING_STANDARDS §3](./BACKEND_CODING_STANDARDS.md#3-package-organization)),
-  so a capability is understood consistently on both sides.
+  belongs in that feature, not `shared`.
+- This mirrors the backend's module isolation
+  ([BACKEND_CODING_STANDARDS §3](./BACKEND_CODING_STANDARDS.md#3-package-organization)), so a capability is understood
+  consistently on both sides.
 
 ---
 
@@ -148,8 +148,8 @@ Responsibilities are separated by role. For each: what it does, what it **must**
 ### Form
 
 - **Responsibilities:** Collect and validate user input; manage submission.
-- **Must:** Provide client-side validation feedback matching the rules; surface server errors
-  clearly ([§9](#9-forms--validation)); manage disabled/submitting states.
+- **Must:** Provide client-side validation feedback matching the rules; surface server errors clearly
+  ([§9](#9-forms--validation)); manage disabled/submitting states.
 - **Must not:** Treat client validation as authoritative; hide server errors.
 
 ### Modal
@@ -174,8 +174,8 @@ Responsibilities are separated by role. For each: what it does, what it **must**
 ### API Client
 
 - **Responsibilities:** The single gateway to the backend.
-- **Must:** Attach auth tokens; handle token refresh; normalize errors to the app's
-  taxonomy ([§8](#8-api-integration-standards)); expose typed functions.
+- **Must:** Attach auth tokens; handle token refresh; normalize errors to the app's taxonomy
+  ([§8](#8-api-integration-standards)); expose typed functions.
 - **Must not:** Be bypassed by raw HTTP calls elsewhere.
 
 ### Route Guard
@@ -183,8 +183,8 @@ Responsibilities are separated by role. For each: what it does, what it **must**
 - **Responsibilities:** Gate protected routes on authentication state.
 - **Must:** Redirect unauthenticated users to sign-in ([FR-AUTH-006](../00-product/SRS.md#41-authentication-auth)); rely
   on server-verified auth, not client trust.
-- **Must not:** Be treated as a security control — it is UX; the server enforces
-  authorization ([SECURITY §5](../01-architecture/SECURITY.md#5-authorization)).
+- **Must not:** Be treated as a security control — it is UX; the server enforces authorization
+  ([SECURITY §5](../01-architecture/SECURITY.md#5-authorization)).
 
 ---
 
@@ -240,11 +240,11 @@ UI -->|mutations via API client|Server
 | **Form state**           | Within the form                                                                                  | Field values, validation, submission status; discarded or synced to the server on submit.                                                                                                                                                    |
 | **Authentication state** | A dedicated context/session home                                                                 | Whether a session exists; gates routing. Not duplicated into feature state.                                                                                                                                                                  |
 
-**Why server state must not be copied unnecessarily:** the server is the source of
-truth ([SECURITY](../01-architecture/SECURITY.md)).
-Copying fetched data into local state creates a second, divergent copy that goes stale, must be manually re-synced, and
-causes subtle "the screen disagrees with the database" bugs. Read server state from its cache and re-fetch/invalidate on
-change — do not shadow it. A global client-state store is introduced **only** if genuinely shared client state emerges
+**Why server state must not be copied unnecessarily:** the server is the source of truth
+([SECURITY](../01-architecture/SECURITY.md)). Copying fetched data into local state creates a second, divergent copy
+that goes stale, must be manually re-synced, and causes subtle "the screen disagrees with the database" bugs. Read
+server state from its cache and re-fetch/invalidate on change — do not shadow it. A global client-state store is
+introduced **only** if genuinely shared client state emerges
 ([ADR-007](../01-architecture/decisions/ADR-007-Frontend-Architecture.md)).
 
 ---
@@ -317,8 +317,8 @@ Every data-driven surface handles the full range of states — this is a complet
 
 ## 11. Accessibility Standards
 
-Accessibility is a **default**, targeting WCAG 2.1 AA for core
-flows ([NFR-011](../00-product/SRS.md#9-non-functional-requirements)).
+Accessibility is a **default**, targeting WCAG 2.1 AA for core flows
+([NFR-011](../00-product/SRS.md#9-non-functional-requirements)).
 
 | Aspect                  | Standard                                                                                                          |
 |-------------------------|-------------------------------------------------------------------------------------------------------------------|
@@ -380,9 +380,8 @@ changes MUST trigger a focused review before merge:
 | **State management changes** | No duplication; correct home per state kind; server truth preserved.                                                           |
 
 **Review outcomes:** **Approved**; **Changes requested** (specific fixes before merge); **Refactor required** (a
-boundary
-or state rule was strained); **ADR required** (the change implies an architectural decision — e.g., introducing a global
-state store, [ADR-007](../01-architecture/decisions/ADR-007-Frontend-Architecture.md)).
+boundary or state rule was strained); **ADR required** (the change implies an architectural decision — e.g., introducing
+a global state store, [ADR-007](../01-architecture/decisions/ADR-007-Frontend-Architecture.md)).
 
 Review is woven into the workflow so the frontend stays aligned with its architecture at every step — small, corrected
 deviations never accumulate into drift.

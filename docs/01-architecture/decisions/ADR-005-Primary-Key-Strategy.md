@@ -1,8 +1,6 @@
 # ADR-005 — Primary Key Strategy (UUID v7)
 
-**Status:** Accepted
-**Date:** 2026-07-14
-**Owner:** Founding Engineer / Principal Database Architect
+**Status:** Accepted **Date:** 2026-07-14 **Owner:** Founding Engineer / Principal Database Architect
 **Related Documents:
 ** [DATABASE §7](../DATABASE.md#7-primary-key-strategy) · [PRODUCT_DECISIONS PD-007](../../00-product/PRODUCT_DECISIONS.md#3-accepted-product-decisions) · [API_SPEC §2.9](../API_SPEC.md#29-uuids) · [SECURITY §5](../SECURITY.md#5-authorization)
 

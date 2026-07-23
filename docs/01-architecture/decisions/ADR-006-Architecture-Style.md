@@ -1,8 +1,6 @@
 # ADR-006 — Architecture Style (Modular Monolith)
 
-**Status:** Accepted
-**Date:** 2026-07-14
-**Owner:** Founding Engineer / Principal Architect
+**Status:** Accepted **Date:** 2026-07-14 **Owner:** Founding Engineer / Principal Architect
 **Related Documents:
 ** [ARCHITECTURE §3](../ARCHITECTURE.md#3-architecture-style) · [ARCHITECTURE §5](../ARCHITECTURE.md#5-backend-architecture) · [ARCHITECTURE ADS-001/003](../ARCHITECTURE.md#16-architecture-decision-summary)
 
@@ -21,9 +19,8 @@ leaving room to grow without a rewrite. We must choose an overall architecture s
 
 Adopt a **Modular Monolith** with **pragmatic layering inside each module** (Controller → Service → Repository) and
 **ports-and-adapters isolation only at the external-service boundary** (AI, OCR, Storage). Backend packages are
-organized
-**domain-first** (by module: auth, users, clients, documents, ocr, ai, reports, search, timeline), layered internally;
-cross-module interaction happens **only through published services**. This is ADS-001/003 from
+organized **domain-first** (by module: auth, users, clients, documents, ocr, ai, reports, search, timeline), layered
+internally; cross-module interaction happens **only through published services**. This is ADS-001/003 from
 [ARCHITECTURE §16](../ARCHITECTURE.md#16-architecture-decision-summary).
 
 ---

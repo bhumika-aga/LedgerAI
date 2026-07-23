@@ -1,8 +1,6 @@
 # ADR-004 — Primary Database (PostgreSQL / Neon)
 
-**Status:** Accepted
-**Date:** 2026-07-14
-**Owner:** Founding Engineer / Principal Database Architect
+**Status:** Accepted **Date:** 2026-07-14 **Owner:** Founding Engineer / Principal Database Architect
 **Related Documents:
 ** [PRODUCT_DECISIONS PD-007](../../00-product/PRODUCT_DECISIONS.md#3-accepted-product-decisions) · [DATABASE](../DATABASE.md) · [ARCHITECTURE §4](../ARCHITECTURE.md#4-high-level-system-architecture)
 
@@ -12,8 +10,8 @@
 
 LedgerAI needs a durable, reliable primary datastore for structured, relational working data (users, clients, document
 metadata, AI requests/outputs, activity) with strong integrity guarantees, some semi-structured fields (preferences,
-activity metadata), and text search over extracted content. It must fit the free/low-cost
-goal ([BG-5](../../00-product/PRD.md#4-goals))
+activity metadata), and text search over extracted content. It must fit the free/low-cost goal
+([BG-5](../../00-product/PRD.md#4-goals))
 and support additive evolution toward multi-tenancy.
 
 ---
@@ -49,8 +47,8 @@ and built-in full-text search (used for MVP search, [ADR-014](./ADR-014-Search-S
 ### Disadvantages
 
 - Serverless free tiers can have cold starts / connection limits to design around.
-- Relational schemas require deliberate migration
-  discipline ([DATABASE §Migration Strategy](../DATABASE.md#database-migration-strategy)).
+- Relational schemas require deliberate migration discipline
+  ([DATABASE §Migration Strategy](../DATABASE.md#database-migration-strategy)).
 
 ### Trade-offs
 
@@ -63,8 +61,7 @@ and built-in full-text search (used for MVP search, [ADR-014](./ADR-014-Search-S
 
 Revisit hosting (not the engine) if Neon's limits are exceeded — migrating to another managed PostgreSQL is low-friction
 precisely because we use standard Postgres. Revisit the engine only under a fundamental shift in data model or scale
-that
-PostgreSQL cannot serve, which is not foreseeable for this product.
+that PostgreSQL cannot serve, which is not foreseeable for this product.
 
 ---
 

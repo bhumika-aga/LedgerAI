@@ -4,9 +4,9 @@
 > **Owner:** Principal AI Evaluation Architect
 > **Last updated:** 2026-07-15
 > **Upstream (frozen):
-** [AI_ARCHITECTURE](../01-architecture/AI_ARCHITECTURE.md) · [TESTING_STRATEGY](../03-engineering/TESTING_STRATEGY.md) · [SRS](../00-product/SRS.md) · [PRD](../00-product/PRD.md) · [SECURITY](../01-architecture/SECURITY.md) · [ADR-003](../01-architecture/decisions/ADR-003-AI-Provider-Abstraction.md)
+> ** [AI_ARCHITECTURE](../01-architecture/AI_ARCHITECTURE.md) · [TESTING_STRATEGY](../03-engineering/TESTING_STRATEGY.md) · [SRS](../00-product/SRS.md) · [PRD](../00-product/PRD.md) · [SECURITY](../01-architecture/SECURITY.md) · [ADR-003](../01-architecture/decisions/ADR-003-AI-Provider-Abstraction.md)
 > **Related:
-** [AI_PROVIDERS](./AI_PROVIDERS.md) · [PROMPTS](./PROMPTS.md) · [RAG](./RAG.md) · [CLAUDE.md](../../CLAUDE.md)
+> ** [AI_PROVIDERS](./AI_PROVIDERS.md) · [PROMPTS](./PROMPTS.md) · [RAG](./RAG.md) · [CLAUDE.md](../../CLAUDE.md)
 
 ---
 
@@ -67,11 +67,10 @@ In one line each:
 
 This document introduces **no product behavior and no quality bar**. What "good" means is
 [SRS](../00-product/SRS.md)'s and
-the [AI Quality Principles](../01-architecture/AI_ARCHITECTURE.md#ai-quality-principles)';
-what "good enough to ship" means for the product is [PRD §11](../00-product/PRD.md#11-success-metrics)'s. Evaluation
-measures against those and reports. Where an evaluation appears to demand a different bar, that is a change to the
-document that owns the bar, raised per [CLAUDE.md §8](../../CLAUDE.md) — never a criterion quietly adjusted until the
-result improves.
+the [AI Quality Principles](../01-architecture/AI_ARCHITECTURE.md#ai-quality-principles)'; what "good enough to ship"
+means for the product is [PRD §11](../00-product/PRD.md#11-success-metrics)'s. Evaluation measures against those and
+reports. Where an evaluation appears to demand a different bar, that is a change to the document that owns the bar,
+raised per [CLAUDE.md §8](../../CLAUDE.md) — never a criterion quietly adjusted until the result improves.
 
 ---
 
@@ -110,10 +109,10 @@ corrected.
 - **Every evaluation MUST state what is being judged.** *"Did it get better?" is not a question — better at what, for
   which capability, against what? An evaluation that does not name its subject cannot be contradicted, and cannot be
   re-run.*
-- **Every evaluation MUST be repeatable enough to compare over time.** *AI output is non-deterministic
-  ([TESTING_STRATEGY §7](../03-engineering/TESTING_STRATEGY.md#7-ai-testing-strategy)); a result that cannot be
-  re-produced closely enough to compare is a single sample, and a single sample of a probabilistic process is an
-  anecdote wearing a number.*
+- **Every evaluation MUST be repeatable enough to compare over time.** *AI output is
+  non-deterministic ([TESTING_STRATEGY §7](../03-engineering/TESTING_STRATEGY.md#7-ai-testing-strategy)); a result that
+  cannot be re-produced closely enough to compare is a single sample, and a single sample of a probabilistic process is
+  an anecdote wearing a number.*
 - **Every evaluation SHOULD use the same baseline when possible.** *Comparison requires a fixed point. A baseline
   changed in the same breath as the thing being measured produces a result that is arithmetically valid and
   epistemically worthless (§7).*
@@ -139,9 +138,8 @@ corrected.
 
 **Why these rules exist.** Evaluation fails in ways that look like success. The three failure modes are **metric drift**
 (the criteria move toward what the system already does, one reasonable adjustment at a time, until they certify it),
-**hidden baselines** (the comparison point is unrecorded or was quietly re-established, so every change appears to be
-an improvement), and **false confidence** (a number that was never valid for the question it is now being used to
-settle).
+**hidden baselines** (the comparison point is unrecorded or was quietly re-established, so every change appears to be an
+improvement), and **false confidence** (a number that was never valid for the question it is now being used to settle).
 
 Each is invisible from inside. Nobody experiences metric drift as lowering the bar; they experience it as fixing an
 unfair test. Nobody notices a hidden baseline; they notice that the numbers look good. These rules exist because the
@@ -156,12 +154,12 @@ worse than none, because it is trusted.
 [AI_ARCHITECTURE — AI Evaluation Strategy](../01-architecture/AI_ARCHITECTURE.md#ai-evaluation-strategy)** — which
 dimensions exist and what each assesses. This section restates none of them and **MUST NOT redefine, rename, merge, or
 add a dimension**. The **quality bar** those dimensions are judged against is likewise
-[AI_ARCHITECTURE's](../01-architecture/AI_ARCHITECTURE.md#ai-quality-principles); this document measures against the
-bar and never sets it.
+[AI_ARCHITECTURE's](../01-architecture/AI_ARCHITECTURE.md#ai-quality-principles); this document measures against the bar
+and never sets it.
 
 **What an evaluation is here.** For governance purposes an evaluation is not a run but a **judgment with a record**: a
-named subject, a stated question, a baseline it was compared against, the dimensions examined, and a verdict somebody
-is accountable for. A run that produced output but not that record has not evaluated anything.
+named subject, a stated question, a baseline it was compared against, the dimensions examined, and a verdict somebody is
+accountable for. A run that produced output but not that record has not evaluated anything.
 
 **The judging concerns, mapped onto the frozen dimensions.** The dimensions are architecture's; what follows is the
 *judging* view of what must be decided within each — what a reviewer must be able to ask, and what an honest answer
@@ -182,8 +180,8 @@ requires. Each is a responsibility, **not** a new dimension.
 ([TESTING_STRATEGY §7.2](../03-engineering/TESTING_STRATEGY.md#72-ai-evaluation-non-deterministic)) but is first an
 architectural obligation: what the product accepts is
 [§11](../01-architecture/AI_ARCHITECTURE.md#11-ai-output-validation)'s, and validation rejects what does not conform.
-Evaluation asks validation cannot — whether conforming output is *reliably* conforming, or conforms only
-when the input is kind.
+Evaluation asks validation cannot — whether conforming output is *reliably* conforming, or conforms only when the input
+is kind.
 
 > **Why the mapping rather than a second model:** two documents naming the same dimensions differently is how the two
 > drift, leaving the reader to guess which is authoritative. The dimensions are the architecture's; these are the
@@ -206,8 +204,8 @@ when the input is kind.
   ([AI_ARCHITECTURE §3](../01-architecture/AI_ARCHITECTURE.md#3-ai-capability-map)).
 - **Output shape reliability** — whether the shape the product accepts is produced dependably
   ([§11](../01-architecture/AI_ARCHITECTURE.md#11-ai-output-validation)).
-- **Grounding behavior** — including whether refusal happens when it
-  should ([§9](../01-architecture/AI_ARCHITECTURE.md#9-grounding-strategy)).
+- **Grounding behavior** — including whether refusal happens when it should
+  ([§9](../01-architecture/AI_ARCHITECTURE.md#9-grounding-strategy)).
 - **Safety behavior** — whether channel separation holds against content that tries to escape it
   ([SECURITY §10](../01-architecture/SECURITY.md#10-ai-security)). A safety finding is routed, never traded off against
   a quality gain.
@@ -231,8 +229,8 @@ here would create a second authority:
 
 ## 5. Evaluation Lifecycle
 
-An evaluation has stages because the difference between *looking at output* and *establishing a fact the product will
-be changed on* is exactly where false confidence forms. Naming the stages makes that boundary explicit.
+An evaluation has stages because the difference between *looking at output* and *establishing a fact the product will be
+changed on* is exactly where false confidence forms. Naming the stages makes that boundary explicit.
 
 | Stage        | What it means                                                                                                                                                                                                                                    |
 |--------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -246,9 +244,9 @@ be changed on* is exactly where false confidence forms. Naming the stages makes 
 | **Retired**  | No longer used for decisions, because its subject, baseline, or relevance has moved on. Its record stays: *why we stopped measuring it that way* is the most valuable thing to know when someone proposes measuring it that way again.           |
 
 **Every stage has an exit.** *Proposed* ends when a decision is named or the question is dropped. *Planned* ends when
-the plan is fixed or the evaluation is abandoned as unanswerable. *Reviewed* resolves to exactly one outcome
-(Evaluation Review Process) and never rests: a finding held for another review does not become approved by the passage
-of time. *Recorded* is permanent. An evaluation that cannot leave a stage is raised, not left there.
+the plan is fixed or the evaluation is abandoned as unanswerable. *Reviewed* resolves to exactly one outcome (Evaluation
+Review Process) and never rests: a finding held for another review does not become approved by the passage of time.
+*Recorded* is permanent. An evaluation that cannot leave a stage is raised, not left there.
 
 **Experimentation versus production evaluation.** Both are legitimate; conflating them is not. **Experimentation** is
 bounded, non-production, uses no real client content
@@ -257,9 +255,9 @@ and creates no dependency — it produces a *hypothesis*. **Production evaluatio
 recorded baseline, a named judge, and a traceable finding — it produces *evidence a decision may rest on*.
 
 A finding MUST NOT reach a production decision by promotion — a promising experiment, quoted in review because it was
-the only number available, becoming the basis for a rollout it was never designed to support. An experiment that
-matters is re-run as an evaluation. The cost of doing so is a day; the cost of not doing so is a decision nobody can
-defend later.
+the only number available, becoming the basis for a rollout it was never designed to support. An experiment that matters
+is re-run as an evaluation. The cost of doing so is a day; the cost of not doing so is a decision nobody can defend
+later.
 
 ---
 
@@ -281,16 +279,16 @@ against** — and it deliberately does not re-list the dimensions, because a sec
 **Criteria compose; they do not collapse.** A verdict rests on several criteria at once, and they routinely disagree —
 that disagreement is information, and it is the first thing a composite score destroys. A single number is permitted
 **only** where that number is explicitly meaningful for the decision at hand, and where what it trades off is stated
-(Rules). Absent that, criteria are reported as they are: several, sometimes conflicting, and resolved by a judgment
-that is written down.
+(Rules). Absent that, criteria are reported as they are: several, sometimes conflicting, and resolved by a judgment that
+is written down.
 
 **Review burden is itself a criterion.** An output the professional must verify line by line has not saved them the
 hours the product exists to save ([PRD](../00-product/PRD.md), [BR-032](../00-product/SRS.md#5-business-rules)) — even
 when it is entirely accurate. Correctness that does not reduce work is a cost the evaluation must be able to see.
 
 **No criterion overrides a safety finding.** Injection resistance, channel separation, and context exposure are not
-dimensions to be traded against quality ([SECURITY §10](../01-architecture/SECURITY.md#10-ai-security)); a concern
-there routes to security review and **blocks** (Evaluation Review Process).
+dimensions to be traded against quality ([SECURITY §10](../01-architecture/SECURITY.md#10-ai-security)); a concern there
+routes to security review and **blocks** (Evaluation Review Process).
 
 ---
 
@@ -324,10 +322,10 @@ other is held still — which is why the two are distinguished (Rules). When bot
 reports a finding that attributes to the pair, never one that quietly credits whichever change was hoped to help.
 
 **How baseline changes are approved.** Re-establishing a baseline is a **reviewed decision**, never a side effect of a
-release (Evaluation Review Process). It requires a stated reason — the capability changed, production reality moved,
-the prior inputs stopped being representative — and the prior baseline is **retained**, not overwritten. A baseline
-replaced silently is how a regression becomes the new normal without anyone having decided it: the numbers look fine,
-because the question changed.
+release (Evaluation Review Process). It requires a stated reason — the capability changed, production reality moved, the
+prior inputs stopped being representative — and the prior baseline is **retained**, not overwritten. A baseline replaced
+silently is how a regression becomes the new normal without anyone having decided it: the numbers look fine, because the
+question changed.
 
 ---
 
@@ -338,8 +336,8 @@ where this product's quality actually lives.
 
 **Human judgment is required when:**
 
-- **Output is ambiguous** — technically supported by the content, but open to a reading the professional did not
-  intend. No metric distinguishes "correct" from "correct and misleading."
+- **Output is ambiguous** — technically supported by the content, but open to a reading the professional did not intend.
+  No metric distinguishes "correct" from "correct and misleading."
 - **Criteria trade off against each other** — one dimension improved and another declined. Only a person can decide
   which the professional would rather have, and only a person can be accountable for deciding wrong (§6).
 - **The decision is capability-specific** — what "good" means for a client email is not what it means for a report, and
@@ -357,13 +355,13 @@ where this product's quality actually lives.
 
 **Why human review remains necessary.** LedgerAI assists a professional who stakes their name on the output
 ([BR-032](../00-product/SRS.md#5-business-rules)); the standard is therefore *professional acceptability*, which is not
-a measurable property of text. Every attempt to fully proxy it selects for what the proxy rewards — and the proxy
-always rewards confident, fluent, complete-looking output, which is precisely the failure mode the frozen quality bar
-exists to prevent.
+a measurable property of text. Every attempt to fully proxy it selects for what the proxy rewards — and the proxy always
+rewards confident, fluent, complete-looking output, which is precisely the failure mode the frozen quality bar exists to
+prevent.
 
-Human judgment is **not** an escape hatch from the rules. A judgment is subject to the same discipline as a
-measurement: it names its subject, states its reasoning, and is recorded and attributable (Rules). "It felt better" is
-not a finding, whoever says it.
+Human judgment is **not** an escape hatch from the rules. A judgment is subject to the same discipline as a measurement:
+it names its subject, states its reasoning, and is recorded and attributable (Rules). "It felt better" is not a finding,
+whoever says it.
 
 ---
 
@@ -380,8 +378,7 @@ finding to resolve, not a detail to defer.
   (§7).
 - [ ] **Repeatability considered?** — The result can be re-produced closely enough to compare; a single sample is not
   reported as a trend (§5, Rules).
-- [ ] **Regression risk assessed?** — Dimensions the change was *not* aimed at were examined, not assumed
-  (§3, §7).
+- [ ] **Regression risk assessed?** — Dimensions the change was *not* aimed at were examined, not assumed (§3, §7).
 - [ ] **Prompt/provider distinction handled?** — Attribution is unambiguous, or the finding says explicitly that it is
   not (Rules).
 - [ ] **Human review completed?** — Where the question is a trade-off, an ambiguity, or safety-sensitive, a person
@@ -430,8 +427,8 @@ from what an evaluation **determines**, which is
 - **Prompt review required** — the finding bears on prompt content, structure, or a version; it is routed to the
   [Prompt Review Process](./PROMPTS.md#prompt-review-process). **A finding is never applied as a prompt edit here.**
 - **Security review required** — injection resistance, channel separation, or context exposure is in question; it is
-  routed to the security review process
-  ([SECURITY](../01-architecture/SECURITY.md#ai-changes--review-required-for)). This outcome **blocks**.
+  routed to the security review process ([SECURITY](../01-architecture/SECURITY.md#ai-changes--review-required-for)).
+  This outcome **blocks**.
 - **Architecture review required** — the finding implies a change to the dimensions, the pipeline, the quality bar, or
   validation; it is raised per [CLAUDE.md §8](../../CLAUDE.md) before proceeding.
 - **ADR required** — the decision is significant, precedent-setting, or hard to reverse.

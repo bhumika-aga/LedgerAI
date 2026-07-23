@@ -6,9 +6,9 @@
 > **Owner:** Principal Retrieval Architect
 > **Last updated:** 2026-07-15
 > **Upstream (frozen):
-** [AI_ARCHITECTURE](../01-architecture/AI_ARCHITECTURE.md) · [ARCHITECTURE](../01-architecture/ARCHITECTURE.md) · [SECURITY](../01-architecture/SECURITY.md) · [SRS](../00-product/SRS.md) · [DATABASE](../01-architecture/DATABASE.md) · [ADR-014](../01-architecture/decisions/ADR-014-Search-Strategy.md)
+> ** [AI_ARCHITECTURE](../01-architecture/AI_ARCHITECTURE.md) · [ARCHITECTURE](../01-architecture/ARCHITECTURE.md) · [SECURITY](../01-architecture/SECURITY.md) · [SRS](../00-product/SRS.md) · [DATABASE](../01-architecture/DATABASE.md) · [ADR-014](../01-architecture/decisions/ADR-014-Search-Strategy.md)
 > **Related:
-** [AI_PROVIDERS](./AI_PROVIDERS.md) · [PROMPTS](./PROMPTS.md) · [EVALUATION](./EVALUATION.md) · [CLAUDE.md](../../CLAUDE.md)
+> ** [AI_PROVIDERS](./AI_PROVIDERS.md) · [PROMPTS](./PROMPTS.md) · [EVALUATION](./EVALUATION.md) · [CLAUDE.md](../../CLAUDE.md)
 
 ---
 
@@ -133,18 +133,18 @@ enforceable rules that follow.
 - **Retrieval MUST serve a documented AI capability.** *A retrieval with no capability behind it is undocumented product
   behavior ([AI_ARCHITECTURE §3](../01-architecture/AI_ARCHITECTURE.md#3-ai-capability-map)). The product does what its
   documents grant, and a retrieval design is not a grant.*
-- **Retrieval MUST remain separate from prompt design.** *They are reviewed by different processes for different risks
-  ([PROMPTS](./PROMPTS.md#prompt-review-process)). Fused, a change to either escapes the review of the other, and the
-  escape is invisible.*
+- **Retrieval MUST remain separate from prompt design.** *They are reviewed by different processes for different
+  risks ([PROMPTS](./PROMPTS.md#prompt-review-process)). Fused, a change to either escapes the review of the other, and
+  the escape is invisible.*
 - **Retrieved context MUST be traceable to an approved source.** *A claim that cannot be walked back to its origin
-  cannot be verified, corrected, or withdrawn — and in the output it is indistinguishable from one that was invented
-  ([BR-030](../00-product/SRS.md#5-business-rules), §8).*
-- **Retrieval SHOULD minimize unnecessary context.** *Minimization is a security obligation
-  ([NFR-018](../00-product/SRS.md#9-non-functional-requirements)), not tidiness. Retrieval is where "just include it, it
-  might help" is most persuasive and least examined.*
-- **Retrieval MUST respect security and confidentiality constraints.** *Per-user isolation
-  ([BR-004](../00-product/SRS.md#5-business-rules), [SECURITY §5](../01-architecture/SECURITY.md#5-authorization)) does
-  not weaken because a candidate scored well. Relevance is never an authorization.*
+  cannot be verified, corrected, or withdrawn — and in the output it is indistinguishable from one that was
+  invented ([BR-030](../00-product/SRS.md#5-business-rules), §8).*
+- **Retrieval SHOULD minimize unnecessary context.** *Minimization is a security
+  obligation ([NFR-018](../00-product/SRS.md#9-non-functional-requirements)), not tidiness. Retrieval is where "just
+  include it, it might help" is most persuasive and least examined.*
+- **Retrieval MUST respect security and confidentiality constraints.** *Per-user
+  isolation ([BR-004](../00-product/SRS.md#5-business-rules), [SECURITY §5](../01-architecture/SECURITY.md#5-authorization))
+  does not weaken because a candidate scored well. Relevance is never an authorization.*
 - **Retrieval MUST NOT become a hidden source of product behavior.** *A rule enforced by what selection happens to
   return is a rule with no home in [SRS](../00-product/SRS.md) — unfindable, untestable, and changed by whoever tunes
   relevance next.*
@@ -159,15 +159,14 @@ enforceable rules that follow.
   instruction. A retrieval change that alters what a capability effectively asks is a behavior change wearing an
   infrastructure ticket ([PROMPTS §7](./PROMPTS.md#7-prompt-variables-and-context)).*
 - **Retrieval decisions MUST remain traceable.** *A selection rule whose reason is unrecorded cannot be changed safely —
-  so it is never changed, only added to, until nobody can say why anything is retrieved
-  ([ADR-015](../01-architecture/decisions/ADR-015-Observability.md)).*
+  so it is never changed, only added to, until nobody can say why anything is
+  retrieved ([ADR-015](../01-architecture/decisions/ADR-015-Observability.md)).*
 
 **Why these rules exist.** Retrieval fails quietly and at scale. The three failure modes are **context drift** (what
 gets selected shifts as content, tuning, and sources evolve, until a capability is answering from material nobody
-chose),
-**hidden behavior change** (product behavior migrating into selection logic, where it is enforced by ranking rather than
-stated in a rule), and **leakage of unreviewed information** (material reaching the model because it was reachable, not
-because it was approved).
+chose), **hidden behavior change** (product behavior migrating into selection logic, where it is enforced by ranking
+rather than stated in a rule), and **leakage of unreviewed information** (material reaching the model because it was
+reachable, not because it was approved).
 
 Each is invisible from inside. Nobody experiences context drift as a regression; they experience individually plausible
 answers. Nobody notices behavior living in relevance logic; they notice that changing the ranking changed the product.
@@ -216,9 +215,9 @@ ask about each; two of them are owned in depth by later sections and are not ela
 
 **How retrieved context enters the model.** Through the **existing channels** —
 [AI_ARCHITECTURE §8](../01-architecture/AI_ARCHITECTURE.md#8-prompt-architecture) already defines **Document Context**
-for grounded source material and **Retrieved Metadata** for non-sensitive interpretive context. This document
-**MUST NOT redefine, rename, merge, or add a channel**, and retrieval does not acquire one by growing. Channel
-separation is a security control; retrieval that needs its own channel to work is an architecture change, raised per
+for grounded source material and **Retrieved Metadata** for non-sensitive interpretive context. This document **MUST NOT
+redefine, rename, merge, or add a channel**, and retrieval does not acquire one by growing. Channel separation is a
+security control; retrieval that needs its own channel to work is an architecture change, raised per
 [CLAUDE.md §8](../../CLAUDE.md).
 
 ---
@@ -286,8 +285,7 @@ outcome (Retrieval Review Process) and never rests: a policy held for another re
 time. A retrieval that cannot leave a stage is raised, not left there.
 
 **Experimentation versus production retrieval.** Both are legitimate; conflating them is not. **Experimentation** is
-bounded, non-production, uses no real client content
-([SECURITY §10](../01-architecture/SECURITY.md#10-ai-security),
+bounded, non-production, uses no real client content ([SECURITY §10](../01-architecture/SECURITY.md#10-ai-security),
 [NFR-018](../00-product/SRS.md#9-non-functional-requirements)), and creates no dependency — it produces a *finding*.
 **Production retrieval** requires an approved policy, approved sources, a named owner, observability, and an evaluation
 where the change warrants one.
@@ -390,8 +388,7 @@ because in the moment there is always an answer available if nobody insisted oth
 | **Security-rejected retrieval** | Something was excluded by a control ([SECURITY §10](../01-architecture/SECURITY.md#10-ai-security)). The exclusion **stands**; it is never relaxed to improve an answer, and a rejection that recurs is a review trigger, not an obstacle to route around.                                                                                                                                         |
 
 **Failure means refusal or degradation, decided per capability.** A summary missing part of its source and a client
-email
-missing part of its source are not equally acceptable
+email missing part of its source are not equally acceptable
 ([AI_ARCHITECTURE §3](../01-architecture/AI_ARCHITECTURE.md#3-ai-capability-map)); what each does when retrieval falls
 short is decided when the retrieval is approved, and recorded — never improvised by whichever code path runs first. What
 is never available is the third option: proceeding as though retrieval succeeded.

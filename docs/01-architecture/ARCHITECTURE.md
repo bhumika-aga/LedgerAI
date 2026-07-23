@@ -19,8 +19,7 @@
 This document defines the **overall technical architecture** of the LedgerAI MVP. It is the highest-level engineering
 design artifact and the blueprint from which every downstream technical document (`DATABASE.md`, `API_SPEC.md`,
 `SECURITY.md`, `AI_ARCHITECTURE.md`) and the source code are derived. It explains **why** each architectural decision
-was
-made, not only **what** it is.
+was made, not only **what** it is.
 
 It stays **implementation-independent**: it defines boundaries, responsibilities, flows, and principles. It does **not**
 define database schemas, endpoint contracts, package names, or framework-specific code — those belong to the downstream
@@ -90,8 +89,7 @@ the sections that follow elaborate *how* they are realized, but the rules themse
 These rules exist to preserve **long-term maintainability** and to prevent **architectural erosion** as LedgerAI grows.
 Individually, each shortcut they forbid looks harmless; collectively, such shortcuts are exactly how a clean modular
 system decays into an unmaintainable one. Holding the line here is what keeps the architecture's growth *additive*
-rather
-than a future rewrite.
+rather than a future rewrite.
 
 ---
 
@@ -221,9 +219,8 @@ sequenceDiagram
 The backend is partitioned into **domain modules**, each owning a slice of the product (Authentication, Users, Clients,
 Documents, OCR, AI, Reports, Search, Timeline) plus shared infrastructure concerns. A module owns its own business
 logic, data access, and rules; it exposes behavior to other modules through **services**, never by reaching into another
-module's internals. Modules map one-to-one to SRS functional
-areas ([SRS §4](../00-product/SRS.md#4-functional-requirements)),
-which keeps traceability direct.
+module's internals. Modules map one-to-one to SRS functional areas
+([SRS §4](../00-product/SRS.md#4-functional-requirements)), which keeps traceability direct.
 
 > Concrete package names are intentionally **not** fixed here (that is a downstream decision recorded in
 > [ADR-006](./decisions/ADR-006-Architecture-Style.md)). This document fixes only the *philosophy*: organize by **domain
@@ -280,9 +277,8 @@ onboarding* goal. (Concrete folder structure is a downstream decision and not fi
 ### 6.2 Routing philosophy
 
 Routing is **declarative and authentication-aware**: public routes (sign-in/registration) and protected routes (the
-authenticated workspace). Protected routes MUST be gated by authentication
-state ([FR-AUTH-006](../00-product/SRS.md#41-authentication-auth)),
-and unauthenticated access MUST redirect to sign-in.
+authenticated workspace). Protected routes MUST be gated by authentication state
+([FR-AUTH-006](../00-product/SRS.md#41-authentication-auth)), and unauthenticated access MUST redirect to sign-in.
 
 ### 6.3 State management philosophy
 
@@ -296,8 +292,8 @@ Two distinct kinds of state are separated deliberately:
 
 ### 6.4 API layer
 
-All backend communication goes through a **single, centralized API layer** (Axios-based) responsible for attaching
-auth tokens, handling token refresh, and normalizing errors into a consistent shape. Feature code calls typed functions,
+All backend communication goes through a **single, centralized API layer** (Axios-based) responsible for attaching auth
+tokens, handling token refresh, and normalizing errors into a consistent shape. Feature code calls typed functions,
 never raw HTTP — so cross-cutting concerns (auth, error normalization) live in exactly one place.
 
 ### 6.5 Error handling
@@ -312,8 +308,7 @@ errors show a generic message. The API layer maps backend error responses to thi
 A layered component model: **route/page** components compose **feature** components, which compose *
 *shared/presentational**
 components. Presentational components stay stateless and reusable; data fetching lives in feature-level hooks. This
-keeps
-the UI testable and the design system (MUI) consistently applied.
+keeps the UI testable and the design system (MUI) consistently applied.
 
 ---
 
@@ -381,12 +376,11 @@ end
 ```
 
 The AI service enforces the AI Request state model ([SRS §7.2](../00-product/SRS.md#72-ai-request-lifecycle)): only
-**Ready** documents are used, only necessary content is sent to the
-provider ([NFR-018](../00-product/SRS.md#9-non-functional-requirements)),
-output is grounded ([BR-030](../00-product/SRS.md#5-business-rules)),
-editable ([BR-031](../00-product/SRS.md#5-business-rules)),
-and never treated as a system of record ([BR-032](../00-product/SRS.md#5-business-rules)). The provider is reached only
-through the port.
+**Ready** documents are used, only necessary content is sent to the provider
+([NFR-018](../00-product/SRS.md#9-non-functional-requirements)), output is grounded
+([BR-030](../00-product/SRS.md#5-business-rules)), editable ([BR-031](../00-product/SRS.md#5-business-rules)), and never
+treated as a system of record ([BR-032](../00-product/SRS.md#5-business-rules)). The provider is reached only through
+the port.
 
 ---
 

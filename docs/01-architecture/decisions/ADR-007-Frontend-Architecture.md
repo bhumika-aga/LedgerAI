@@ -1,8 +1,6 @@
 # ADR-007 — Frontend Architecture
 
-**Status:** Accepted
-**Date:** 2026-07-14
-**Owner:** Founding Engineer / Principal Architect
+**Status:** Accepted **Date:** 2026-07-14 **Owner:** Founding Engineer / Principal Architect
 **Related Documents:
 ** [ARCHITECTURE §6](../ARCHITECTURE.md#6-frontend-architecture) · [ARCHITECTURE ADS-005](../ARCHITECTURE.md#16-architecture-decision-summary) · [PRODUCT_DECISIONS PD-006](../../00-product/PRODUCT_DECISIONS.md#3-accepted-product-decisions) · [API_SPEC](../API_SPEC.md)
 
@@ -11,10 +9,10 @@
 ## Context
 
 The approved frontend stack is **React + TypeScript + Vite + Material UI + React Query + Axios
-** ([PD-006](../../00-product/PRODUCT_DECISIONS.md#3-accepted-product-decisions)),
-deployed on Vercel. The app is data-heavy with long-running AI/OCR operations that must remain **non-blocking** with
-visible status ([NFR-002](../../00-product/SRS.md#9-non-functional-requirements)). We must decide how to organize the
-frontend, manage state, and talk to the API.
+** ([PD-006](../../00-product/PRODUCT_DECISIONS.md#3-accepted-product-decisions)), deployed on Vercel. The app is
+data-heavy with long-running AI/OCR operations that must remain **non-blocking** with visible status
+([NFR-002](../../00-product/SRS.md#9-non-functional-requirements)). We must decide how to organize the frontend, manage
+state, and talk to the API.
 
 ---
 

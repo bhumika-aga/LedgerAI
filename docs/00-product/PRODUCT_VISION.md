@@ -247,12 +247,10 @@ accounting system.
   trust — Tally, QuickBooks, Xero, Zoho Books, SAP, Oracle Financials, and Excel — rather than competing with them.
 - **Our focus is the productivity layer around accounting work.** We own the AI-powered document intelligence surface:
   understanding, summarizing, questioning, extracting, drafting, organizing, and searching the documents that flow in
-  and
-  out of those systems.
+  and out of those systems.
 - **This is a deliberate boundary.** Any future feature that moves LedgerAI toward becoming an ERP or bookkeeping
-  platform
-  should be carefully evaluated against this product vision before it is pursued. Staying in our lane is a strategic
-  advantage, not a limitation.
+  platform should be carefully evaluated against this product vision before it is pursued. Staying in our lane is a
+  strategic advantage, not a limitation.
 
 ---
 
@@ -275,7 +273,7 @@ clients instead of clerical work.**
 
 - Storage provider selection (free-tier) — to be resolved and recorded
   in [ADR-002](../01-architecture/decisions/ADR-002-Storage-Provider.md).
-- Primary AI provider(s) and fallback strategy — see [AI Architecture](../01-architecture/AI_ARCHITECTURE.md)
+- Primary AI provider (s) and fallback strategy — see [AI Architecture](../01-architecture/AI_ARCHITECTURE.md)
   and [AI Providers](../04-ai/AI_PROVIDERS.md).
 - Whether V1 targets a single jurisdiction first (e.g., India CA vs. US CPA) to sharpen the initial experience.
 

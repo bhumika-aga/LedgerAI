@@ -1,8 +1,6 @@
 # ADR-012 — Deployment Strategy (Vercel + Render + Neon)
 
-**Status:** Accepted
-**Date:** 2026-07-14
-**Owner:** Founding Engineer / Principal Architect
+**Status:** Accepted **Date:** 2026-07-14 **Owner:** Founding Engineer / Principal Architect
 **Related Documents:
 ** [PRODUCT_DECISIONS PD-009](../../00-product/PRODUCT_DECISIONS.md#3-accepted-product-decisions) · [ARCHITECTURE §11](../ARCHITECTURE.md#11-scalability-strategy) · [ARCHITECTURE ADS-007](../ARCHITECTURE.md#16-architecture-decision-summary)
 
@@ -18,8 +16,8 @@ need a hosting topology that fits each part's needs and keeps ops simple.
 
 ## Decision
 
-Deploy the **frontend (SPA) on Vercel**, the **backend (single Spring Boot deployable) on Render**, and the
-**database on Neon (serverless PostgreSQL)** —
+Deploy the **frontend (SPA) on Vercel**, the **backend (single Spring Boot deployable) on Render**, and the **database
+on Neon (serverless PostgreSQL)** —
 confirming [PD-009](../../00-product/PRODUCT_DECISIONS.md#3-accepted-product-decisions)
 and ADS-007. Each platform is chosen as the best-fit free tier for its workload; traffic is HTTPS end-to-end with the
 SPA calling the backend across origins (handled by CORS + Bearer
@@ -48,15 +46,14 @@ tokens, [SECURITY §15](../SECURITY.md#15-cors-and-csrf)).
 
 ### Disadvantages
 
-- Free tiers bring cold starts, sleep, and quota limits to design
-  around ([ARCHITECTURE §14](../ARCHITECTURE.md#14-architecture-risks)).
+- Free tiers bring cold starts, sleep, and quota limits to design around
+  ([ARCHITECTURE §14](../ARCHITECTURE.md#14-architecture-risks)).
 - Cross-origin frontend/backend requires deliberate CORS configuration.
 
 ### Trade-offs
 
 - We accept free-tier constraints (cold starts, limits) for near-zero cost during validation, with a clear
-  vertical-then-
-  extract scaling path ([ARCHITECTURE §11](../ARCHITECTURE.md#11-scalability-strategy)).
+  vertical-then- extract scaling path ([ARCHITECTURE §11](../ARCHITECTURE.md#11-scalability-strategy)).
 
 ---
 

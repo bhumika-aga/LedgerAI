@@ -69,8 +69,8 @@ New contributors should read in this order. Each item links to the document that
    [User Flows](docs/02-design/USER_FLOWS.md).
 7. [Engineering](docs/03-engineering/) — [Implementation Plan](docs/03-engineering/IMPLEMENTATION_PLAN.md),
    [Implementation Status](docs/03-engineering/IMPLEMENTATION_STATUS.md),
-   [Contributing](docs/03-engineering/CONTRIBUTING.md), [Testing Strategy](docs/03-engineering/TESTING_STRATEGY.md),
-   and coding standards ([backend](docs/03-engineering/BACKEND_CODING_STANDARDS.md),
+   [Contributing](docs/03-engineering/CONTRIBUTING.md), [Testing Strategy](docs/03-engineering/TESTING_STRATEGY.md), and
+   coding standards ([backend](docs/03-engineering/BACKEND_CODING_STANDARDS.md),
    [frontend](docs/03-engineering/FRONTEND_CODING_STANDARDS.md)).
 8. [AI](docs/04-ai/) — [AI Providers](docs/04-ai/AI_PROVIDERS.md), [Prompts](docs/04-ai/PROMPTS.md),
    [Evaluation](docs/04-ai/EVALUATION.md), and [RAG](docs/04-ai/RAG.md).

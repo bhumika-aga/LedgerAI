@@ -4,9 +4,9 @@
 > **Owner:** Founding Engineer / Principal Engineering Manager
 > **Last updated:** 2026-07-14
 > **Upstream (frozen):
-** [Product Vision](../00-product/PRODUCT_VISION.md) · [Product Decisions](../00-product/PRODUCT_DECISIONS.md) · [PRD](../00-product/PRD.md) · [SRS](../00-product/SRS.md) · [Architecture](../01-architecture/ARCHITECTURE.md) · [Database](../01-architecture/DATABASE.md) · [API Spec](../01-architecture/API_SPEC.md) · [Security](../01-architecture/SECURITY.md) · [AI Architecture](../01-architecture/AI_ARCHITECTURE.md) · [ADRs](../01-architecture/decisions/)
+> ** [Product Vision](../00-product/PRODUCT_VISION.md) · [Product Decisions](../00-product/PRODUCT_DECISIONS.md) · [PRD](../00-product/PRD.md) · [SRS](../00-product/SRS.md) · [Architecture](../01-architecture/ARCHITECTURE.md) · [Database](../01-architecture/DATABASE.md) · [API Spec](../01-architecture/API_SPEC.md) · [Security](../01-architecture/SECURITY.md) · [AI Architecture](../01-architecture/AI_ARCHITECTURE.md) · [ADRs](../01-architecture/decisions/)
 > **Related:
-** [TESTING_STRATEGY](./TESTING_STRATEGY.md) · [DEPLOYMENT](./DEPLOYMENT.md) · [LESSONS_LEARNED](./LESSONS_LEARNED.md)
+> ** [TESTING_STRATEGY](./TESTING_STRATEGY.md) · [DEPLOYMENT](./DEPLOYMENT.md) · [LESSONS_LEARNED](./LESSONS_LEARNED.md)
 
 ---
 
@@ -28,10 +28,8 @@ This plan **executes** the frozen architecture; it never redefines it. Every pha
 specified
 in [SRS §4](../00-product/SRS.md#4-functional-requirements), [ARCHITECTURE](../01-architecture/ARCHITECTURE.md),
 [DATABASE](../01-architecture/DATABASE.md), and [API_SPEC](../01-architecture/API_SPEC.md). Where the architecture left
-a
-decision **deferred** (storage provider, AI provider, background processing), this plan marks *when* that decision must
-be
-resolved before the dependent phase can proceed.
+a decision **deferred** (storage provider, AI provider, background processing), this plan marks *when* that decision
+must be resolved before the dependent phase can proceed.
 
 ### Relationship to milestones
 
@@ -64,9 +62,8 @@ The plan is built on a **vertical-slice, finish-before-expanding** philosophy. E
 ## Engineering Rules
 
 Non-negotiable rules that keep implementation aligned with the frozen architecture. They exist because the most common
-way
-a well-designed system decays is a series of individually-small shortcuts; binding every change to these rules preserves
-integrity as the codebase grows.
+way a well-designed system decays is a series of individually-small shortcuts; binding every change to these rules
+preserves integrity as the codebase grows.
 
 - **Never implement undocumented features.** If it isn't in the [SRS](../00-product/SRS.md)/[PRD](../00-product/PRD.md),
   it isn't built until it is documented and approved — this is how scope creep and boundary violations are prevented
@@ -96,9 +93,8 @@ integrity as the codebase grows.
 ## 3. Build Order
 
 Phases are strictly ordered by the [feature dependency graph](../00-product/PRD.md#feature-dependency-overview):
-identity
-→ organization → documents → understanding → AI actions → cross-cutting. Each phase is a set of **vertical slices** and
-ends in a working state.
+identity → organization → documents → understanding → AI actions → cross-cutting. Each phase is a set of **vertical
+slices** and ends in a working state.
 
 ### Phase 0 — Foundation
 
@@ -107,8 +103,8 @@ ends in a working state.
   per [ARCHITECTURE §5](../01-architecture/ARCHITECTURE.md#5-backend-architecture)); frontend scaffold (feature-first
   per [ADR-007](../01-architecture/decisions/ADR-007-Frontend-Architecture.md)); Docker for local dev; CI (build + test
   gate); environment/secret configuration ([SECURITY §13](../01-architecture/SECURITY.md#13-secrets-management));
-  OpenAPI wiring (PD-013); database connectivity to
-  PostgreSQL/Neon ([ADR-004](../01-architecture/decisions/ADR-004-Primary-Database.md)).
+  OpenAPI wiring (PD-013); database connectivity to PostgreSQL/Neon
+  ([ADR-004](../01-architecture/decisions/ADR-004-Primary-Database.md)).
 - **Dependencies:** None.
 - **Completion criteria:** `main` builds; CI is green; the app boots locally and in a deployed environment; a health
   endpoint responds; secrets are externalized. No product features yet.
@@ -117,20 +113,20 @@ ends in a working state.
 
 - **Goal:** A user can register, sign in, stay signed in, and manage their profile.
 - **Features:** Authentication ([SRS §4.1](../00-product/SRS.md#41-authentication-auth)); JWT access + refresh tokens
-  with
-  rotation ([ADR-001](../01-architecture/decisions/ADR-001-Authentication-Strategy.md), [SECURITY §4](../01-architecture/SECURITY.md#4-authentication));
+  with rotation
+  ([ADR-001](../01-architecture/decisions/ADR-001-Authentication-Strategy.md), [SECURITY §4](../01-architecture/SECURITY.md#4-authentication));
   User Profile ([SRS §4.2](../00-product/SRS.md#42-user-profile-prof)).
 - **Dependencies:** Phase 0.
-- **Completion criteria:** Register/login/refresh/logout work end-to-end; protected routes reject unauthenticated
-  access ([FR-AUTH-006](../00-product/SRS.md#41-authentication-auth)); passwords BCrypt-hashed; refresh tokens hashed +
-  rotated; profile view/edit persists; tests cover auth success/failure and
-  validation ([VR-001/002/003](../00-product/SRS.md#6-validation-rules)).
+- **Completion criteria:** Register/login/refresh/logout work end-to-end; protected routes reject unauthenticated access
+  ([FR-AUTH-006](../00-product/SRS.md#41-authentication-auth)); passwords BCrypt-hashed; refresh tokens hashed +
+  rotated; profile view/edit persists; tests cover auth success/failure and validation
+  ([VR-001/002/003](../00-product/SRS.md#6-validation-rules)).
 
 ### Phase 2 — Client Management
 
 - **Goal:** A signed-in professional can organize work by client.
-- **Features:** Client CRUD + archive ([SRS §4.3](../00-product/SRS.md#43-client-management-clnt)); input
-  validation ([VR-004](../00-product/SRS.md#6-validation-rules)); **ownership enforcement
+- **Features:** Client CRUD + archive ([SRS §4.3](../00-product/SRS.md#43-client-management-clnt)); input validation
+  ([VR-004](../00-product/SRS.md#6-validation-rules)); **ownership enforcement
   ** ([BR-004](../00-product/SRS.md#5-business-rules), [SECURITY §5](../01-architecture/SECURITY.md#5-authorization)).
 - **Dependencies:** Phase 1 (identity/ownership).
 - **Completion criteria:** Create/list/get/edit/archive clients; every access owner-scoped (cross-user → `404`); archive
@@ -141,53 +137,52 @@ ends in a working state.
 
 - **Goal:** A professional can upload a document, have it stored securely, and get its text extracted and marked Ready.
 - **Features:** Document Upload ([SRS §4.4](../00-product/SRS.md#44-document-upload-upld)); Document Storage in external
-  object store ([ADR-008](../01-architecture/decisions/ADR-008-Object-Storage.md)); OCR / native
-  extraction ([SRS §4.6](../00-product/SRS.md#46-ocr-ocr), [ADR-009](../01-architecture/decisions/ADR-009-OCR-Strategy.md));
+  object store ([ADR-008](../01-architecture/decisions/ADR-008-Object-Storage.md)); OCR / native extraction
+  ([SRS §4.6](../00-product/SRS.md#46-ocr-ocr), [ADR-009](../01-architecture/decisions/ADR-009-OCR-Strategy.md));
   document lifecycle status tracking ([SRS §7.1](../00-product/SRS.md#71-document-lifecycle)).
 - **Dependencies:** Phase 2; *
   *resolve [ADR-002 Storage Provider](../01-architecture/decisions/ADR-002-Storage-Provider.md) (DD-001) before starting
   **; select OCR provider ([DD-002](../00-product/PRODUCT_DECISIONS.md#4-deferred-decisions)).
 - **Completion criteria:** Upload with type/size validation ([VR-005](../00-product/SRS.md#6-validation-rules)); binary
-  in storage, reference + metadata in DB; extraction runs and drives `READY`/`FAILED`; status
-  visible/pollable ([API_SPEC §9.1](../01-architecture/API_SPEC.md#91-get-ocr-status)); delete removes from all
-  surfaces ([BR-012/013](../00-product/SRS.md#5-business-rules)); tests cover upload validation, lifecycle transitions,
+  in storage, reference + metadata in DB; extraction runs and drives `READY`/`FAILED`; status visible/pollable
+  ([API_SPEC §9.1](../01-architecture/API_SPEC.md#91-get-ocr-status)); delete removes from all surfaces
+  ([BR-012/013](../00-product/SRS.md#5-business-rules)); tests cover upload validation, lifecycle transitions,
   ownership.
 
 ### Phase 4 — AI Capabilities
 
 - **Goal:** A professional can act on a Ready document with AI: summarize, ask, draft an email, generate a report.
-- **Features:** AI Summary ([SRS §4.7](../00-product/SRS.md#47-ai-summary-summ)); AI
-  Chat ([§4.8](../00-product/SRS.md#48-ai-chat-chat)); AI
-  Email ([§4.9](../00-product/SRS.md#49-ai-email-generation-email)); Report
-  Generation ([§4.10](../00-product/SRS.md#410-report-generation-rpt)) — all via the AI
-  port ([ADR-003](../01-architecture/decisions/ADR-003-AI-Provider-Abstraction.md)) with the AI Request
-  lifecycle ([ADR-010](../01-architecture/decisions/ADR-010-AI-Request-Lifecycle.md)).
+- **Features:** AI Summary ([SRS §4.7](../00-product/SRS.md#47-ai-summary-summ)); AI Chat
+  ([§4.8](../00-product/SRS.md#48-ai-chat-chat)); AI Email ([§4.9](../00-product/SRS.md#49-ai-email-generation-email));
+  Report Generation ([§4.10](../00-product/SRS.md#410-report-generation-rpt)) — all via the AI port
+  ([ADR-003](../01-architecture/decisions/ADR-003-AI-Provider-Abstraction.md)) with the AI Request lifecycle
+  ([ADR-010](../01-architecture/decisions/ADR-010-AI-Request-Lifecycle.md)).
 - **Dependencies:** Phase 3 (Ready documents); **resolve AI
   provider ([DD-002](../00-product/PRODUCT_DECISIONS.md#4-deferred-decisions)) before starting**.
 - **Completion criteria:** Each action works only on `READY`
-  documents ([BR-010](../00-product/SRS.md#5-business-rules)); outputs
-  grounded ([BR-030](../00-product/SRS.md#5-business-rules)),
-  editable ([BR-031](../00-product/SRS.md#5-business-rules)), review-required; email is drafted, **never sent
-  ** ([BR-034](../00-product/SRS.md#5-business-rules)); reports
-  single-document ([BR-035](../00-product/SRS.md#5-business-rules)); async-ready (`201`/`202`+poll); failures degrade
-  gracefully ([AI_ARCHITECTURE §12](../01-architecture/AI_ARCHITECTURE.md#12-ai-failure-handling)); no sensitive content
-  logged ([§14](../01-architecture/AI_ARCHITECTURE.md#14-ai-observability)); tests cover grounding-precondition, failure
-  paths, and ownership.
+  documents ([BR-010](../00-product/SRS.md#5-business-rules)); outputs grounded
+  ([BR-030](../00-product/SRS.md#5-business-rules)), editable ([BR-031](../00-product/SRS.md#5-business-rules)),
+  review-required; email is drafted, **never sent
+  ** ([BR-034](../00-product/SRS.md#5-business-rules)); reports single-document
+  ([BR-035](../00-product/SRS.md#5-business-rules)); async-ready (`201`/`202`+poll); failures degrade gracefully
+  ([AI_ARCHITECTURE §12](../01-architecture/AI_ARCHITECTURE.md#12-ai-failure-handling)); no sensitive content logged
+  ([§14](../01-architecture/AI_ARCHITECTURE.md#14-ai-observability)); tests cover grounding-precondition, failure paths,
+  and ownership.
 
 ### Phase 5 — Search, Timeline & Launch
 
 - **Goal:** The MVP is complete, findable, traceable, polished, and deployed.
-- **Features:** Global
-  Search ([SRS §4.11](../00-product/SRS.md#411-global-search-srch), [ADR-014](../01-architecture/decisions/ADR-014-Search-Strategy.md));
-  Activity Timeline ([§4.12](../00-product/SRS.md#412-activity-timeline-tmln)); UX polish; production
-  deployment ([ADR-012](../01-architecture/decisions/ADR-012-Deployment-Strategy.md)); baseline
-  observability ([ADR-015](../01-architecture/decisions/ADR-015-Observability.md)).
+- **Features:** Global Search
+  ([SRS §4.11](../00-product/SRS.md#411-global-search-srch), [ADR-014](../01-architecture/decisions/ADR-014-Search-Strategy.md));
+  Activity Timeline ([§4.12](../00-product/SRS.md#412-activity-timeline-tmln)); UX polish; production deployment
+  ([ADR-012](../01-architecture/decisions/ADR-012-Deployment-Strategy.md)); baseline observability
+  ([ADR-015](../01-architecture/decisions/ADR-015-Observability.md)).
 - **Dependencies:** Phases 1–4 (search indexes content; timeline records their actions).
-- **Completion criteria:** Owner-scoped search over content/metadata, excluding
-  deleted ([BR-013](../00-product/SRS.md#5-business-rules)); read-only timeline with per-user/per-client
-  views ([BR-016](../00-product/SRS.md#5-business-rules)); accessibility and error states
-  polished ([NFR-011](../00-product/SRS.md#9-non-functional-requirements)); deployed to Vercel/Render/Neon; all twelve
-  modules meet the [Definition of Done](#7-definition-of-done).
+- **Completion criteria:** Owner-scoped search over content/metadata, excluding deleted
+  ([BR-013](../00-product/SRS.md#5-business-rules)); read-only timeline with per-user/per-client views
+  ([BR-016](../00-product/SRS.md#5-business-rules)); accessibility and error states polished
+  ([NFR-011](../00-product/SRS.md#9-non-functional-requirements)); deployed to Vercel/Render/Neon; all twelve modules
+  meet the [Definition of Done](#7-definition-of-done).
 
 ---
 
@@ -259,8 +254,8 @@ flowchart LR
 1. **Feature** — pick the next item from the current phase (one at a time).
 2. **Branch** — short-lived feature branch off a green `main` (per the README branching strategy).
 3. **Implementation** — a vertical slice: DB → service → API → UI, honoring the [Engineering Rules](#engineering-rules).
-4. **Tests** — written alongside, covering business logic, validation, security/ownership, and key edge
-   cases ([TESTING_STRATEGY](./TESTING_STRATEGY.md)).
+4. **Tests** — written alongside, covering business logic, validation, security/ownership, and key edge cases
+   ([TESTING_STRATEGY](./TESTING_STRATEGY.md)).
 5. **Review** — against the [Definition of Done](#7-definition-of-done), the Engineering Rules, and the
    relevant [Review Process](#review-process) triggers.
 6. **Merge** — only when green; `main` remains deployable.
@@ -341,8 +336,8 @@ changes MUST trigger the corresponding review before merge:
 - **Approval** — meets the Definition of Done and the rules; merge.
 - **Requested changes** — specific fixes required before merge.
 - **ADR creation** — the change embodies an architectural decision that must be recorded.
-- **Documentation updates** — a frozen document must be updated to match (
-  per [Change Management](#9-change-management)).
+- **Documentation updates** — a frozen document must be updated to match
+  (per [Change Management](#9-change-management)).
 
 **Implementation quality is preserved through continuous review woven into the development workflow — not through large,
 end-of-project audits.** Small, reviewed changes keep the system aligned with its architecture at every step; deferring
@@ -354,12 +349,12 @@ scrutiny to the end is how drift becomes irreversible.
 
 The MVP is **complete** when:
 
-- **All twelve modules** are implemented and each meets
-  the [Definition of Done](#7-definition-of-done) ([PRD §8](../00-product/PRD.md#8-functional-requirements)).
+- **All twelve modules** are implemented and each meets the [Definition of Done](#7-definition-of-done)
+  ([PRD §8](../00-product/PRD.md#8-functional-requirements)).
 - **Milestone M6 ("Beta ready")** is achieved — the full loop (sign in → client → upload → understand → act → search →
   timeline) works **in production** ([ADR-012](../01-architecture/decisions/ADR-012-Deployment-Strategy.md)).
-- **The MoSCoW "Must Have" and "Should Have"** scope is delivered; no "Won't Have (V1)" item was
-  built ([PRD §15](../00-product/PRD.md#15-release-scope-moscow)).
+- **The MoSCoW "Must Have" and "Should Have"** scope is delivered; no "Won't Have (V1)" item was built
+  ([PRD §15](../00-product/PRD.md#15-release-scope-moscow)).
 - **The core promise holds:** a professional can genuinely go *from hours to minutes* on a real document — the product
   delivers its [value proposition](../00-product/PRODUCT_VISION.md#7-value-proposition) and honors
   every [product principle](../00-product/PRODUCT_VISION.md#8-product-principles) (grounded, human-in-the-loop,
@@ -372,5 +367,5 @@ At that point LedgerAI is ready for beta — the validation goal of [PRD BG-1](.
 
 *This plan governs execution order; it does not restate or override the architecture. It MUST remain consistent with the
 frozen Product Vision, Product Decisions, PRD, SRS, Architecture, Database, API Spec, Security, AI Architecture, and
-ADRs.
-Detailed testing, deployment, and contribution practices live in their own documents under [`03-engineering/`](.).*
+ADRs. Detailed testing, deployment, and contribution practices live in their own documents under [
+`03-engineering/`](.).*

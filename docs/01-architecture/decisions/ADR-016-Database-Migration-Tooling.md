@@ -1,8 +1,6 @@
 # ADR-016 — Database Migration Tooling
 
-**Status:** Accepted
-**Date:** 2026-07-16
-**Owner:** Founding Engineer / Principal Architect
+**Status:** Accepted **Date:** 2026-07-16 **Owner:** Founding Engineer / Principal Architect
 **Related Documents:
 ** [DATABASE — Migration Strategy](../DATABASE.md#database-migration-strategy) · [ADR-004 (Primary Database)](./ADR-004-Primary-Database.md) · [BACKEND_CODING_STANDARDS §11](../../03-engineering/BACKEND_CODING_STANDARDS.md#11-configuration-standards) · [IMPLEMENTATION_PLAN Phase 0](../../03-engineering/IMPLEMENTATION_PLAN.md#3-build-order)
 
@@ -29,15 +27,14 @@ Adopt **Flyway** (Community Edition) as the database migration tool.
   `ddl-auto: none` and never creates, alters, or drops schema.
 - **SQL-first, versioned scripts** live under the backend's migration resource location and follow Flyway's
   `V<version>__<description>.sql` convention, one focused, reviewable change per script — matching the "one logical
-  change per
-  migration" principle in [DATABASE.md](../DATABASE.md#database-migration-strategy).
+  change per migration" principle in [DATABASE.md](../DATABASE.md#database-migration-strategy).
 - **Forward-oriented, expand-then-contract** evolution, consistent with the documented additive strategy; scripts are
   reversible in the practical sense the database strategy requires (deprecate-then-remove, backfill-before-enforce),
   rather than relying on automated down-migrations.
 - Flyway runs on application startup and in tests, establishing the schema before the application uses it.
 
-This ADR selects the tool only. The schema itself is introduced incrementally by the feature slices that own each
-table; this decision creates no tables.
+This ADR selects the tool only. The schema itself is introduced incrementally by the feature slices that own each table;
+this decision creates no tables.
 
 ---
 
@@ -46,8 +43,7 @@ table; this decision creates no tables.
 - **Liquibase.** Capable and database-agnostic, with changelog abstraction and built-in rollback. Rejected as heavier
   than needed: LedgerAI targets a single, fixed database (PostgreSQL, [ADR-004](./ADR-004-Primary-Database.md)), so the
   cross-database abstraction earns little, while transparent, Postgres-native SQL scripts are easier to review and
-  reason
-  about — a priority the migration strategy emphasizes.
+  reason about — a priority the migration strategy emphasizes.
 - **Hibernate `ddl-auto` (create/update/validate as the schema source).** Rejected: uncontrolled, unreviewable schema
   generation is directly contrary to the additive, reviewed, versioned strategy in
   [DATABASE.md](../DATABASE.md#database-migration-strategy). `validate` is retained only as a possible safety check
@@ -71,8 +67,7 @@ table; this decision creates no tables.
 - SQL-first scripts are database-specific — acceptable because the database is fixed by
   [ADR-004](./ADR-004-Primary-Database.md) and portability is not a goal.
 - No automated down-migrations in the Community Edition; reversibility is achieved by the strategy's
-  expand-then-contract
-  discipline rather than by generated rollbacks.
+  expand-then-contract discipline rather than by generated rollbacks.
 
 ### Trade-offs
 

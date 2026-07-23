@@ -6,9 +6,9 @@
 > **Owner:** Principal Release Documentation Architect
 > **Last updated:** 2026-07-16
 > **Upstream (frozen):
-** [CLAUDE.md](../../CLAUDE.md) · [CONTRIBUTING](../03-engineering/CONTRIBUTING.md) · [DEPLOYMENT](../03-engineering/DEPLOYMENT.md) · [IMPLEMENTATION_PLAN](../03-engineering/IMPLEMENTATION_PLAN.md) · [IMPLEMENTATION_STATUS](../03-engineering/IMPLEMENTATION_STATUS.md)
+> ** [CLAUDE.md](../../CLAUDE.md) · [CONTRIBUTING](../03-engineering/CONTRIBUTING.md) · [DEPLOYMENT](../03-engineering/DEPLOYMENT.md) · [IMPLEMENTATION_PLAN](../03-engineering/IMPLEMENTATION_PLAN.md) · [IMPLEMENTATION_STATUS](../03-engineering/IMPLEMENTATION_STATUS.md)
 > **Related:
-** [RELEASE_NOTES](./RELEASE_NOTES.md) · [LESSONS_LEARNED](../03-engineering/LESSONS_LEARNED.md) · [PRODUCT_DECISIONS](../00-product/PRODUCT_DECISIONS.md) · [ADRs](../01-architecture/decisions/)
+> ** [RELEASE_NOTES](./RELEASE_NOTES.md) · [LESSONS_LEARNED](../03-engineering/LESSONS_LEARNED.md) · [PRODUCT_DECISIONS](../00-product/PRODUCT_DECISIONS.md) · [ADRs](../01-architecture/decisions/)
 
 ---
 
@@ -35,9 +35,8 @@ it for product decisions: *add a new entry, mark the prior one superseded, and l
 This document applies the same discipline to the repository's changes, and owns nothing else.
 
 **What changed is not what shipped, what was decided, or what we learned** — and each of those already has an owner.
-What
-no document holds is the **chronological record of the changes themselves**: what changed, when, and how it is grouped
-so a future reader can find it. This document owns that, and only that.
+What no document holds is the **chronological record of the changes themselves**: what changed, when, and how it is
+grouped so a future reader can find it. This document owns that, and only that.
 
 It is **not** release notes, **not** a lessons-learned document, **not** an issue tracker, **not** architecture or
 product governance, and **not** implementation history. It contains **no issue identifiers, no tickets, no scripts, no
@@ -125,8 +124,8 @@ that follow.
 - **Entries SHOULD be concise.** *A record is judged on whether it is read. Length is what makes a changelog into an
   archive — technically complete and functionally absent (§6).*
 - **Entries MUST NOT invent history.** *Not for gaps, not for tidiness, not to make a release legible in hindsight. A
-  missing entry is a known unknown; an invented one is an unknown, and it will be cited with total confidence
-  by someone who had no way to know (§2).*
+  missing entry is a known unknown; an invented one is an unknown, and it will be cited with total confidence by someone
+  who had no way to know (§2).*
 
 **Why these rules exist.** A changelog fails in three ways, and all three leave it looking healthy. **False history** —
 an entry that is wrong, invented, or reconstructed, and is believed precisely because records are the thing nobody
@@ -220,10 +219,9 @@ because an unverifiable entry is the one failure this record cannot survive. *Pu
 *Superseded* or *Archived*, and **never back into an editable state**.
 
 **In-progress entry versus released record.** An entry before *Published* is a **draft**: it can be rewritten,
-corrected,
-argued over, or discarded, and nothing depends on it. After *Published* it is **the record**: it can only be added to.
-The two look identical and behave oppositely, which is why the boundary is named rather than assumed. Everything this
-document protects lives on one side of it.
+corrected, argued over, or discarded, and nothing depends on it. After *Published* it is **the record**: it can only be
+added to. The two look identical and behave oppositely, which is why the boundary is named rather than assumed.
+Everything this document protects lives on one side of it.
 
 ---
 
@@ -244,18 +242,16 @@ costing more.
 
 **When in doubt, ask what a reader would search for.** Not what was done, not what was hard, and not what took the most
 effort — those produce a work log. The record answers a question asked in the future by someone with a problem: *when
-did
-this change, and what changed it?* An entry that would not be found by that question is not helping, whatever it cost to
-write.
+did this change, and what changed it?* An entry that would not be found by that question is not helping, whatever it
+cost to write.
 
 ---
 
 ## 7. Cross-Referencing
 
 **An entry is a pointer.** Its value is entirely in where it leads: the entry says a change happened, and the source
-says
-what the change *was* and why it was allowed. Strip the reference and what remains is a dated assertion — true, perhaps,
-and unusable.
+says what the change *was* and why it was allowed. Strip the reference and what remains is a dated assertion — true,
+perhaps, and unusable.
 
 | Reference                  | What it establishes                                                                                                                                                                                                                                                                   |
 |----------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -303,9 +299,8 @@ The frozen documents own versioning of **their own artifacts** — the API
 changes), requirements ([SRS §14](../00-product/SRS.md#14-requirement-versioning)), flows
 ([USER_FLOWS](../02-design/USER_FLOWS.md#flow-versioning)), and prompts
 ([PROMPTS §6](../04-ai/PROMPTS.md#6-prompt-versioning)). **No document defines a product or release version scheme**,
-and
-this one does not fill that gap: choosing one would be significant, precedent-setting, and hard to reverse — an **ADR**,
-raised per [CLAUDE.md §8](../../CLAUDE.md), not a changelog decision made because a column looked empty.
+and this one does not fill that gap: choosing one would be significant, precedent-setting, and hard to reverse — an
+**ADR**, raised per [CLAUDE.md §8](../../CLAUDE.md), not a changelog decision made because a column looked empty.
 
 Until such a scheme exists, entries are grouped by what the frozen documents already provide — the milestones above —
 and the version part of an entry (§3) is recorded **only when known**. An invented version is worse than an absent one:
@@ -388,8 +383,7 @@ outcome edits a published entry**, which is not an available result at any stage
 relevant [ADRs](../01-architecture/decisions/). When this document and one of them disagree, **they win** and this
 document is corrected ([CLAUDE.md §3](../../CLAUDE.md)) — *this document*, meaning its governance. **A published entry
 is never corrected to agree with anything**; if the record and a document disagree about what happened, that is a
-finding
-about both, and it is resolved by appending here and correcting there (§5).
+finding about both, and it is resolved by appending here and correcting there (§5).
 
 ---
 
@@ -422,9 +416,10 @@ restated here.
 so a future reader can find it; it does not override the frozen documents under [`docs/`](../), and it grants, decides,
 and explains nothing. It records what shipped without describing it ([RELEASE_NOTES](./RELEASE_NOTES.md) does), what
 changed without deciding it (the [ADRs](../01-architecture/decisions/) and
-[PRODUCT_DECISIONS](../00-product/PRODUCT_DECISIONS.md) do), what happened without teaching from it
-([LESSONS_LEARNED](../03-engineering/LESSONS_LEARNED.md) does), and what occurred without tracking what is occurring
-([IMPLEMENTATION_STATUS](../03-engineering/IMPLEMENTATION_STATUS.md) does). The record is currently empty because
-nothing has been released, and it will be filled by things happening — never by anyone deciding what should have. When
-an entry would require a version scheme, restate a decision, or correct history in place, stop and raise it per
+[PRODUCT_DECISIONS](../00-product/PRODUCT_DECISIONS.md) do), what happened without teaching from
+it ([LESSONS_LEARNED](../03-engineering/LESSONS_LEARNED.md) does), and what occurred without tracking what is
+occurring ([IMPLEMENTATION_STATUS](../03-engineering/IMPLEMENTATION_STATUS.md) does). The record is currently empty
+because nothing has been released, and it will be filled by things happening — never by anyone deciding what should
+have. When an entry would require a version scheme, restate a decision, or correct history in place, stop and raise it
+per
 [CLAUDE.md §8](../../CLAUDE.md): every other document here is corrected; this one is only continued.*

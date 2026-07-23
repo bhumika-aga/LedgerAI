@@ -192,7 +192,7 @@ ADR-009 mandates native-first extraction but left the *mechanism* unspecified. *
 ### Advantages
 
 - The OCR adapter maps directly onto the documented output: text + confidence → `extracted_text` + `extraction_quality`
-  - `char_count`, with no unused premium features.
+    - `char_count`, with no unused premium features.
 - **Native-first is fully realized**: digital PDFs extract locally and free; only images and image-only PDFs incur an
   OCR call — best quality at lowest cost (the ADR-009 goal).
 - **Provider-independent and low lock-in**: business logic depends only on the OCR port; the plain-text output shape is

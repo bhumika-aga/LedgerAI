@@ -4,7 +4,7 @@
 > **Owner:** Founding Engineer / Principal Security Architect
 > **Last updated:** 2026-07-14
 > **Upstream (frozen):
-** [Product Vision](../00-product/PRODUCT_VISION.md) · [Product Decisions](../00-product/PRODUCT_DECISIONS.md) · [PRD](../00-product/PRD.md) · [SRS](../00-product/SRS.md) · [Architecture](./ARCHITECTURE.md) · [Database](./DATABASE.md) · [API Spec](./API_SPEC.md)
+> ** [Product Vision](../00-product/PRODUCT_VISION.md) · [Product Decisions](../00-product/PRODUCT_DECISIONS.md) · [PRD](../00-product/PRD.md) · [SRS](../00-product/SRS.md) · [Architecture](./ARCHITECTURE.md) · [Database](./DATABASE.md) · [API Spec](./API_SPEC.md)
 > **Related:** [AI Architecture](./AI_ARCHITECTURE.md) · [ADRs](./decisions/)
 
 ---
@@ -12,9 +12,8 @@
 ## Security Philosophy
 
 Security in LedgerAI is **structural, not additive** — it is expressed in the architecture, data model, and API
-contract,
-not bolted on afterward. LedgerAI handles **confidential client financial documents**; a breach of confidentiality is an
-existential product failure, so the following principles are binding.
+contract, not bolted on afterward. LedgerAI handles **confidential client financial documents**; a breach of
+confidentiality is an existential product failure, so the following principles are binding.
 
 | Principle                         | What it means                                                                                               | Why it exists                                                                                                  |
 |-----------------------------------|-------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------|
@@ -102,8 +101,8 @@ below describe the current controls, these rules bind whatever is built next.
 - Sensitive data MUST be **minimized** wherever practical (Privacy by Design).
 - Secrets MUST **never** be logged ([§16](#16-logging-and-audit)).
 - Passwords, refresh tokens, and API keys MUST never be exposed through APIs ([§12](#12-data-security)).
-- AI prompts and confidential client documents MUST be handled according to the platform's privacy
-  principles ([§10](#10-ai-security)).
+- AI prompts and confidential client documents MUST be handled according to the platform's privacy principles
+  ([§10](#10-ai-security)).
 
 ### External Providers
 
@@ -112,8 +111,8 @@ below describe the current controls, these rules bind whatever is built next.
 - External providers MUST receive only the **minimum data required
   ** ([NFR-018](../00-product/SRS.md#9-non-functional-requirements)).
 - Provider credentials MUST remain **server-side** ([§13](#13-secrets-management)).
-- Provider integrations MUST occur only through the **approved architectural abstraction layers** (
-  ports/adapters, [ARCHITECTURE §10](./ARCHITECTURE.md#10-external-services)).
+- Provider integrations MUST occur only through the **approved architectural abstraction layers**
+  (ports/adapters, [ARCHITECTURE §10](./ARCHITECTURE.md#10-external-services)).
 
 ### Engineering Practices
 
@@ -190,10 +189,9 @@ User ──owns──> Report (via Document) · Activity · RefreshToken
 | **Reports follow Document ownership** | A Report is accessible only to the User who owns its source Document.                                          |
 
 **Ownership validation:** every protected operation MUST verify that the authenticated User owns the target resource
-(and the full parent chain) **before** acting — enforced in the service
-layer ([ARCHITECTURE §7.1](./ARCHITECTURE.md#71-standard-request)),
-not merely at the URL. This is the primary confidentiality control ([SG-2](#2-security-goals)) and MUST NOT be assumed
-from path structure alone.
+(and the full parent chain) **before** acting — enforced in the service layer
+([ARCHITECTURE §7.1](./ARCHITECTURE.md#71-standard-request)), not merely at the URL. This is the primary confidentiality
+control ([SG-2](#2-security-goals)) and MUST NOT be assumed from path structure alone.
 
 **Why cross-user resources return `404` (not `403`):** returning `403 Forbidden` for a resource the caller does not own
 would *confirm the resource exists*, leaking information (e.g., that a given document id is valid). Returning **`404 Not
@@ -230,8 +228,7 @@ non-disclosure.
 practical; a refresh token, if browser-held, SHOULD be delivered as a secure, **httpOnly** cookie to mitigate XSS theft.
 Exact transport (httpOnly cookie vs. body) is finalized alongside the frontend, consistent with
 [API_SPEC §3](./API_SPEC.md#3-authentication). Because this is a token (not cookie-session) API, CSRF exposure is
-limited
-(see [§15](#15-cors-and-csrf)).
+limited (see [§15](#15-cors-and-csrf)).
 
 ---
 
@@ -421,35 +418,35 @@ Security is evaluated continuously, not once. The following changes **trigger a 
 review applies the [Security Design Rules](#security-design-rules) and updates the [Threat Model §3](#3-threat-model) as
 needed.
 
-### Architecture Changes — review required for:
+### Architecture Changes — review required for
 
 - Authentication architecture changes.
 - Authorization model changes.
 - New trust boundaries.
 - Module ownership changes.
 
-### Infrastructure Changes — review required for:
+### Infrastructure Changes — review required for
 
 - New external providers.
 - Storage architecture changes.
 - Secrets management changes.
 - Deployment architecture changes.
 
-### Data Changes — review required for:
+### Data Changes — review required for
 
 - Database schema changes involving sensitive data.
 - Introduction of new personal or financial information.
 - Data retention policy changes.
 - Encryption strategy changes.
 
-### API Changes — review required for:
+### API Changes — review required for
 
 - Authentication endpoints.
 - Authorization behavior.
 - Public API additions.
 - Breaking API changes.
 
-### AI Changes — review required for:
+### AI Changes — review required for
 
 - Prompt architecture.
 - Grounding strategy.

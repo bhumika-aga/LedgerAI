@@ -1,8 +1,6 @@
 # ADR-001 — Authentication Strategy (JWT + Refresh Tokens)
 
-**Status:** Accepted
-**Date:** 2026-07-14
-**Owner:** Founding Engineer / Principal Architect
+**Status:** Accepted **Date:** 2026-07-14 **Owner:** Founding Engineer / Principal Architect
 **Related Documents:
 ** [PRODUCT_DECISIONS PD-008](../../00-product/PRODUCT_DECISIONS.md#3-accepted-product-decisions) · [SRS §4.1](../../00-product/SRS.md#41-authentication-auth) · [SECURITY §4](../SECURITY.md#4-authentication) · [ARCHITECTURE §4.1](../ARCHITECTURE.md#41-authentication-flow-high-level) · [API_SPEC §3](../API_SPEC.md#3-authentication)
 
@@ -33,8 +31,8 @@ revocation and cleanup ([DATABASE §5.9](../DATABASE.md#59-refreshtoken)).
 - **Access tokens only (no refresh).** Rejected: forces a bad trade — either long-lived access tokens (large theft
   window) or frequent re-login (poor UX). Refresh tokens decouple session length from access-token exposure.
 - **Third-party managed auth (external IdP/SSO).** Rejected for MVP: adds an external dependency and cost, and exceeds
-  MVP needs (single professional per account). Reserved as a future
-  option ([SECURITY §19](../SECURITY.md#19-future-security-evolution)).
+  MVP needs (single professional per account). Reserved as a future option
+  ([SECURITY §19](../SECURITY.md#19-future-security-evolution)).
 
 ---
 

@@ -21,9 +21,9 @@ It is the shared contract between the frontend and backend teams. It is document
 with [OpenAPI](../00-product/PRODUCT_DECISIONS.md#3-accepted-product-decisions)
 (PD-013) at implementation time; §"OpenAPI Organization" describes the grouping.
 
-**Scope guardrails:** endpoints exist only for the twelve approved MVP
-modules ([SRS §4](../00-product/SRS.md#4-functional-requirements)).
-No endpoint crosses a [product boundary](../00-product/PRODUCT_DECISIONS.md#2-product-boundaries) or implements a
+**Scope guardrails:** endpoints exist only for the twelve approved MVP modules
+([SRS §4](../00-product/SRS.md#4-functional-requirements)). No endpoint crosses
+a [product boundary](../00-product/PRODUCT_DECISIONS.md#2-product-boundaries) or implements a
 [Non-Goal](../00-product/PRD.md#5-non-goals). In particular, there is **no email-sending endpoint
 ** ([BR-034](../00-product/SRS.md#5-business-rules))
 and report generation is **single-document** ([BR-035](../00-product/SRS.md#5-business-rules)).
@@ -106,8 +106,8 @@ Collection endpoints are paginated with query parameters:
 | `size` | integer | `20`             | Items per page (max `100` **[Assumption]**).                  |
 | `sort` | string  | resource default | `field,(asc\|desc)`, e.g., `sort=createdAt,desc`. Repeatable. |
 
-Responses use the [`PageResponse`](#19-common-dtos) envelope carrying `content` plus pagination metadata
-(`page`, `size`, `totalElements`, `totalPages`, `hasNext`).
+Responses use the [`PageResponse`](#19-common-dtos) envelope carrying `content` plus pagination metadata (`page`,
+`size`, `totalElements`, `totalPages`, `hasNext`).
 
 ### 2.6 Filtering
 
@@ -130,9 +130,8 @@ the API never emits zone-ambiguous values. Maps to PostgreSQL
 ### 2.9 UUIDs
 
 All resource identifiers are **UUIDs** (string form, e.g., `9f1c…`),
-per [DATABASE §7](./DATABASE.md#7-primary-key-strategy).
-Path variables named `{…Id}` are UUIDs. Malformed UUIDs yield `400`. Non-enumerable IDs are a deliberate security
-property, not incidental.
+per [DATABASE §7](./DATABASE.md#7-primary-key-strategy). Path variables named `{…Id}` are UUIDs. Malformed UUIDs yield
+`400`. Non-enumerable IDs are a deliberate security property, not incidental.
 
 ### 2.10 Idempotency
 
@@ -159,8 +158,7 @@ Because the processing mechanism for long-running OCR/AI work is a deferred deci
   summary, the OCR status) until it reaches `COMPLETED`/`READY` or `FAILED`.
 
 Both are valid under this contract; the frontend MUST handle `202` + poll. This lets the backend adopt background
-workers
-later with **no contract change**.
+workers later with **no contract change**.
 
 ### 2.12 Error Model — RFC 7807 Problem Details
 
@@ -247,10 +245,8 @@ the current API is shaped; these rules ensure every new addition stays shaped th
 - New modules MUST adopt the same conventions defined in this document.
 
 These rules exist to preserve **long-term consistency as the API grows** and to prevent **design drift between modules
-**.
-An API that behaves the same way everywhere is one a frontend or third-party client can learn once and trust across
-every
-module; each rule above closes a common path by which multi-module APIs quietly become inconsistent.
+**. An API that behaves the same way everywhere is one a frontend or third-party client can learn once and trust across
+every module; each rule above closes a common path by which multi-module APIs quietly become inconsistent.
 
 ---
 
@@ -331,21 +327,21 @@ contract:
 
 ### 5.3 Refresh Token
 
-- **Purpose:** Obtain a new access token using a valid refresh
-  token ([FR-AUTH-004](../00-product/SRS.md#41-authentication-auth)).
+- **Purpose:** Obtain a new access token using a valid refresh token
+  ([FR-AUTH-004](../00-product/SRS.md#41-authentication-auth)).
 - **Method / URL:** `POST /api/v1/auth/refresh`
 - **Auth required:** No (presents refresh token, not access token)
 - **Request body:** `{ refreshToken }` *(or refresh token supplied via httpOnly cookie — see SECURITY.md)*
 - **Response body:** `{ tokens: AuthTokens }`
 - **Success codes:** `200 OK`
 - **Error codes:** `401` (invalid/expired/revoked refresh token)
-- **Notes:** Refresh tokens are **rotated** on use; the prior token is
-  revoked ([DATABASE §12](./DATABASE.md#12-data-retention)).
+- **Notes:** Refresh tokens are **rotated** on use; the prior token is revoked
+  ([DATABASE §12](./DATABASE.md#12-data-retention)).
 
 ### 5.4 Logout
 
-- **Purpose:** End the session by revoking the refresh
-  token ([FR-AUTH-005](../00-product/SRS.md#41-authentication-auth)).
+- **Purpose:** End the session by revoking the refresh token
+  ([FR-AUTH-005](../00-product/SRS.md#41-authentication-auth)).
 - **Method / URL:** `POST /api/v1/auth/logout`
 - **Auth required:** Yes
 - **Request body:** `{ refreshToken }` *(or cookie)*
@@ -381,8 +377,8 @@ contract:
 
 ### 6.2 Update Profile
 
-- **Purpose:** Update editable profile fields and
-  preferences ([FR-PROF-002](../00-product/SRS.md#42-user-profile-prof)).
+- **Purpose:** Update editable profile fields and preferences
+  ([FR-PROF-002](../00-product/SRS.md#42-user-profile-prof)).
 - **Method / URL:** `PATCH /api/v1/users/me`
 - **Auth required:** Yes
 - **Request body:** `{ fullName?, professionalDetails?, preferences? }`
@@ -463,22 +459,22 @@ single document is addressed directly for read/delete.
 
 ### 8.1 Upload Document
 
-- **Purpose:** Upload a file to a client and begin
-  processing ([FR-UPLD-001](../00-product/SRS.md#44-document-upload-upld)).
+- **Purpose:** Upload a file to a client and begin processing
+  ([FR-UPLD-001](../00-product/SRS.md#44-document-upload-upld)).
 - **Method / URL:** `POST /api/v1/clients/{clientId}/documents`
 - **Auth required:** Yes
 - **Path variables:** `clientId`
 - **Request body:** `multipart/form-data` — `file` (binary), optional metadata fields.
 - **Response body:** `DocumentResponse` (initial `status` = `UPLOADED` or `PROCESSING`)
 - **Success codes:** `201 Created`
-- **Error codes:** `401`, `404` (client not found/owned), `409` (client archived — optional policy), `413`/`422` (
-  oversized/unsupported — see note), `422` (validation), `503` (storage unavailable)
+- **Error codes:** `401`, `404` (client not found/owned), `409` (client archived — optional policy), `413`/`422`
+  (oversized/unsupported — see note), `422` (validation), `503` (storage unavailable)
 - **Validation:** [VR-005](../00-product/SRS.md#6-validation-rules) — allowed types and max
   size \* \*[Assumption; finalized in SRS/architecture]\*\*.
-- **Notes:** The binary goes to the Storage Provider; the DB stores a
-  reference ([DATABASE §1.3](./DATABASE.md#13-related-documents)). Rejections use `422` with a Problem Details reason (a
-  stricter `413 Payload Too Large` MAY be used for size). Emits `DOCUMENT_UPLOADED`. Processing/OCR proceed
-  asynchronously; poll [OCR status](#91-get-ocr-status). MAY accept `Idempotency-Key`.
+- **Notes:** The binary goes to the Storage Provider; the DB stores a reference
+  ([DATABASE §1.3](./DATABASE.md#13-related-documents)). Rejections use `422` with a Problem Details reason (a stricter
+  `413 Payload Too Large` MAY be used for size). Emits `DOCUMENT_UPLOADED`. Processing/OCR proceed asynchronously;
+  poll [OCR status](#91-get-ocr-status). MAY accept `Idempotency-Key`.
 
 ### 8.2 List Documents
 
@@ -510,14 +506,14 @@ single document is addressed directly for read/delete.
 - **Response body:** —
 - **Success codes:** `204 No Content`
 - **Error codes:** `401`, `404`
-- **Notes:** Soft-deletes (`status=DELETED`); removes it from listings, search, and AI
-  actions ([BR-012/013](../00-product/SRS.md#5-business-rules)); the external file SHOULD be removed from storage. Emits
+- **Notes:** Soft-deletes (`status=DELETED`); removes it from listings, search, and AI actions
+  ([BR-012/013](../00-product/SRS.md#5-business-rules)); the external file SHOULD be removed from storage. Emits
   `DOCUMENT_DELETED`. Idempotent.
 
 ### 8.5 Download Metadata / Access Link
 
-- **Purpose:** Obtain the means to view/download the original
-  file ([FR-STOR-003](../00-product/SRS.md#45-document-storage-stor)).
+- **Purpose:** Obtain the means to view/download the original file
+  ([FR-STOR-003](../00-product/SRS.md#45-document-storage-stor)).
 - **Method / URL:** `GET /api/v1/documents/{documentId}/download`
 - **Auth required:** Yes
 - **Path variables:** `documentId`
@@ -526,16 +522,15 @@ single document is addressed directly for read/delete.
 - **Success codes:** `200 OK`
 - **Error codes:** `401`, `404`, `503` (storage unavailable)
 - **Notes:** Returns **download metadata** (a short-lived, owner-scoped URL), not raw bytes streamed through the API —
-  consistent with the external-storage design. The exact link mechanics are a storage
-  concern ([ADR-002](./decisions/ADR-002-Storage-Provider.md)).
+  consistent with the external-storage design. The exact link mechanics are a storage concern
+  ([ADR-002](./decisions/ADR-002-Storage-Provider.md)).
 
 ---
 
 ## 9. OCR Module
 
 OCR has no user-triggered endpoint (it runs automatically during
-processing, [FR-OCR-001](../00-product/SRS.md#46-ocr-ocr));
-only its status is exposed.
+processing, [FR-OCR-001](../00-product/SRS.md#46-ocr-ocr)); only its status is exposed.
 
 ### 9.1 Get OCR Status
 
@@ -564,16 +559,16 @@ only its status is exposed.
 - **Response body:** `AIResponse` (type `SUMMARY`, with `status` and, when complete, editable `content`)
 - **Success codes:** `201 Created` (synchronous) **or** `202 Accepted` (async —
   poll [Get Summary](#102-get-existing-summary))
-- **Error codes:** `401`, `404`, `409` (document not `READY`, [BR-010](../00-product/SRS.md#5-business-rules)), `422` (
-  no extractable text), `503` (AI provider unavailable)
+- **Error codes:** `401`, `404`, `409` (document not `READY`, [BR-010](../00-product/SRS.md#5-business-rules)), `422`
+  (no extractable text), `503` (AI provider unavailable)
 - **Notes:** Grounded in extracted content ([BR-030](../00-product/SRS.md#5-business-rules)); result is **editable
-  ** ([BR-031](../00-product/SRS.md#5-business-rules)) and AI-assisted, subject to
-  review ([BR-032](../00-product/SRS.md#5-business-rules)). Emits `SUMMARY_GENERATED`.
+  ** ([BR-031](../00-product/SRS.md#5-business-rules)) and AI-assisted, subject to review
+  ([BR-032](../00-product/SRS.md#5-business-rules)). Emits `SUMMARY_GENERATED`.
 
 ### 10.2 Get Existing Summary
 
-- **Purpose:** Retrieve the saved summary (and its status) for a
-  document ([FR-SUMM-004](../00-product/SRS.md#47-ai-summary-summ)).
+- **Purpose:** Retrieve the saved summary (and its status) for a document
+  ([FR-SUMM-004](../00-product/SRS.md#47-ai-summary-summ)).
 - **Method / URL:** `GET /api/v1/documents/{documentId}/summary`
 - **Auth required:** Yes
 - **Path variables:** `documentId`
@@ -613,8 +608,8 @@ resource in MVP.
 - **Success codes:** `201 Created` (synchronous) **or** `202 Accepted` (async — poll history)
 - **Error codes:** `401`, `404`, `409` (document not `READY`), `422` (empty/invalid
   question, [VR-007](../00-product/SRS.md#6-validation-rules)), `503`
-- **Notes:** Answers are grounded; when unsupported by the document, the answer says so rather than
-  fabricating ([BR-033](../00-product/SRS.md#5-business-rules)). Emits chat activity.
+- **Notes:** Answers are grounded; when unsupported by the document, the answer says so rather than fabricating
+  ([BR-033](../00-product/SRS.md#5-business-rules)). Emits chat activity.
 
 ### 11.2 Get Chat History
 
@@ -715,19 +710,19 @@ managed as first-class resources.
 
 ### 14.1 Global Search
 
-- **Purpose:** Search across the user's documents and
-  content ([FR-SRCH-001](../00-product/SRS.md#411-global-search-srch)).
+- **Purpose:** Search across the user's documents and content
+  ([FR-SRCH-001](../00-product/SRS.md#411-global-search-srch)).
 - **Method / URL:** `GET /api/v1/search`
 - **Auth required:** Yes
 - **Query params:** `q` (required keywords), `page`, `size`, optional `type` (e.g., `DOCUMENT`) for future scoping
 - **Response body:** `PageResponse<SearchResultResponse>` — each result carries
-  `{ documentId, clientId, title/snippet, matchContext }` for
-  navigation ([FR-SRCH-002](../00-product/SRS.md#411-global-search-srch))
+  `{ documentId, clientId, title/snippet, matchContext }` for navigation
+  ([FR-SRCH-002](../00-product/SRS.md#411-global-search-srch))
 - **Success codes:** `200 OK`
 - **Error codes:** `401`, `422` (invalid/oversized query, [VR-006](../00-product/SRS.md#6-validation-rules))
 - **Notes:** Owner-scoped; excludes `DELETED` documents ([BR-013](../00-product/SRS.md#5-business-rules)); reflects
-  extracted text + metadata. Empty/no-result queries return an empty
-  page ([FR-SRCH-006](../00-product/SRS.md#411-global-search-srch)).
+  extracted text + metadata. Empty/no-result queries return an empty page
+  ([FR-SRCH-006](../00-product/SRS.md#411-global-search-srch)).
 
 ---
 
@@ -735,16 +730,16 @@ managed as first-class resources.
 
 ### 15.1 Get Timeline
 
-- **Purpose:** Retrieve the chronological activity
-  timeline ([FR-TMLN-002](../00-product/SRS.md#412-activity-timeline-tmln)).
+- **Purpose:** Retrieve the chronological activity timeline
+  ([FR-TMLN-002](../00-product/SRS.md#412-activity-timeline-tmln)).
 - **Method / URL:** `GET /api/v1/activities`
 - **Auth required:** Yes
 - **Query params:** `page`, `size`, `sort` (default `createdAt,desc`), optional `clientId` (per-client view)
 - **Response body:** `PageResponse<ActivityResponse>`
 - **Success codes:** `200 OK`
 - **Error codes:** `401`
-- **Notes:** **Read-only** — no create/update/delete
-  endpoints ([FR-TMLN-004](../00-product/SRS.md#412-activity-timeline-tmln), [BR-016](../00-product/SRS.md#5-business-rules)).
+- **Notes:** **Read-only** — no create/update/delete endpoints
+  ([FR-TMLN-004](../00-product/SRS.md#412-activity-timeline-tmln), [BR-016](../00-product/SRS.md#5-business-rules)).
   Owner-scoped; supports account-level and per-client views.
 
 ---
@@ -840,8 +835,8 @@ As defined in [§2.12](#212-error-model--rfc-7807-problem-details).
 
 ## 18. Validation
 
-Request validation is enforced at the API boundary and maps directly to the SRS validation rules; failures return
-**`422`** with `validationErrors`.
+Request validation is enforced at the API boundary and maps directly to the SRS validation rules; failures return **
+`422`** with `validationErrors`.
 
 | Endpoint(s)                              | Rule                                              |
 |------------------------------------------|---------------------------------------------------|
@@ -878,8 +873,7 @@ Detailed controls are in [SECURITY.md](./SECURITY.md). Contract-level stance:
 ## API Lifecycle
 
 Every endpoint moves through a defined set of lifecycle states over its lifetime. This governs *how* an endpoint
-changes;
-the [Versioning Strategy](#20-api-versioning-strategy) governs *where* those changes are allowed to land.
+changes; the [Versioning Strategy](#20-api-versioning-strategy) governs *where* those changes are allowed to land.
 
 | State            | Description                                                             |
 |------------------|-------------------------------------------------------------------------|
@@ -906,10 +900,9 @@ the [Versioning Strategy](#20-api-versioning-strategy) governs *where* those cha
 ### Compatibility Philosophy
 
 LedgerAI favors **long-lived, stable APIs and incremental evolution** over frequent breaking changes. Endpoints are
-meant
-to be relied upon for the long term: the API grows by adding capabilities and deprecating gracefully, not by churning
-contracts. This keeps the frontend and any future third-party clients reliable across releases — a stable contract is a
-feature in its own right.
+meant to be relied upon for the long term: the API grows by adding capabilities and deprecating gracefully, not by
+churning contracts. This keeps the frontend and any future third-party clients reliable across releases — a stable
+contract is a feature in its own right.
 
 ---
 
@@ -944,9 +937,9 @@ Authentication · Users · Clients · Documents · OCR · AI · Reports · Searc
 
 ## 22. Future API Evolution
 
-**Future, not MVP.** Recorded so they can be added **additively** within versioning
-policy ([§20](#20-api-versioning-strategy)).
-None are implemented now ([boundaries](../00-product/PRODUCT_DECISIONS.md#2-product-boundaries)).
+**Future, not MVP.** Recorded so they can be added **additively** within versioning policy
+([§20](#20-api-versioning-strategy)). None are implemented now
+([boundaries](../00-product/PRODUCT_DECISIONS.md#2-product-boundaries)).
 
 | Future capability                | Additive shape                                                                                                                                 |
 |----------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------|

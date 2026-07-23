@@ -4,9 +4,9 @@
 > **Owner:** Principal Prompt Architect
 > **Last updated:** 2026-07-15
 > **Upstream (frozen):
-** [AI_ARCHITECTURE](../01-architecture/AI_ARCHITECTURE.md) · [AI_PROVIDERS](./AI_PROVIDERS.md) · [SECURITY](../01-architecture/SECURITY.md) · [SRS](../00-product/SRS.md) · [ADR-003](../01-architecture/decisions/ADR-003-AI-Provider-Abstraction.md)
+> ** [AI_ARCHITECTURE](../01-architecture/AI_ARCHITECTURE.md) · [AI_PROVIDERS](./AI_PROVIDERS.md) · [SECURITY](../01-architecture/SECURITY.md) · [SRS](../00-product/SRS.md) · [ADR-003](../01-architecture/decisions/ADR-003-AI-Provider-Abstraction.md)
 > **Related:
-** [EVALUATION](./EVALUATION.md) · [RAG](./RAG.md) · [CLAUDE.md](../../CLAUDE.md)
+> ** [EVALUATION](./EVALUATION.md) · [RAG](./RAG.md) · [CLAUDE.md](../../CLAUDE.md)
 
 ---
 
@@ -102,8 +102,8 @@ rules that follow.
 - **Prompt assumptions MUST be documented.** *Every prompt assumes something: about the content, the task, the reader,
   the shape expected back. Undocumented, those assumptions are indistinguishable from requirements to the next
   maintainer, who preserves them faithfully long after they stopped being true.*
-- **Prompt changes MUST be reviewed before production use.** *A prompt change is a behavior change with no type to
-  check it and no test that fully substitutes for judgment. Review is the only gate it has (Prompt Review Process).*
+- **Prompt changes MUST be reviewed before production use.** *A prompt change is a behavior change with no type to check
+  it and no test that fully substitutes for judgment. Review is the only gate it has (Prompt Review Process).*
 - **Prompt fragments MUST NOT fork silently across capabilities.** *A fragment copied to be tweaked "just here" is the
   moment one shared obligation becomes two divergent ones. Forking MAY be correct; forking **silently** never is.*
 - **Prompt text MUST NOT embed product behavior that belongs in frozen documents.** *A rule stated only in a prompt is a
@@ -111,15 +111,15 @@ rules that follow.
   it and never becomes its only home.*
 - **Prompt output expectations MUST be grounded in product rules.** *What a prompt asks for must match what the product
   promises and what validation
-  accepts ([AI_ARCHITECTURE §11](../01-architecture/AI_ARCHITECTURE.md#11-ai-output-validation));
-  a prompt requesting a shape the product does not honor manufactures failure downstream.*
+  accepts ([AI_ARCHITECTURE §11](../01-architecture/AI_ARCHITECTURE.md#11-ai-output-validation)); a prompt requesting a
+  shape the product does not honor manufactures failure downstream.*
 - **Prompt decisions MUST remain traceable.** *A phrase whose reason is unrecorded cannot be changed safely — so it is
   never changed, only added to. That is how prompts calcify into text nobody dares touch (§6).*
 
 **Why these rules exist.** Prompt drift is silent by construction. A prompt has no signature to break, no test that
 proves it still means what it meant, and no reviewer who reads it as carefully the tenth time. Behavior changes one
-clause at a time, each reasonable, until a capability no longer does what its documentation says — and the
-documentation is not wrong, the prose is.
+clause at a time, each reasonable, until a capability no longer does what its documentation says — and the documentation
+is not wrong, the prose is.
 
 These rules exist because the three failure modes are invisible until they are expensive: **drift** (behavior moves
 without a decision), **accidental provider lock-in** (accommodation that looks like ordinary wording), and
@@ -245,8 +245,8 @@ artifact whose tooling does not supply it.
 ## 7. Prompt Variables and Context
 
 **What may reach a prompt.** Context is admitted because the task requires it, never because it is available. Each kind
-below enters through the channel
-model ([AI_ARCHITECTURE §8](../01-architecture/AI_ARCHITECTURE.md#8-prompt-architecture))
+below enters through the channel model
+([AI_ARCHITECTURE §8](../01-architecture/AI_ARCHITECTURE.md#8-prompt-architecture))
 and this section governs only the **discipline of deciding what goes in**.
 
 | Context                        | The discipline                                                                                                                                                                                                                             |
@@ -264,8 +264,7 @@ and this section governs only the **discipline of deciding what goes in**.
 - **Content the task does not require.** Data minimization is a security obligation
   ([NFR-018](../00-product/SRS.md#9-non-functional-requirements),
   [AI_ARCHITECTURE §15](../01-architecture/AI_ARCHITECTURE.md#15-ai-data-privacy)), not a tidiness preference.
-  Everything
-  sent crosses an untrusted boundary.
+  Everything sent crosses an untrusted boundary.
 - **Another user's content, ever.** Per-user isolation does not weaken at this boundary
   ([BR-004](../00-product/SRS.md#5-business-rules)); no prompt composes context from more than the owning user's
   material.
@@ -339,8 +338,8 @@ not a detail to defer.
 - **A new prompt** is proposed.
 - **A prompt change** — any edit to an approved version, however small. Size is not a proxy for impact here.
 - **A new AI capability** is introduced — it needs a prompt, and the prompt needs an owner and a use case.
-- **A provider change** — an active or fallback provider
-  changes ([AI_PROVIDERS §5](./AI_PROVIDERS.md#5-provider-lifecycle)); prompts are re-examined for neutrality and for
+- **A provider change** — an active or fallback provider changes
+  ([AI_PROVIDERS §5](./AI_PROVIDERS.md#5-provider-lifecycle)); prompts are re-examined for neutrality and for
   assumptions that were the old provider's.
 - **An evaluation regression** — measured quality drops against what a version was approved on.
 - **A security concern** — anything touching injection resistance, channel separation, or what reaches a prompt.
@@ -360,8 +359,8 @@ not a detail to defer.
   [Provider Review Process](./AI_PROVIDERS.md#provider-review-process). A prompt that only works on one provider is a
   provider finding, not a prompt style.
 - **Security review required** — injection resistance, channel separation, or context exposure is in question; it is
-  routed to the security review process
-  ([SECURITY](../01-architecture/SECURITY.md#ai-changes--review-required-for)). This outcome **blocks**.
+  routed to the security review process ([SECURITY](../01-architecture/SECURITY.md#ai-changes--review-required-for)).
+  This outcome **blocks**.
 - **Architecture review required** — the prompt implies a change to the channel model, the pipeline, or validation; it
   is raised per [CLAUDE.md §8](../../CLAUDE.md) before proceeding.
 - **ADR required** — the decision is significant, precedent-setting, or hard to reverse.

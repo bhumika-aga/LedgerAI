@@ -1,8 +1,7 @@
 # ADR-014 — Search Strategy
 
 **Status:** Accepted (MVP); semantic/vector search **Deferred**
-**Date:** 2026-07-14
-**Owner:** Founding Engineer / Principal Database Architect
+**Date:** 2026-07-14 **Owner:** Founding Engineer / Principal Database Architect
 **Related Documents:
 ** [DATABASE §9](../DATABASE.md#9-indexing-strategy) · [SRS §4.11](../../00-product/SRS.md#411-global-search-srch) · [PRODUCT_DECISIONS DD-003](../../00-product/PRODUCT_DECISIONS.md#4-deferred-decisions)
 
@@ -10,10 +9,10 @@
 
 ## Context
 
-Global Search must let a professional find documents and content across their own
-clients ([FR-SRCH-001](../../00-product/SRS.md#411-global-search-srch)),
-reflecting extracted text and metadata, owner-scoped, excluding deleted documents. It must fit the free-tier goal (no
-extra search infrastructure) while leaving room for future semantic search.
+Global Search must let a professional find documents and content across their own clients
+([FR-SRCH-001](../../00-product/SRS.md#411-global-search-srch)), reflecting extracted text and metadata, owner-scoped,
+excluding deleted documents. It must fit the free-tier goal (no extra search infrastructure) while leaving room for
+future semantic search.
 
 ---
 
@@ -23,8 +22,7 @@ For the MVP, implement search using **PostgreSQL's built-in full-text search** (
 `document_content.extracted_text`), scoped to the owning user and filtered to non-deleted, Ready documents
 ([DATABASE §9](../DATABASE.md#9-indexing-strategy)). **Semantic/vector search (embeddings)** is **deferred**
 ([DD-003](../../00-product/PRODUCT_DECISIONS.md#4-deferred-decisions)) and can be added additively later without
-changing
-this design.
+changing this design.
 
 ---
 
@@ -33,8 +31,8 @@ this design.
 - **A dedicated external search engine (e.g., Elasticsearch/OpenSearch).** Rejected for MVP: significant extra
   infrastructure, cost, and ops — unjustified for keyword search at MVP scale, and against the free-tier goal.
 - **A vector database / embeddings now.** Rejected for MVP: semantic search is valuable but not required for the MVP's
-  keyword-find use case; it adds infrastructure and depends on the deferred AI
-  provider ([DD-002](../../00-product/PRODUCT_DECISIONS.md#4-deferred-decisions)).
+  keyword-find use case; it adds infrastructure and depends on the deferred AI provider
+  ([DD-002](../../00-product/PRODUCT_DECISIONS.md#4-deferred-decisions)).
 - **Naive `LIKE`/`ILIKE` scans.** Rejected: no ranking, poor performance at scale, no proper text analysis; PostgreSQL
   full-text search is strictly better with a GIN index.
 

@@ -1,8 +1,6 @@
 # ADR-010 — AI Request Lifecycle
 
-**Status:** Accepted
-**Date:** 2026-07-14
-**Owner:** Founding Engineer / Principal AI Architect
+**Status:** Accepted **Date:** 2026-07-14 **Owner:** Founding Engineer / Principal AI Architect
 **Related Documents:
 ** [SRS §7.2](../../00-product/SRS.md#72-ai-request-lifecycle) · [AI_ARCHITECTURE §4](../AI_ARCHITECTURE.md#4-ai-request-lifecycle) · [DATABASE §5.5–5.6](../DATABASE.md#55-airequest) · [API_SPEC §2.11](../API_SPEC.md#211-async-ready-behavior)
 
@@ -13,8 +11,8 @@
 AI actions (summary, chat, email, report) are long-running, can fail (provider timeout/outage/rate limit), and must
 remain **non-blocking** with visible status ([NFR-002](../../00-product/SRS.md#9-non-functional-requirements)). The
 processing mechanism (synchronous vs. background worker) is a **deferred**
-decision ([DD-007](../../00-product/PRODUCT_DECISIONS.md#4-deferred-decisions)).
-We need a model for AI work that is observable, retryable, and doesn't lock us into a processing mechanism now.
+decision ([DD-007](../../00-product/PRODUCT_DECISIONS.md#4-deferred-decisions)). We need a model for AI work that is
+observable, retryable, and doesn't lock us into a processing mechanism now.
 
 ---
 
@@ -24,9 +22,8 @@ Model every AI action as an explicit **AI Request lifecycle** — `REQUESTED →
 ([SRS §7.2](../../00-product/SRS.md#72-ai-request-lifecycle)) — persisted as an `AIRequest` record with its editable
 result in a separate `AIOutput` ([DATABASE §5.5–5.6](../DATABASE.md#55-airequest)). The API is **async-ready**: a
 generation endpoint returns `201` when synchronous or `202 Accepted` + poll when asynchronous, so the backend can move
-to
-background workers with **no contract change** ([API_SPEC §2.11](../API_SPEC.md#211-async-ready-behavior)). The provider
-call sits **outside** the database transaction; only persistence of its result is transactional.
+to background workers with **no contract change** ([API_SPEC §2.11](../API_SPEC.md#211-async-ready-behavior)). The
+provider call sits **outside** the database transaction; only persistence of its result is transactional.
 
 ---
 

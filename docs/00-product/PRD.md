@@ -5,7 +5,7 @@
 > **Last updated:** 2026-07-14
 > **Release:** V1 (MVP)
 > **Related:
-** [Product Vision](./PRODUCT_VISION.md) · [Product Decisions](./PRODUCT_DECISIONS.md) · [SRS](./SRS.md) · [Architecture](../01-architecture/ARCHITECTURE.md)
+> ** [Product Vision](./PRODUCT_VISION.md) · [Product Decisions](./PRODUCT_DECISIONS.md) · [SRS](./SRS.md) · [Architecture](../01-architecture/ARCHITECTURE.md)
 
 ---
 
@@ -273,8 +273,7 @@ searchable for next time.
 - **Purpose:** Organize all work around clients — the professional's natural mental model.
 - **User Stories:**
     - As a professional, I want to create, view, edit, and archive clients, so that I can organize documents and
-      activity
-      by client.
+      activity by client.
     - As a professional, I want to see a client's documents, outputs, and activity in one place, so that I have full
       context.
 - **Acceptance Criteria:**
@@ -331,8 +330,7 @@ searchable for next time.
       fails.
     - AC-4: Extracted text becomes the basis for AI Summary, AI Chat, and Search.
 - **Edge Cases:** poor scan quality; handwritten content; rotated/skewed pages; non-supported language; empty/blank
-  pages;
-  mixed text+image documents.
+  pages; mixed text+image documents.
 - **Dependencies:** Document Upload/Storage; feeds AI Summary, AI Chat, Global Search.
 
 ### 8.7 AI Document Summary
@@ -366,8 +364,7 @@ searchable for next time.
     - AC-4: The conversation for a document is retained within its context for the session/thread.
     - AC-5: Output is clearly AI-assisted and subject to user review.
 - **Edge Cases:** question unanswerable from the document; out-of-scope question; ambiguous question; very long
-  document;
-  no extractable text.
+  document; no extractable text.
 - **Dependencies:** OCR/extraction; AI service. (RAG strategy
   deferred — [DD-004](./PRODUCT_DECISIONS.md#4-deferred-decisions).)
 
@@ -393,8 +390,7 @@ searchable for next time.
 - **Purpose:** Turn understood documents into a structured, shareable report.
 - **User Stories:**
     - As a professional, I want to generate a report from a document or set of understood content, so that I can produce
-      a
-      deliverable quickly.
+      a deliverable quickly.
     - As a professional, I want to review and edit the report before finalizing, so that it meets my standards.
 - **Acceptance Criteria:**
     - AC-1: A user can generate a report based on a document/client's processed content.
@@ -467,9 +463,8 @@ downstream of the action-producing modules because it records what they did.
 
 **Why this sequence is recommended for implementation.** Building in dependency order means every module is developed
 against prerequisites that already exist and work, avoiding stubs and rework. It also keeps the application in a
-working,
-demonstrable state at each step — from a secure shell, to client organization, to a stored document, to an understood
-document, to acting on it — which mirrors the milestone sequencing in
+working, demonstrable state at each step — from a secure shell, to client organization, to a stored document, to an
+understood document, to acting on it — which mirrors the milestone sequencing in
 [IMPLEMENTATION_PLAN.md §4](../03-engineering/IMPLEMENTATION_PLAN.md#4-milestones).
 
 **Which modules are foundational.** Authentication, Client Management, Document Upload, and Document Storage are the
@@ -526,8 +521,8 @@ extraction and AI-input quality (see [Risks §12](#12-risks)) matter so much.
 
 ### Document Upload
 
-- As a professional, I want to upload a document to a client, so that I can act on it. *(AC: type/size validated;
-  status visible.)*
+- As a professional, I want to upload a document to a client, so that I can act on it. *(AC: type/size validated; status
+  visible.)*
 
 ### Document Storage
 

@@ -6,9 +6,9 @@
 > **Owner:** Principal Release Communications Architect
 > **Last updated:** 2026-07-16
 > **Upstream (frozen):
-** [CLAUDE.md](../../CLAUDE.md) · [CHANGELOG](./CHANGELOG.md) · [PRD](../00-product/PRD.md) · [SRS](../00-product/SRS.md) · [UI_GUIDELINES](../02-design/UI_GUIDELINES.md) · [DEPLOYMENT](../03-engineering/DEPLOYMENT.md)
+> ** [CLAUDE.md](../../CLAUDE.md) · [CHANGELOG](./CHANGELOG.md) · [PRD](../00-product/PRD.md) · [SRS](../00-product/SRS.md) · [UI_GUIDELINES](../02-design/UI_GUIDELINES.md) · [DEPLOYMENT](../03-engineering/DEPLOYMENT.md)
 > **Related:
-** [CONTRIBUTING](../03-engineering/CONTRIBUTING.md) · [LESSONS_LEARNED](../03-engineering/LESSONS_LEARNED.md) · [IMPLEMENTATION_STATUS](../03-engineering/IMPLEMENTATION_STATUS.md) · [PRODUCT_DECISIONS](../00-product/PRODUCT_DECISIONS.md)
+> ** [CONTRIBUTING](../03-engineering/CONTRIBUTING.md) · [LESSONS_LEARNED](../03-engineering/LESSONS_LEARNED.md) · [IMPLEMENTATION_STATUS](../03-engineering/IMPLEMENTATION_STATUS.md) · [PRODUCT_DECISIONS](../00-product/PRODUCT_DECISIONS.md)
 
 ---
 
@@ -28,10 +28,10 @@ The governing principle of this document:
 > Everything else is the team talking to itself. This is the product talking to a Chartered Accountant who is deciding
 > whether to keep trusting it with their client's documents — and who did not ask what changed.
 
-That single fact settles most of what follows. Because a release note is **product surface**, it speaks in the
-product's voice rather than inventing one (§2). Because it is read by a professional, it makes only claims the product's
-documents already grant (Rules). And because its reader did not come looking, it earns their attention or wastes it —
-there is no third outcome.
+That single fact settles most of what follows. Because a release note is **product surface**, it speaks in the product's
+voice rather than inventing one (§2). Because it is read by a professional, it makes only claims the product's documents
+already grant (Rules). And because its reader did not come looking, it earns their attention or wastes it — there is no
+third outcome.
 
 **What shipped is not what changed.** [CHANGELOG](./CHANGELOG.md) already holds the chronological record of changes, and
 it states the boundary from its side: this document *"addresses an audience and explains shipped behavior in terms of
@@ -224,8 +224,8 @@ applied honestly, including when the answer is inconvenient (§2).
   [PRODUCT_DECISIONS](../00-product/PRODUCT_DECISIONS.md).
 - **What the work taught** — [LESSONS_LEARNED](../03-engineering/LESSONS_LEARNED.md)'s, and never a user's concern.
 - **Positioning and competitive claims
-  ** — [PRODUCT_VISION §12](../00-product/PRODUCT_VISION.md#12-competitive-positioning)'s.
-  A release note reports; it does not persuade (§2).
+  ** — [PRODUCT_VISION §12](../00-product/PRODUCT_VISION.md#12-competitive-positioning)'s. A release note reports; it
+  does not persuade (§2).
 - **Roadmap and intent** — what is coming. A note describes what shipped; a promise made here is a commitment nobody
   approved ([PRODUCT_DECISIONS](../00-product/PRODUCT_DECISIONS.md#4-deferred-decisions)).
 
@@ -247,14 +247,13 @@ read and acted on* is the difference between text that can be fixed and text tha
 | **Archived**   | Grouped away as a release recedes — old, not untrue. Archiving changes **prominence**, never content or order. An archived note that cannot be read is a deleted one with extra steps.                                                                                               |
 
 **Every stage has an exit.** *Proposed* ends when the change is judged to matter or set aside as invisible to the
-reader.
-*Reviewed* ends in approval or a finding — a note that cannot be checked against what shipped does not publish, because
-an unverifiable note is the one failure this document cannot survive (Rules). *Published* is terminal: it ends only into
-*Superseded* or *Archived*, and **never back into an editable state**.
+reader. *Reviewed* ends in approval or a finding — a note that cannot be checked against what shipped does not publish,
+because an unverifiable note is the one failure this document cannot survive (Rules). *Published* is terminal: it ends
+only into *Superseded* or *Archived*, and **never back into an editable state**.
 
 **Draft versus published record.** Before *Published*, a note is a **draft**: rewrite it, argue about it, discard it —
-nothing depends on it. After *Published*, it is **a statement made to a professional**, and it can only be added to.
-The two look identical and behave oppositely, which is why the boundary is named rather than assumed. Everything this
+nothing depends on it. After *Published*, it is **a statement made to a professional**, and it can only be added to. The
+two look identical and behave oppositely, which is why the boundary is named rather than assumed. Everything this
 document protects lives on one side of it.
 
 ---
@@ -305,10 +304,9 @@ true* and *this sounded right to whoever wrote it on release day*.
 ## 8. Chronology and Release Grouping
 
 **Newest first**, matching [CHANGELOG §8](./CHANGELOG.md#8-chronology-and-versioning). Two reasons, and the second is
-the
-stronger one. The reader's question is almost always *what changed recently* — they are catching up, not studying the
-product's history, and a record that grows forever must not require reaching its end. And a reader moving between the
-two records should never have to reorient: consistency across them costs nothing and is noticed only when absent.
+the stronger one. The reader's question is almost always *what changed recently* — they are catching up, not studying
+the product's history, and a record that grows forever must not require reaching its end. And a reader moving between
+the two records should never have to reorient: consistency across them costs nothing and is noticed only when absent.
 
 The unit differs even though the order does not: the changelog is chronological **by change**; this is chronological
 **by release**. A release groups changes, so this record is coarser and derived — it never dates a change, only a
@@ -330,8 +328,8 @@ The frozen documents own versioning of their **own artifacts** — the API
 ([PROMPTS §6](../04-ai/PROMPTS.md#6-prompt-versioning)). **No document defines a product or release version scheme**,
 and
 [CHANGELOG §8](./CHANGELOG.md#8-chronology-and-versioning) already establishes that introducing one is an **ADR**,
-raised
-per [CLAUDE.md §8](../../CLAUDE.md) — not a decision made by a release document because a reader would like a number.
+raised per [CLAUDE.md §8](../../CLAUDE.md) — not a decision made by a release document because a reader would like a
+number.
 
 Until such a scheme exists, releases are grouped by what the frozen documents already provide: the **milestones**
 ([IMPLEMENTATION_PLAN §4](../03-engineering/IMPLEMENTATION_PLAN.md#4-milestones)), where M6 is the MVP/beta of
@@ -344,8 +342,7 @@ decide whether something applies to them, and it would mean nothing.
 ## 9. Release Notes Checklist
 
 Every note is assessed against this checklist before publication. A "no" is a finding to resolve, not a detail to
-defer —
-after publication there is no revision, only supersession (§5).
+defer — after publication there is no revision, only supersession (§5).
 
 - [ ] **Real release?** — It shipped, to real readers; nothing here is anticipated, imminent, or nearly done (Rules).
 - [ ] **Audience impact clear?** — The reader can tell what is different for them, not only that something changed (§3).
@@ -357,9 +354,9 @@ after publication there is no revision, only supersession (§5).
   changelog entry (Rules).
 - [ ] **No invented history?** — Nothing described ahead of shipping, smoothed, or filled in; what is unknown is left
   unclaimed (§2).
-- [ ] **Concise and readable?** — In the product's
-  voice ([UI_GUIDELINES §3](../02-design/UI_GUIDELINES.md#3-tone-and-voice)),
-  in the reader's vocabulary, and short enough to be read in the seconds it will get (§6).
+- [ ] **Concise and readable?** — In the product's voice
+  ([UI_GUIDELINES §3](../02-design/UI_GUIDELINES.md#3-tone-and-voice)), in the reader's vocabulary, and short enough to
+  be read in the seconds it will get (§6).
 - [ ] **Review complete?** — Checked against **what shipped**, not against whether it reads well (§5).
 - [ ] **Consistent with changelog and sources?** — It agrees with [CHANGELOG](./CHANGELOG.md) and the owning documents
   about the same release; a disagreement is a finding, not a difference of emphasis (§7).
@@ -394,8 +391,8 @@ after publication there is no revision, only supersession (§5).
 **Review outcomes** — each review resolves to exactly one:
 
 - **Approved** — true, traceable, in the reader's terms, and safe to publish as written (§9).
-- **Refinement required** — the release is real but the note is not publishable: an unclear impact, an unnamed source,
-  a claim beyond what the documents grant, a register written for us.
+- **Refinement required** — the release is real but the note is not publishable: an unclear impact, an unnamed source, a
+  claim beyond what the documents grant, a register written for us.
 - **Changelog review required** — the note has no grouping to derive from, or disagrees with one; routed to the
   [Changelog Review Process](./CHANGELOG.md#changelog-review-process). **A note is never the fix for a missing record.**
 - **Documentation review required** — the note reveals that an owning document does not describe what shipped; routed
@@ -421,10 +418,10 @@ a published note**, which is not an available result at any stage (§5).
 [CHANGELOG](./CHANGELOG.md), [CONTRIBUTING](../03-engineering/CONTRIBUTING.md),
 [DEPLOYMENT](../03-engineering/DEPLOYMENT.md), [UI_GUIDELINES](../02-design/UI_GUIDELINES.md),
 [PRD](../00-product/PRD.md)/[SRS](../00-product/SRS.md), and the relevant [ADRs](../01-architecture/decisions/). When
-this document and one of them disagree, **they win** and this document is corrected
-([CLAUDE.md §3](../../CLAUDE.md)) — *this document*, meaning its governance. **A published note is never corrected to
-agree with anything**; if a note and a document disagree about what shipped, that is a finding about both, resolved by
-publishing here and correcting there (§5).
+this document and one of them disagree, **they win** and this document is corrected ([CLAUDE.md §3](../../CLAUDE.md)) —
+*this document*, meaning its governance. **A published note is never corrected to agree with anything**; if a note and a
+document disagree about what shipped, that is a finding about both, resolved by publishing here and correcting there
+(§5).
 
 ---
 
@@ -455,8 +452,8 @@ restated here.
 *This document holds LedgerAI's audience-facing record of what shipped — what a release gives the professional, grouped
 so they can tell whether it applies, and traceable so the team can verify it before saying it; it does not override the
 frozen documents under [`docs/`](../), and it grants, decides, and defines nothing. It describes what shipped without
-recording what changed ([CHANGELOG](./CHANGELOG.md) does), without deciding what the product should do
-([PRD](../00-product/PRD.md) and [SRS](../00-product/SRS.md) do), without explaining how it was built (the
+recording what changed ([CHANGELOG](./CHANGELOG.md) does), without deciding what the product should
+do ([PRD](../00-product/PRD.md) and [SRS](../00-product/SRS.md) do), without explaining how it was built (the
 [ADRs](../01-architecture/decisions/) do), without teaching from
 it ([LESSONS_LEARNED](../03-engineering/LESSONS_LEARNED.md)
 does), and without inventing a voice ([UI_GUIDELINES](../02-design/UI_GUIDELINES.md#3-tone-and-voice) owns it). The

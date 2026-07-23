@@ -7,7 +7,7 @@
 > **Related (frozen):
 > ** [Product Vision](./PRODUCT_VISION.md) · [Product Decisions](./PRODUCT_DECISIONS.md) · [PRD](./PRD.md)
 > **Downstream:
-** [Architecture](../01-architecture/ARCHITECTURE.md) · [Security](../01-architecture/SECURITY.md) · [AI Architecture](../01-architecture/AI_ARCHITECTURE.md)
+> ** [Architecture](../01-architecture/ARCHITECTURE.md) · [Security](../01-architecture/SECURITY.md) · [AI Architecture](../01-architecture/AI_ARCHITECTURE.md)
 
 ---
 
@@ -16,11 +16,9 @@
 ### 1.1 Purpose
 
 This SRS translates the approved [PRD](./PRD.md) into precise, testable software behavior. It defines **what the
-software
-MUST do**, **how it MUST behave**, the **business rules**, **validation rules**, **state transitions**, and
+software MUST do**, **how it MUST behave**, the **business rules**, **validation rules**, **state transitions**, and
 **constraints** — while remaining **implementation-independent**. It is the contract from which senior software
-engineers
-and QA engineers can independently build and verify the LedgerAI MVP.
+engineers and QA engineers can independently build and verify the LedgerAI MVP.
 
 ### 1.2 Scope
 
@@ -173,11 +171,11 @@ Business and technical constraints are catalogued in [§12](#12-constraints).
 
 **Functional Requirements**
 
-- **FR-AUTH-001:** The system MUST allow a new User to register with the required credentials (
-  see [VR-001](#6-validation-rules)).
+- **FR-AUTH-001:** The system MUST allow a new User to register with the required credentials
+  (see [VR-001](#6-validation-rules)).
 - **FR-AUTH-002:** The system MUST authenticate a User presenting valid credentials and MUST establish a session.
-- **FR-AUTH-003:** The system MUST reject invalid credentials with a non-revealing message (
-  see [BR-020](#5-business-rules)).
+- **FR-AUTH-003:** The system MUST reject invalid credentials with a non-revealing message
+  (see [BR-020](#5-business-rules)).
 - **FR-AUTH-004:** The system MUST expire sessions after a defined period of inactivity/validity and MUST allow seamless
   renewal while the User is active.
 - **FR-AUTH-005:** The system MUST allow a User to sign out, immediately terminating access to protected areas.
@@ -185,15 +183,14 @@ Business and technical constraints are catalogued in [§12](#12-constraints).
 - **FR-AUTH-007:** The system MUST NOT store User passwords in recoverable form.
 - **FR-AUTH-008:** The system SHOULD limit repeated failed authentication attempts to deter brute-force attempts.
 
-**Preconditions:** None for registration; a registered account for sign-in.
-**Trigger:** User submits registration or sign-in.
-**Main Flow:** User submits valid data → system validates → account created (register) or session established (
-sign-in) → User reaches an authenticated area.
-**Alternate Flows:** Already-authenticated User navigating to sign-in SHOULD be routed to an authenticated area.
-**Exception Flows:** Invalid input → validation error ([VR-001](#6-validation-rules)/[VR-002](#6-validation-rules));
-duplicate registration → rejection ([BR-021](#5-business-rules)); expired session → User is returned to sign-in.
-**Postconditions:** On success, an authenticated session exists (or an account is created).
-**Business Rules:** BR-020, BR-021, BR-022. **Validation:** VR-001, VR-002.
+**Preconditions:** None for registration; a registered account for sign-in. **Trigger:** User submits registration or
+sign-in. **Main Flow:** User submits valid data → system validates → account created (register) or session established
+(sign-in) → User reaches an authenticated area. **Alternate Flows:** Already-authenticated User navigating to sign-in
+SHOULD be routed to an authenticated area. **Exception Flows:** Invalid input → validation error
+([VR-001](#6-validation-rules)/[VR-002](#6-validation-rules)); duplicate registration → rejection
+([BR-021](#5-business-rules)); expired session → User is returned to sign-in. **Postconditions:** On success, an
+authenticated session exists (or an account is created). **Business Rules:** BR-020, BR-021, BR-022. **Validation:**
+VR-001, VR-002.
 
 ### 4.2 User Profile (`PROF`)
 
@@ -208,13 +205,10 @@ duplicate registration → rejection ([BR-021](#5-business-rules)); expired sess
 - **FR-PROF-004:** The system MUST NOT allow a User to view or edit another User's profile.
 - **FR-PROF-005:** The system SHOULD allow a User to manage basic preferences.
 
-**Preconditions:** Authenticated User.
-**Trigger:** User opens or edits their profile.
-**Main Flow:** User edits fields → system validates → changes persist → confirmation shown.
-**Alternate Flows:** User cancels edit → no changes persist.
-**Exception Flows:** Invalid input → validation error; navigation with unsaved edits → system SHOULD warn.
-**Postconditions:** Profile reflects the latest valid values.
-**Business Rules:** BR-023. **Validation:** VR-003.
+**Preconditions:** Authenticated User. **Trigger:** User opens or edits their profile. **Main Flow:** User edits
+fields → system validates → changes persist → confirmation shown. **Alternate Flows:** User cancels edit → no changes
+persist. **Exception Flows:** Invalid input → validation error; navigation with unsaved edits → system SHOULD warn.
+**Postconditions:** Profile reflects the latest valid values. **Business Rules:** BR-023. **Validation:** VR-003.
 
 ### 4.3 Client Management (`CLNT`)
 
@@ -222,26 +216,24 @@ duplicate registration → rejection ([BR-021](#5-business-rules)); expired sess
 
 **Functional Requirements**
 
-- **FR-CLNT-001:** The system MUST allow a User to create a Client with required details (
-  see [VR-004](#6-validation-rules)).
+- **FR-CLNT-001:** The system MUST allow a User to create a Client with required details
+  (see [VR-004](#6-validation-rules)).
 - **FR-CLNT-002:** The system MUST allow a User to view a list of their Clients and open a single Client workspace.
 - **FR-CLNT-003:** The system MUST allow a User to edit a Client.
 - **FR-CLNT-004:** The system MUST allow a User to archive/deactivate a Client, including one that has associated
   Documents (see [BR-002](#5-business-rules)).
-- **FR-CLNT-005:** The system MUST scope every Client to exactly one owning User (
-  see [BR-001](#5-business-rules), [BR-003](#5-business-rules)).
+- **FR-CLNT-005:** The system MUST scope every Client to exactly one owning User
+  (see [BR-001](#5-business-rules), [BR-003](#5-business-rules)).
 - **FR-CLNT-006:** The system MUST present a Client's Documents, generated outputs, and activity within that Client.
 - **FR-CLNT-007:** The system MUST NOT permanently delete a Client's Documents solely as a side effect of archiving the
   Client, unless the User explicitly requests deletion.
 
-**Preconditions:** Authenticated User.
-**Trigger:** User creates/edits/archives a Client or opens a Client workspace.
-**Main Flow:** User submits Client data → system validates → Client persists and appears in the list.
-**Alternate Flows:** Archiving a Client → Client is hidden from active lists but its data is retained.
-**Exception Flows:** Invalid input → validation error ([VR-004](#6-validation-rules)); duplicate-name → system SHOULD
-warn but MAY allow ([BR-024](#5-business-rules)).
-**Postconditions:** Client state reflects the User's action; ownership scoping is preserved.
-**Business Rules:** BR-001, BR-002, BR-003, BR-024. **Validation:** VR-004.
+**Preconditions:** Authenticated User. **Trigger:** User creates/edits/archives a Client or opens a Client workspace.
+**Main Flow:** User submits Client data → system validates → Client persists and appears in the list. **Alternate
+Flows:** Archiving a Client → Client is hidden from active lists but its data is retained. **Exception Flows:** Invalid
+input → validation error ([VR-004](#6-validation-rules)); duplicate-name → system SHOULD warn but MAY allow
+([BR-024](#5-business-rules)). **Postconditions:** Client state reflects the User's action; ownership scoping is
+preserved. **Business Rules:** BR-001, BR-002, BR-003, BR-024. **Validation:** VR-004.
 
 ### 4.4 Document Upload (`UPLD`)
 
@@ -249,28 +241,26 @@ warn but MAY allow ([BR-024](#5-business-rules)).
 
 **Functional Requirements**
 
-- **FR-UPLD-001:** The system MUST allow a User to upload a Document and associate it with exactly one of their
-  Clients (see [BR-001](#5-business-rules)).
-- **FR-UPLD-002:** The system MUST validate file type and size before accepting a Document (
-  see [VR-005](#6-validation-rules)).
+- **FR-UPLD-001:** The system MUST allow a User to upload a Document and associate it with exactly one of their Clients
+  (see [BR-001](#5-business-rules)).
+- **FR-UPLD-002:** The system MUST validate file type and size before accepting a Document
+  (see [VR-005](#6-validation-rules)).
 - **FR-UPLD-003:** The system MUST reject unsupported or oversized files with a clear, actionable message.
-- **FR-UPLD-004:** The system MUST make upload progress and post-upload Processing status visible to the User (
-  see [§7.1](#71-document-lifecycle)).
+- **FR-UPLD-004:** The system MUST make upload progress and post-upload Processing status visible to the User
+  (see [§7.1](#71-document-lifecycle)).
 - **FR-UPLD-005:** The system MUST initiate Processing for each successfully uploaded Document.
-- **FR-UPLD-006:** The system MUST NOT make a Document available for AI Actions until it reaches the **Ready** state (
-  see [BR-010](#5-business-rules)).
+- **FR-UPLD-006:** The system MUST NOT make a Document available for AI Actions until it reaches the **Ready** state
+  (see [BR-010](#5-business-rules)).
 - **FR-UPLD-007:** The system SHOULD detect and warn on an apparently duplicate upload within the same Client but MAY
   allow it.
 
-**Preconditions:** Authenticated User; at least one Client exists.
-**Trigger:** User submits a file for upload.
-**Main Flow:** User selects file + Client → system validates → file is stored → Document enters **Uploaded → Processing
-**.
-**Alternate Flows:** File already contains selectable text → OCR MAY be skipped (see [§4.6](#46-ocr-ocr)).
+**Preconditions:** Authenticated User; at least one Client exists. **Trigger:** User submits a file for upload. **Main
+Flow:** User selects file + Client → system validates → file is stored → Document enters **Uploaded → Processing
+**. **Alternate Flows:** File already contains selectable text → OCR MAY be skipped (see [§4.6](#46-ocr-ocr)).
 **Exception Flows:** Unsupported/oversized/corrupt/empty file → rejection ([VR-005](#6-validation-rules)); interrupted
-upload → Document MUST NOT appear as Ready; storage failure → **Failed** with a clear message.
-**Postconditions:** A valid Document is stored and progressing through its lifecycle.
-**Business Rules:** BR-001, BR-010, BR-011. **Validation:** VR-005.
+upload → Document MUST NOT appear as Ready; storage failure → **Failed** with a clear message. **Postconditions:** A
+valid Document is stored and progressing through its lifecycle. **Business Rules:** BR-001, BR-010, BR-011.
+**Validation:** VR-005.
 
 ### 4.5 Document Storage (`STOR`)
 
@@ -285,14 +275,12 @@ upload → Document MUST NOT appear as Ready; storage failure → **Failed** wit
   and MUST NOT appear in listings, search, or AI Actions (see [BR-012](#5-business-rules), [BR-013](#5-business-rules)).
 - **FR-STOR-005:** The system MUST NOT return a Deleted Document through any retrieval path.
 
-**Preconditions:** Document exists and is owned by the requesting User.
-**Trigger:** User views, downloads, or deletes a Document.
-**Main Flow:** User requests a Document → system verifies ownership → Document is returned or deleted.
-**Alternate Flows:** None.
-**Exception Flows:** Non-owner access attempt → authorization error ([BR-004](#5-business-rules)); storage unavailable →
-clear error, retrievable later; retrieval of a Deleted Document → not-found behavior.
-**Postconditions:** Document is retrieved, or removed from all User-visible surfaces.
-**Business Rules:** BR-004, BR-012, BR-013. **Validation:** —.
+**Preconditions:** Document exists and is owned by the requesting User. **Trigger:** User views, downloads, or deletes a
+Document. **Main Flow:** User requests a Document → system verifies ownership → Document is returned or deleted.
+**Alternate Flows:** None. **Exception Flows:** Non-owner access attempt → authorization error
+([BR-004](#5-business-rules)); storage unavailable → clear error, retrievable later; retrieval of a Deleted Document →
+not-found behavior. **Postconditions:** Document is retrieved, or removed from all User-visible surfaces. **Business
+Rules:** BR-004, BR-012, BR-013. **Validation:** —.
 
 ### 4.6 OCR (`OCR`)
 
@@ -310,15 +298,12 @@ clear error, retrievable later; retrieval of a Deleted Document → not-found be
   Ready.
 - **FR-OCR-006:** The system SHOULD indicate a low-confidence extraction so the User can judge reliability.
 
-**Preconditions:** A stored Document in Processing.
-**Trigger:** Processing reaches the extraction step.
-**Main Flow:** System determines document nature → extracts text (native or OCR) → on success, Document becomes **Ready
-**.
-**Alternate Flows:** Native text available → OCR skipped.
-**Exception Flows:** Poor scan/blank/unsupported-language/handwritten content → low-quality warning or **Failed**;
-extraction service unavailable → **Failed**/retryable.
-**Postconditions:** Extracted Text exists for a Ready Document, or the Document is Failed.
-**Business Rules:** BR-010, BR-014, BR-015. **Validation:** —.
+**Preconditions:** A stored Document in Processing. **Trigger:** Processing reaches the extraction step. **Main Flow:**
+System determines document nature → extracts text (native or OCR) → on success, Document becomes **Ready
+**. **Alternate Flows:** Native text available → OCR skipped. **Exception Flows:** Poor
+scan/blank/unsupported-language/handwritten content → low-quality warning or **Failed**; extraction service
+unavailable → **Failed**/retryable. **Postconditions:** Extracted Text exists for a Ready Document, or the Document is
+Failed. **Business Rules:** BR-010, BR-014, BR-015. **Validation:** —.
 
 ### 4.7 AI Summary (`SUMM`)
 
@@ -326,27 +311,26 @@ extraction service unavailable → **Failed**/retryable.
 
 **Functional Requirements**
 
-- **FR-SUMM-001:** The system MUST allow a User to obtain a summary for a **Ready** Document (
-  see [BR-010](#5-business-rules)).
-- **FR-SUMM-002:** The summary MUST be generated from the Document's Extracted Text and reflect its key content (
-  see [BR-030](#5-business-rules)).
+- **FR-SUMM-001:** The system MUST allow a User to obtain a summary for a **Ready** Document
+  (see [BR-010](#5-business-rules)).
+- **FR-SUMM-002:** The summary MUST be generated from the Document's Extracted Text and reflect its key content
+  (see [BR-030](#5-business-rules)).
 - **FR-SUMM-003:** The system MUST make summary generation status visible and MUST present failures as clear,
   non-technical messages.
 - **FR-SUMM-004:** The system MUST persist a generated summary with its Document and make it viewable later without
   regeneration.
 - **FR-SUMM-005:** The generated summary MUST be editable by the User (see [BR-031](#5-business-rules)).
-- **FR-SUMM-006:** The system MUST indicate that the summary is AI-assisted and subject to User review (
-  see [BR-032](#5-business-rules)).
+- **FR-SUMM-006:** The system MUST indicate that the summary is AI-assisted and subject to User review
+  (see [BR-032](#5-business-rules)).
 - **FR-SUMM-007:** The system MUST NOT summarize a Document that is not Ready.
 
-**Preconditions:** A Ready Document with Extracted Text.
-**Trigger:** User requests a summary (or the system offers one on reaching Ready).
-**Main Flow:** User requests summary → AI Request created → summary produced → saved and displayed.
-**Alternate Flows:** Summary already exists → system SHOULD show the saved summary and offer regeneration.
-**Exception Flows:** Little/no extractable text → system MUST inform the User; generation timeout/failure → **Failed**
-AI Request with a clear message and retry option (see [§7.2](#72-ai-request-lifecycle)).
-**Postconditions:** A saved, editable summary exists, or the AI Request is Failed.
-**Business Rules:** BR-010, BR-030, BR-031, BR-032. **Validation:** VR-007.
+**Preconditions:** A Ready Document with Extracted Text. **Trigger:** User requests a summary (or the system offers one
+on reaching Ready). **Main Flow:** User requests summary → AI Request created → summary produced → saved and displayed.
+**Alternate Flows:** Summary already exists → system SHOULD show the saved summary and offer regeneration. **Exception
+Flows:** Little/no extractable text → system MUST inform the User; generation timeout/failure → **Failed**
+AI Request with a clear message and retry option (see [§7.2](#72-ai-request-lifecycle)). **Postconditions:** A saved,
+editable summary exists, or the AI Request is Failed. **Business Rules:** BR-010, BR-030, BR-031, BR-032.
+**Validation:** VR-007.
 
 ### 4.8 AI Chat (`CHAT`)
 
@@ -361,20 +345,17 @@ AI Request with a clear message and retry option (see [§7.2](#72-ai-request-lif
 - **FR-CHAT-003:** When the Document does not contain the answer, the system MUST state that rather than fabricating a
   response (see [BR-033](#5-business-rules)).
 - **FR-CHAT-004:** The system MUST retain the conversation within the Document's context for the session/thread.
-- **FR-CHAT-005:** The system MUST indicate that answers are AI-assisted and subject to review (
-  see [BR-032](#5-business-rules)).
+- **FR-CHAT-005:** The system MUST indicate that answers are AI-assisted and subject to review
+  (see [BR-032](#5-business-rules)).
 - **FR-CHAT-006:** The system MUST validate the User's question input (see [VR-007](#6-validation-rules)).
 - **FR-CHAT-007:** The system MUST NOT answer questions against a Document that is not Ready.
 
-**Preconditions:** A Ready Document with Extracted Text.
-**Trigger:** User submits a question.
-**Main Flow:** User asks → AI Request created → grounded answer returned and appended to the thread.
-**Alternate Flows:** Follow-up question → answered within the same Document context.
-**Exception Flows:** Unanswerable-from-document / out-of-scope question → honest "not found/out of scope" response;
-empty/invalid question → validation error ([VR-007](#6-validation-rules)); generation failure → Failed AI Request with
-retry.
-**Postconditions:** The thread contains the question and a grounded answer.
-**Business Rules:** BR-010, BR-030, BR-032, BR-033. **Validation:** VR-007.
+**Preconditions:** A Ready Document with Extracted Text. **Trigger:** User submits a question. **Main Flow:** User
+asks → AI Request created → grounded answer returned and appended to the thread. **Alternate Flows:** Follow-up
+question → answered within the same Document context. **Exception Flows:** Unanswerable-from-document / out-of-scope
+question → honest "not found/out of scope" response; empty/invalid question → validation error
+([VR-007](#6-validation-rules)); generation failure → Failed AI Request with retry. **Postconditions:** The thread
+contains the question and a grounded answer. **Business Rules:** BR-010, BR-030, BR-032, BR-033. **Validation:** VR-007.
 
 ### 4.9 AI Email Generation (`EMAIL`)
 
@@ -384,23 +365,20 @@ retry.
 
 - **FR-EMAIL-001:** The system MUST allow a User to generate an email draft from an instruction and/or a selected
   Document/Client context.
-- **FR-EMAIL-002:** The generated draft MUST be professional in tone and MUST be editable before use (
-  see [BR-031](#5-business-rules)).
+- **FR-EMAIL-002:** The generated draft MUST be professional in tone and MUST be editable before use
+  (see [BR-031](#5-business-rules)).
 - **FR-EMAIL-003:** The system MUST allow the User to regenerate or refine a draft.
 - **FR-EMAIL-004:** The system MUST allow a draft to be saved/associated with the Client.
 - **FR-EMAIL-005:** The system MUST require explicit User review before any external use and MUST NOT send email on the
   User's behalf in V1 (see [BR-034](#5-business-rules)).
 - **FR-EMAIL-006:** The system MUST validate the generation instruction input (see [VR-007](#6-validation-rules)).
 
-**Preconditions:** Authenticated User; optional Document/Client context (Document, if used, MUST be Ready).
-**Trigger:** User requests an email draft.
-**Main Flow:** User provides instruction/context → AI Request created → draft produced → User reviews/edits → optionally
-saves.
-**Alternate Flows:** User regenerates/refines → new draft produced.
-**Exception Flows:** Vague instruction/missing context → system SHOULD produce a best-effort draft and MAY prompt for
-clarification; generation failure → Failed AI Request with retry.
-**Postconditions:** An editable email draft exists; nothing is sent by the system.
-**Business Rules:** BR-031, BR-032, BR-034. **Validation:** VR-007.
+**Preconditions:** Authenticated User; optional Document/Client context (Document, if used, MUST be Ready). **Trigger:**
+User requests an email draft. **Main Flow:** User provides instruction/context → AI Request created → draft produced →
+User reviews/edits → optionally saves. **Alternate Flows:** User regenerates/refines → new draft produced. **Exception
+Flows:** Vague instruction/missing context → system SHOULD produce a best-effort draft and MAY prompt for clarification;
+generation failure → Failed AI Request with retry. **Postconditions:** An editable email draft exists; nothing is sent
+by the system. **Business Rules:** BR-031, BR-032, BR-034. **Validation:** VR-007.
 
 ### 4.10 Report Generation (`RPT`)
 
@@ -410,24 +388,22 @@ clarification; generation failure → Failed AI Request with retry.
 
 - **FR-RPT-001:** The system MUST allow a User to generate a report from a **Ready** Document's content (V1 scope is
   single-document; see [BR-035](#5-business-rules)).
-- **FR-RPT-002:** The report MUST be structured, readable, and reflect the underlying content (
-  see [BR-030](#5-business-rules)).
-- **FR-RPT-003:** The system MUST allow the User to review, edit, and save the report to the Client (
-  see [BR-031](#5-business-rules)).
+- **FR-RPT-002:** The report MUST be structured, readable, and reflect the underlying content
+  (see [BR-030](#5-business-rules)).
+- **FR-RPT-003:** The system MUST allow the User to review, edit, and save the report to the Client
+  (see [BR-031](#5-business-rules)).
 - **FR-RPT-004:** The system MUST allow the User to export/download the report in a common document format.
-- **FR-RPT-005:** The system MUST indicate that the report is AI-assisted and subject to review (
-  see [BR-032](#5-business-rules)).
-- **FR-RPT-006:** The system MUST validate any User-supplied report generation input (
-  see [VR-008](#6-validation-rules)).
+- **FR-RPT-005:** The system MUST indicate that the report is AI-assisted and subject to review
+  (see [BR-032](#5-business-rules)).
+- **FR-RPT-006:** The system MUST validate any User-supplied report generation input
+  (see [VR-008](#6-validation-rules)).
 
-**Preconditions:** A Ready Document with Extracted Text.
-**Trigger:** User requests report generation.
-**Main Flow:** User requests → AI Request created → report produced → User reviews/edits → saves and/or exports.
-**Alternate Flows:** User regenerates → new report produced.
-**Exception Flows:** Insufficient content → system MUST inform the User; generation failure → Failed AI Request with
-retry; export failure → clear error, retry (see [§7.3](#73-report-lifecycle)).
-**Postconditions:** A saved and/or exported, editable report exists.
-**Business Rules:** BR-030, BR-031, BR-032, BR-035. **Validation:** VR-008.
+**Preconditions:** A Ready Document with Extracted Text. **Trigger:** User requests report generation. **Main Flow:**
+User requests → AI Request created → report produced → User reviews/edits → saves and/or exports. **Alternate Flows:**
+User regenerates → new report produced. **Exception Flows:** Insufficient content → system MUST inform the User;
+generation failure → Failed AI Request with retry; export failure → clear error, retry
+(see [§7.3](#73-report-lifecycle)). **Postconditions:** A saved and/or exported, editable report exists. **Business
+Rules:** BR-030, BR-031, BR-032, BR-035. **Validation:** VR-008.
 
 ### 4.11 Global Search (`SRCH`)
 
@@ -444,13 +420,10 @@ retry; export failure → clear error, retry (see [§7.3](#73-report-lifecycle))
 - **FR-SRCH-006:** An empty or no-results query MUST return a clear, helpful state.
 - **FR-SRCH-007:** The system MUST validate the search query input (see [VR-006](#6-validation-rules)).
 
-**Preconditions:** Authenticated User.
-**Trigger:** User submits a search query.
-**Main Flow:** User queries → system returns owner-scoped, ranked results → User navigates to an item.
-**Alternate Flows:** No results → helpful empty state.
+**Preconditions:** Authenticated User. **Trigger:** User submits a search query. **Main Flow:** User queries → system
+returns owner-scoped, ranked results → User navigates to an item. **Alternate Flows:** No results → helpful empty state.
 **Exception Flows:** Invalid/oversized query → validation error ([VR-006](#6-validation-rules)); querying before content
-is processed → such content simply does not appear.
-**Postconditions:** The User sees relevant, owner-scoped results.
+is processed → such content simply does not appear. **Postconditions:** The User sees relevant, owner-scoped results.
 **Business Rules:** BR-005, BR-013. **Validation:** VR-006.
 
 ### 4.12 Activity Timeline (`TMLN`)
@@ -463,19 +436,16 @@ is processed → such content simply does not appear.
   with an accurate timestamp.
 - **FR-TMLN-002:** The system MUST allow a User to view the timeline at the account level and/or per Client, in
   chronological order.
-- **FR-TMLN-003:** Timeline entries MUST be scoped to the owning User and MUST be read-only (
-  see [BR-006](#5-business-rules), [BR-016](#5-business-rules)).
+- **FR-TMLN-003:** Timeline entries MUST be scoped to the owning User and MUST be read-only
+  (see [BR-006](#5-business-rules), [BR-016](#5-business-rules)).
 - **FR-TMLN-004:** The system MUST NOT allow a User to edit or delete individual timeline entries.
 - **FR-TMLN-005:** The system SHOULD record notable failed actions so the record is complete and honest.
 
-**Preconditions:** Authenticated User; recorded activity exists.
-**Trigger:** An action completes, or the User opens the timeline.
-**Main Flow:** Action occurs → entry recorded → entry visible in chronological order.
-**Alternate Flows:** Empty timeline (first-run) → helpful empty state.
-**Exception Flows:** High activity volume → the timeline MUST remain readable (e.g., via paging/lazy loading — behavior,
-not implementation).
-**Postconditions:** The timeline reflects the User's actions accurately.
-**Business Rules:** BR-006, BR-016. **Validation:** —.
+**Preconditions:** Authenticated User; recorded activity exists. **Trigger:** An action completes, or the User opens the
+timeline. **Main Flow:** Action occurs → entry recorded → entry visible in chronological order. **Alternate Flows:**
+Empty timeline (first-run) → helpful empty state. **Exception Flows:** High activity volume → the timeline MUST remain
+readable (e.g., via paging/lazy loading — behavior, not implementation). **Postconditions:** The timeline reflects the
+User's actions accurately. **Business Rules:** BR-006, BR-016. **Validation:** —.
 
 ---
 

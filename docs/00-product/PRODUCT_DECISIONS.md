@@ -43,16 +43,16 @@ If the PRD says "build X to spec Y," this document says "we chose to build X ins
 - **Every decision needs a rationale.** No entry is complete without the reasoning behind it.
 - **Cross-reference.** Link to the Product Vision, ADRs, and PRD so decisions stay traceable.
 - **Architecture-level decisions** additionally get a formal ADR under [
-  `01-architecture/decisions/`](../01-architecture/decisions/);
-  this document links to them rather than duplicating them.
+  `01-architecture/decisions/`](../01-architecture/decisions/); this document links to them rather than duplicating
+  them.
 
 ---
 
 ## 1. Product Principles
 
 Every future decision must satisfy the product principles inherited from
-the [Product Vision](./PRODUCT_VISION.md#8-product-principles).
-A decision that violates these should be rejected or escalated.
+the [Product Vision](./PRODUCT_VISION.md#8-product-principles). A decision that violates these should be rejected or
+escalated.
 
 **A feature must serve at least one core value:**
 
@@ -94,8 +94,7 @@ limitations.
 **Strategic rationale:** LedgerAI wins by being the *thin, fast, AI-native layer* on top of documents that other systems
 produce. Every boundary above protects that wedge. Crossing any of them trades a defensible, focused product for a
 crowded, capital-intensive one. When a feature request pushes on a boundary, that is a signal to say no — or to solve
-the
-underlying need with AI on the document layer instead.
+the underlying need with AI on the document layer instead.
 
 ---
 
@@ -148,7 +147,7 @@ Ideas **considered and intentionally rejected.** Recorded so they are not revisi
 
 | ID     | Rejected idea                                  | Why rejected                                                                                                                                                                           |
 |--------|------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| RI-001 | **Build an ERP**                               | Violates a core product boundary. Heavyweight, capital-intensive, crowded market; destroys our AI-first, lightweight advantage.                                                        | 
+| RI-001 | **Build an ERP**                               | Violates a core product boundary. Heavyweight, capital-intensive, crowded market; destroys our AI-first, lightweight advantage.                                                        |
 | RI-002 | **Build bookkeeping functionality**            | Makes us a system of record with liability for correctness; duplicates trusted incumbent tools; off-strategy.                                                                          |
 | RI-003 | **Build tax filing**                           | Legal liability, per-jurisdiction certification, deadline risk — a different business entirely.                                                                                        |
 | RI-004 | **Build payroll**                              | Compliance-heavy, error-intolerant specialist domain unrelated to document intelligence.                                                                                               |
@@ -168,23 +167,23 @@ sequenced after P0; **—** = not applicable.
 
 | Feature                           | Included? | Reason                                                                              | Priority |
 |-----------------------------------|-----------|-------------------------------------------------------------------------------------|----------|
-| **Authentication**                | ✅ Yes     | Table stakes; gates all client data.                                                | P0       |
-| **User Profile**                  | ✅ Yes     | Basic account identity and settings.                                                | P1       |
-| **Client Management**             | ✅ Yes     | Organizing work by client is the professional's mental model.                       | P0       |
-| **Document Upload**               | ✅ Yes     | Entry point of the entire product loop.                                             | P0       |
-| **Document Storage**              | ✅ Yes     | Required to persist and retrieve uploaded documents.                                | P0       |
-| **OCR**                           | ✅ Yes     | Many inputs are scans; without it the AI layer fails on a large share of documents. | P0       |
-| **AI Document Summary**           | ✅ Yes     | Highest-leverage, most immediate time-saver.                                        | P0       |
-| **AI Chat (Document Q&A)**        | ✅ Yes     | Core AI-native interaction; grounded answers over documents.                        | P0       |
-| **AI Email Generation**           | ✅ Yes     | Direct, repetitive-work win with clear time savings.                                | P1       |
-| **Report Generation**             | ✅ Yes     | Turns understood documents into deliverables.                                       | P1       |
-| **Global Search**                 | ✅ Yes     | Solves the "find that one document" pain across everything.                         | P1       |
-| **Activity Timeline**             | ✅ Yes     | Traceability and trust; lightweight to build.                                       | P1       |
-| **Integrations** (Tally/QB/Xero…) | ❌ No      | Out of scope (DD-006); high effort, unproven value pre-MVP.                         | —        |
-| **Bookkeeping**                   | ❌ No      | Boundary violation (RI-002).                                                        | —        |
-| **Payroll**                       | ❌ No      | Boundary violation (RI-004).                                                        | —        |
-| **Compliance reminders**          | ❌ No      | Deferred (RI-005); adds surface area outside the core loop.                         | —        |
-| **Bank reconciliation**           | ❌ No      | Moves toward system-of-record / bookkeeping territory; out of scope for MVP.        | —        |
+| **Authentication**                | ✅ Yes    | Table stakes; gates all client data.                                                | P0       |
+| **User Profile**                  | ✅ Yes    | Basic account identity and settings.                                                | P1       |
+| **Client Management**             | ✅ Yes    | Organizing work by client is the professional's mental model.                       | P0       |
+| **Document Upload**               | ✅ Yes    | Entry point of the entire product loop.                                             | P0       |
+| **Document Storage**              | ✅ Yes    | Required to persist and retrieve uploaded documents.                                | P0       |
+| **OCR**                           | ✅ Yes    | Many inputs are scans; without it the AI layer fails on a large share of documents. | P0       |
+| **AI Document Summary**           | ✅ Yes    | Highest-leverage, most immediate time-saver.                                        | P0       |
+| **AI Chat (Document Q&A)**        | ✅ Yes    | Core AI-native interaction; grounded answers over documents.                        | P0       |
+| **AI Email Generation**           | ✅ Yes    | Direct, repetitive-work win with clear time savings.                                | P1       |
+| **Report Generation**             | ✅ Yes    | Turns understood documents into deliverables.                                       | P1       |
+| **Global Search**                 | ✅ Yes    | Solves the "find that one document" pain across everything.                         | P1       |
+| **Activity Timeline**             | ✅ Yes    | Traceability and trust; lightweight to build.                                       | P1       |
+| **Integrations** (Tally/QB/Xero…) | ❌ No     | Out of scope (DD-006); high effort, unproven value pre-MVP.                         | —        |
+| **Bookkeeping**                   | ❌ No     | Boundary violation (RI-002).                                                        | —        |
+| **Payroll**                       | ❌ No     | Boundary violation (RI-004).                                                        | —        |
+| **Compliance reminders**          | ❌ No     | Deferred (RI-005); adds surface area outside the core loop.                         | —        |
+| **Bank reconciliation**           | ❌ No     | Moves toward system-of-record / bookkeeping territory; out of scope for MVP.        | —        |
 
 ---
 
@@ -262,6 +261,5 @@ Records how product decisions evolve over time. Add a row whenever a decision is
 ---
 
 *This is a living document. When a decision changes, add a new entry, mark the prior one `Superseded`, and log it
-above —
-never rewrite history in place. Architecture-level decisions are additionally formalized
+above — never rewrite history in place. Architecture-level decisions are additionally formalized
 as [ADRs](../01-architecture/decisions/).*

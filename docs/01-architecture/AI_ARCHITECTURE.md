@@ -4,7 +4,7 @@
 > **Owner:** Founding Engineer / Principal AI Architect
 > **Last updated:** 2026-07-14
 > **Upstream (frozen):
-** [Product Vision](../00-product/PRODUCT_VISION.md) · [Product Decisions](../00-product/PRODUCT_DECISIONS.md) · [PRD](../00-product/PRD.md) · [SRS](../00-product/SRS.md) · [Architecture](./ARCHITECTURE.md) · [Database](./DATABASE.md) · [API Spec](./API_SPEC.md) · [Security](./SECURITY.md)
+> ** [Product Vision](../00-product/PRODUCT_VISION.md) · [Product Decisions](../00-product/PRODUCT_DECISIONS.md) · [PRD](../00-product/PRD.md) · [SRS](../00-product/SRS.md) · [Architecture](./ARCHITECTURE.md) · [Database](./DATABASE.md) · [API Spec](./API_SPEC.md) · [Security](./SECURITY.md)
 > **Related:** [AI docs](../04-ai/) · [ADRs](./decisions/)
 
 ---
@@ -56,8 +56,8 @@ judged.
 ### Transparency
 
 - Users SHOULD understand **when content is AI-generated** ([BR-032](../00-product/SRS.md#5-business-rules)).
-- AI SHOULD **communicate uncertainty** when the available information is
-  insufficient ([BR-033](../00-product/SRS.md#5-business-rules)).
+- AI SHOULD **communicate uncertainty** when the available information is insufficient
+  ([BR-033](../00-product/SRS.md#5-business-rules)).
 - AI MUST **never imply confidence that exceeds the available evidence**.
 
 ### Professional Quality
@@ -148,8 +148,7 @@ Non-negotiable rules binding every current and future AI capability. They operat
 ## 3. AI Capability Map
 
 The MVP AI capabilities. Each maps to an SRS functional area and produces an editable, review-required output (except
-OCR,
-which is a preparatory step).
+OCR, which is a preparatory step).
 
 | Capability                 | Purpose                                                                                          | Input                                                                              | Output                                         | Dependencies                         | User interaction                                                                                       |
 |----------------------------|--------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------|------------------------------------------------|--------------------------------------|--------------------------------------------------------------------------------------------------------|
@@ -209,20 +208,20 @@ sequenceDiagram
 
 **Step-by-step:**
 
-1. **User → API.** The user invokes an AI action via an approved
-   endpoint ([API_SPEC §10–13](./API_SPEC.md#10-ai-summary-module)).
-2. **Authorization.** Authenticate, then validate the user owns the target document/resource; fail closed
-   otherwise ([SECURITY §5](./SECURITY.md#5-authorization)).
+1. **User → API.** The user invokes an AI action via an approved endpoint
+   ([API_SPEC §10–13](./API_SPEC.md#10-ai-summary-module)).
+2. **Authorization.** Authenticate, then validate the user owns the target document/resource; fail closed otherwise
+   ([SECURITY §5](./SECURITY.md#5-authorization)).
 3. **Document retrieval.** Load the document and its `DocumentContent`; enforce the **Ready**
    precondition ([BR-010](../00-product/SRS.md#5-business-rules)).
 4. **OCR (conditional).** If extracted text is missing/incomplete, ensure extraction has run (native or OCR) — normally
    already done during upload processing ([§5](#5-ai-pipeline)).
 5. **Prompt Builder.** Deterministically assemble the prompt from separated channels ([§8](#8-prompt-architecture))
    using only the minimal necessary content.
-6. **AI Provider (via port).** Call the provider through the **AI port**; the adapter maps
-   request/response ([§6](#6-provider-architecture)).
-7. **Output validation.** Check the response for emptiness, malformation, groundedness, and
-   safety ([§11](#11-ai-output-validation)); retry within limits or fail.
+6. **AI Provider (via port).** Call the provider through the **AI port**; the adapter maps request/response
+   ([§6](#6-provider-architecture)).
+7. **Output validation.** Check the response for emptiness, malformation, groundedness, and safety
+   ([§11](#11-ai-output-validation)); retry within limits or fail.
 8. **Persistence.** On success, persist the editable `AIOutput`, transition the `AIRequest` to `COMPLETED`, and record
    activity; on failure, mark `FAILED` with a reason ([DATABASE §11](./DATABASE.md#11-transaction-boundaries)).
 9. **Response.** Return the AI-assisted, editable result (or a clear, retryable failure). Long-running work MAY return
@@ -301,9 +300,8 @@ Cfg -. selects/credentials .-> Adapter
 choice irreversible, leak vendor concepts into the domain, and
 violate [PD-010](../00-product/PRODUCT_DECISIONS.md#3-accepted-product-decisions)
 and the [Guiding Architectural Rules](./ARCHITECTURE.md#guiding-architectural-rules). Isolation behind the port keeps
-the
-deferred provider decision ([DD-002](../00-product/PRODUCT_DECISIONS.md#4-deferred-decisions)) genuinely reversible and
-lets a fallback/second provider be added as another adapter with no change to services.
+the deferred provider decision ([DD-002](../00-product/PRODUCT_DECISIONS.md#4-deferred-decisions)) genuinely reversible
+and lets a fallback/second provider be added as another adapter with no change to services.
 
 ---
 
@@ -321,8 +319,7 @@ Provider-neutral, no vendors named ([DD-002](../00-product/PRODUCT_DECISIONS.md#
 - **Context window.** Model selection and [chunking](#5-ai-pipeline) must respect the chosen model's context limits;
   content is sized to fit with margin.
 - **Future upgrades.** Because selection lives behind the port/adapter and configuration, upgrading or swapping models
-  is
-  additive ([§16](#16-future-ai-evolution)) and does not touch business logic.
+  is additive ([§16](#16-future-ai-evolution)) and does not touch business logic.
 
 Concrete model routing is a **future** capability ([§16](#16-future-ai-evolution)); the MVP MAY use a single default
 model, chosen at implementation time behind the port.
@@ -343,10 +340,9 @@ prompt text appears in this document.)
 | **Formatting Instructions** | Desired output shape (e.g., structured summary, email format).                          | Produces predictable, validatable output ([§11](#11-ai-output-validation)).                                                      |
 
 **Separation is a security control, not just tidiness:** keeping system instructions, untrusted user input, and
-untrusted
-document content in distinct channels is what lets the system treat document/user text as *data* and resist **prompt
-injection** ([SECURITY §10](./SECURITY.md#10-ai-security)). Centralizing prompt
-composition ([AI Design Rules](#ai-design-rules))
+untrusted document content in distinct channels is what lets the system treat document/user text as *data* and resist
+**prompt injection** ([SECURITY §10](./SECURITY.md#10-ai-security)). Centralizing prompt composition
+([AI Design Rules](#ai-design-rules))
 ensures every capability applies the same guardrails.
 
 ---
@@ -584,5 +580,4 @@ regression.
 *This is the authoritative AI reference for the LedgerAI MVP — architecture and governance, not prompts or code, and
 provider-neutral. It MUST remain consistent with the frozen Product Vision, Product Decisions, PRD, SRS, Architecture,
 Database, API Spec, and Security. Major decisions are summarized in [§17](#17-ai-decision-summary) and formalized as
-ADRs;
-AI content specifics (prompt templates, provider configuration, evaluation) live under [`../04-ai/`](../04-ai/).*
+ADRs; AI content specifics (prompt templates, provider configuration, evaluation) live under [`../04-ai/`](../04-ai/).*

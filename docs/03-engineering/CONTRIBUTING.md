@@ -4,9 +4,9 @@
 > **Owner:** Principal Engineering Governance Lead
 > **Last updated:** 2026-07-16
 > **Upstream (frozen):
-** [CLAUDE.md](../../CLAUDE.md) · [IMPLEMENTATION_PLAN](./IMPLEMENTATION_PLAN.md) · [PRODUCT_DECISIONS](../00-product/PRODUCT_DECISIONS.md) · [ARCHITECTURE](../01-architecture/ARCHITECTURE.md)
+> ** [CLAUDE.md](../../CLAUDE.md) · [IMPLEMENTATION_PLAN](./IMPLEMENTATION_PLAN.md) · [PRODUCT_DECISIONS](../00-product/PRODUCT_DECISIONS.md) · [ARCHITECTURE](../01-architecture/ARCHITECTURE.md)
 > **Related:
-** [IMPLEMENTATION_STATUS](./IMPLEMENTATION_STATUS.md) · [TESTING_STRATEGY](./TESTING_STRATEGY.md) · [BACKEND_CODING_STANDARDS](./BACKEND_CODING_STANDARDS.md) · [FRONTEND_CODING_STANDARDS](./FRONTEND_CODING_STANDARDS.md)
+> ** [IMPLEMENTATION_STATUS](./IMPLEMENTATION_STATUS.md) · [TESTING_STRATEGY](./TESTING_STRATEGY.md) · [BACKEND_CODING_STANDARDS](./BACKEND_CODING_STANDARDS.md) · [FRONTEND_CODING_STANDARDS](./FRONTEND_CODING_STANDARDS.md)
 
 ---
 
@@ -103,8 +103,8 @@ rules that follow.
 - **Every change MUST have a clear purpose.** *A change that cannot say what it is for cannot be reviewed against
   anything — the reviewer is reduced to checking whether it looks fine, which is how everything that looks fine gets
   merged.*
-- **Every change MUST respect the frozen documents.** *They are the source of truth ([CLAUDE.md §2](../../CLAUDE.md)).
-  A change that contradicts one is not a disagreement to be settled in the diff; it is routed to the owning document
+- **Every change MUST respect the frozen documents.** *They are the source of truth ([CLAUDE.md §2](../../CLAUDE.md)). A
+  change that contradicts one is not a disagreement to be settled in the diff; it is routed to the owning document
   first, or it does not proceed (§8).*
 - **Contributors MUST NOT introduce new requirements, architecture, or design by accident.** *The accidental kind is the
   common kind. Nobody sets out to add a requirement — they add a reasonable behavior, and the product now does something
@@ -115,9 +115,9 @@ rules that follow.
 - **Changes that touch architecture MUST be traced to the owning architecture or ADR documents.** *Boundaries erode
   through changes that each look local ([ARCHITECTURE](../01-architecture/ARCHITECTURE.md)). An architectural decision
   made in a pull request is still an architectural decision; it is simply unrecorded.*
-- **Changes that touch design MUST be traced to the owning design documents.** *Appearance is inherited, not invented
-  ([DESIGN_SYSTEM](../02-design/DESIGN_SYSTEM.md)). One screen's exception is the product's second visual language, and
-  it arrives looking like a small improvement.*
+- **Changes that touch design MUST be traced to the owning design documents.** *Appearance is inherited, not
+  invented ([DESIGN_SYSTEM](../02-design/DESIGN_SYSTEM.md)). One screen's exception is the product's second visual
+  language, and it arrives looking like a small improvement.*
 - **Changes that touch AI behavior, prompts, evaluation, or retrieval MUST be traced to the owning AI documents.** *AI
   behavior changes without a signature to break ([PROMPTS](../04-ai/PROMPTS.md)) — no type objects, no test necessarily
   fails, and the output still reads well. Its documents are the only gate it has.*
@@ -127,8 +127,8 @@ rules that follow.
   documentation written never, or written by someone reconstructing intent from code. The change and its record are one
   unit, or they are already diverging ([IMPLEMENTATION_PLAN §9](./IMPLEMENTATION_PLAN.md#9-change-management)).*
 - **Conflicting interpretations MUST be escalated before merge.** *A contributor who picks the convenient reading has
-  not resolved the conflict — they have hidden it, and the repository now contains two truths and one silent vote
-  (§8, [CLAUDE.md §8](../../CLAUDE.md)).*
+  not resolved the conflict — they have hidden it, and the repository now contains two truths and one silent vote (
+  §8, [CLAUDE.md §8](../../CLAUDE.md)).*
 
 **Why these rules exist.** A repository does not decay through bad changes; it decays through good ones that nobody
 routed. The three failure modes are **repo drift** (the system and its documents describe different products, each
@@ -302,9 +302,8 @@ What this section owns is **what a contributor does** when they hit a conflict:
 | **The convenient reading is available**         | It is not taken. Choosing the wording that permits the change is not interpretation; it is an unrecorded amendment to a frozen document, made unilaterally, by whoever wanted the change most.                                                                                                                       |
 
 **Conflicts are reconciled before merge, not tracked.** A known contradiction left in place is a decision to let the
-next
-reader resolve it — and they will resolve it differently, at a moment nobody is watching. The reconciliation is itself a
-change, routed like any other (§4): it belongs to the document that must be corrected.
+next reader resolve it — and they will resolve it differently, at a moment nobody is watching. The reconciliation is
+itself a change, routed like any other (§4): it belongs to the document that must be corrected.
 
 > **A known, unreconciled contradiction: the branching model.**
 > [IMPLEMENTATION_PLAN §6](./IMPLEMENTATION_PLAN.md#6-development-workflow) and
@@ -345,8 +344,7 @@ detail to defer.
   small (§7).
 - [ ] **Documentation updated?** — The owning document reflects the change, updated before or with it
   ([IMPLEMENTATION_PLAN §9](./IMPLEMENTATION_PLAN.md#9-change-management)); [STATUS](./IMPLEMENTATION_STATUS.md)
-  reflects
-  what landed.
+  reflects what landed.
 - [ ] **Cross-references validated?** — Links resolve and still say what they are cited for; nothing points at a moved
   target (§6).
 - [ ] **Safe to merge?** — Every owed review returned, no conflict is outstanding (§8), and the
@@ -362,8 +360,7 @@ detail to defer.
 
 **Review triggers** — a contribution review is required when any of the following occurs:
 
-- **New feature work** — it needs a granted requirement before it needs an implementation
-  ([SRS](../00-product/SRS.md)).
+- **New feature work** — it needs a granted requirement before it needs an implementation ([SRS](../00-product/SRS.md)).
 - **A behavior change** — anything a user would notice, however it arrived.
 - **An architecture change** — boundaries, dependency direction, or style
   ([ARCHITECTURE](../01-architecture/ARCHITECTURE.md)).
@@ -373,8 +370,8 @@ detail to defer.
   repository (§6). Reformatting is not; rewording a rule is.
 - **A conflict with a frozen document** — surfaced at any point, by anyone (§8).
 - **A cross-document inconsistency** — two documents that no longer agree, whether this change caused it.
-- **A release-impacting change** — anything that alters what a release contains or claims
-  ([`docs/05-releases/`](../05-releases/)).
+- **A release-impacting change** — anything that alters what a release contains or claims ([
+  `docs/05-releases/`](../05-releases/)).
 
 **Review outcomes** — each review resolves to exactly one:
 

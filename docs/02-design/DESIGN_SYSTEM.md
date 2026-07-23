@@ -4,9 +4,9 @@
 > **Owner:** Principal Design Systems Architect
 > **Last updated:** 2026-07-15
 > **Upstream (frozen):
-** [PRD](../00-product/PRD.md) · [SRS](../00-product/SRS.md) · [ARCHITECTURE §6](../01-architecture/ARCHITECTURE.md#6-frontend-architecture) · [AI_ARCHITECTURE](../01-architecture/AI_ARCHITECTURE.md) · [SECURITY](../01-architecture/SECURITY.md)
+> ** [PRD](../00-product/PRD.md) · [SRS](../00-product/SRS.md) · [ARCHITECTURE §6](../01-architecture/ARCHITECTURE.md#6-frontend-architecture) · [AI_ARCHITECTURE](../01-architecture/AI_ARCHITECTURE.md) · [SECURITY](../01-architecture/SECURITY.md)
 > **Related:
-** [COMPONENTS](./COMPONENTS.md) · [USER_FLOWS](./USER_FLOWS.md) · [UI_GUIDELINES](./UI_GUIDELINES.md) · [FRONTEND_CODING_STANDARDS](../03-engineering/FRONTEND_CODING_STANDARDS.md) · [CLAUDE.md](../../CLAUDE.md)
+> ** [COMPONENTS](./COMPONENTS.md) · [USER_FLOWS](./USER_FLOWS.md) · [UI_GUIDELINES](./UI_GUIDELINES.md) · [FRONTEND_CODING_STANDARDS](../03-engineering/FRONTEND_CODING_STANDARDS.md) · [CLAUDE.md](../../CLAUDE.md)
 
 ---
 
@@ -84,19 +84,19 @@ enforceable rules that follow.
 > rationale follows each rule.*
 
 - **Every interface MUST use design tokens.** *Tokens are the single source of visual truth; an interface that draws
-  appearance from anywhere else has stepped outside the language and will drift from it independently
-  ([FRONTEND_CODING_STANDARDS §12](../03-engineering/FRONTEND_CODING_STANDARDS.md#12-styling-standards)).*
+  appearance from anywhere else has stepped outside the language and will drift from it
+  independently ([FRONTEND_CODING_STANDARDS §12](../03-engineering/FRONTEND_CODING_STANDARDS.md#12-styling-standards)).*
 - **Hard-coded visual styles MUST NOT become part of the design language.** *A one-off value is invisible to review,
   unowned, and unfindable when the language changes; it is how a design system silently forks into many.*
 - **Components MUST inherit from the Design System.** *A component that carries its own appearance breaks the guarantee
-  that a change to the language reaches every screen; inheritance is what makes the system a system
-  ([COMPONENTS](./COMPONENTS.md)).*
+  that a change to the language reaches every screen; inheritance is what makes the system a
+  system ([COMPONENTS](./COMPONENTS.md)).*
 - **Visual consistency MUST take precedence over individual creativity.** *No screen gets to look "a little different"
   for local convenience. Each deviation is individually defensible and collectively fatal — the cumulative effect is an
   incoherent product.*
 - **Accessibility MUST override aesthetics.** *When a visual preference and an accessibility obligation conflict,
-  accessibility wins without debate. An interface that cannot be perceived or operated is not beautiful; it is broken
-  ([FRONTEND_CODING_STANDARDS §11](../03-engineering/FRONTEND_CODING_STANDARDS.md#11-accessibility-standards)).*
+  accessibility wins without debate. An interface that cannot be perceived or operated is not beautiful; it is
+  broken ([FRONTEND_CODING_STANDARDS §11](../03-engineering/FRONTEND_CODING_STANDARDS.md#11-accessibility-standards)).*
 - **New visual patterns MUST undergo review.** *A pattern admitted without review becomes precedent by accident; the
   review is where the system decides what it is, rather than discovering later what it became (Design Review Process).*
 - **Semantic meaning MUST remain consistent.** *If a semantic color, weight, or emphasis means one thing on one screen
@@ -250,8 +250,8 @@ that is often false and always worth testing. This section defines principles on
 
 - **Semantic meaning.** An icon MUST mean exactly one thing across the entire product. The same symbol carrying two
   meanings on two screens is worse than two words, because the user cannot know they have been misled.
-- **Consistency.** Icons MUST read as one family — consistent, construction, and level of abstraction. A mixed
-  set looks assembled rather than designed and undermines the professional appearance the product depends on.
+- **Consistency.** Icons MUST read as one family — consistent, construction, and level of abstraction. A mixed set looks
+  assembled rather than designed and undermines the professional appearance the product depends on.
 - **Decorative vs functional.** The distinction MUST be explicit. A **functional** icon identifies an action or state,
   carries an accessible name, and is operable where relevant. A **decorative** icon adds no information and MUST be
   hidden from assistive technology — announcing it only adds noise for the user who can least afford it.
@@ -382,8 +382,7 @@ made responsive afterward; it can only be rebuilt.
 ### Theming scope
 
 Adapting to a viewport and adapting to a *theme* are different problems, but they fail the same way — by being
-retrofitted
-onto a language that assumed a single case. The position is therefore stated here explicitly:
+retrofitted onto a language that assumed a single case. The position is therefore stated here explicitly:
 
 - **Dark mode is intentionally outside MVP scope.** No frozen document specifies it, and this document does not
   introduce it. Its absence is a **deliberate scope boundary**, not an oversight and not a gap to be filled locally.
@@ -400,9 +399,9 @@ onto a language that assumed a single case. The position is therefore stated her
 ## 12. Accessibility
 
 Accessibility is a **property of the language**, decided once in the vocabulary and inherited by every screen composed
-of it. LedgerAI's users work long hours in these screens; some rely on keyboards or assistive technology; all
-eventually work tired, in poor light, on an imperfect display. Accessibility is what keeps the product usable in the
-conditions it is actually used in.
+of it. LedgerAI's users work long hours in these screens; some rely on keyboards or assistive technology; all eventually
+work tired, in poor light, on an imperfect display. Accessibility is what keeps the product usable in the conditions it
+is actually used in.
 
 This section states the **visual-language intent** only. [COMPONENTS §8](./COMPONENTS.md#8-accessibility) builds
 accessibility into each component,

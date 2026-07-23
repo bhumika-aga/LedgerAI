@@ -179,119 +179,119 @@ premature structure).
 
 ```mermaid
 erDiagram
-    USER ||--o{ CLIENT: owns
-    USER ||--o{ REFRESH_TOKEN: has
-    USER ||--o{ ACTIVITY: generates
-    USER ||--o{ AI_REQUEST: requests
-    USER ||--o{ REPORT: owns
-    CLIENT ||--o{ DOCUMENT: contains
-    DOCUMENT ||--o| DOCUMENT_CONTENT: "extracted as"
-    DOCUMENT ||--o{ AI_REQUEST: "targeted by"
-    DOCUMENT ||--o{ REPORT: "basis for"
-    AI_REQUEST ||--o| AI_OUTPUT: produces
+  USER ||--o{ CLIENT: owns
+  USER ||--o{ REFRESH_TOKEN: has
+  USER ||--o{ ACTIVITY: generates
+  USER ||--o{ AI_REQUEST: requests
+  USER ||--o{ REPORT: owns
+  CLIENT ||--o{ DOCUMENT: contains
+  DOCUMENT ||--o| DOCUMENT_CONTENT: "extracted as"
+  DOCUMENT ||--o{ AI_REQUEST: "targeted by"
+  DOCUMENT ||--o{ REPORT: "basis for"
+  AI_REQUEST ||--o| AI_OUTPUT: produces
 
-    USER {
-        uuid id PK
-        citext email UK
-        text password_hash
-        text full_name
-        text professional_details
-        jsonb preferences
-        timestamptz created_at
-        timestamptz updated_at
-    }
+  USER {
+    uuid id PK
+    citext email UK
+    text password_hash
+    text full_name
+    text professional_details
+    jsonb preferences
+    timestamptz created_at
+    timestamptz updated_at
+  }
 
-    CLIENT {
-        uuid id PK
-        uuid user_id FK
-        text name
-        text contact_details
-        text notes
-        text status
-        timestamptz archived_at
-        timestamptz created_at
-        timestamptz updated_at
-    }
+  CLIENT {
+    uuid id PK
+    uuid user_id FK
+    text name
+    text contact_details
+    text notes
+    text status
+    timestamptz archived_at
+    timestamptz created_at
+    timestamptz updated_at
+  }
 
-    DOCUMENT {
-        uuid id PK
-        uuid client_id FK
-        text original_filename
-        text mime_type
-        bigint size_bytes
-        text storage_reference
-        text status
-        text extraction_method
-        text failure_reason
-        timestamptz deleted_at
-        timestamptz created_at
-        timestamptz updated_at
-    }
+  DOCUMENT {
+    uuid id PK
+    uuid client_id FK
+    text original_filename
+    text mime_type
+    bigint size_bytes
+    text storage_reference
+    text status
+    text extraction_method
+    text failure_reason
+    timestamptz deleted_at
+    timestamptz created_at
+    timestamptz updated_at
+  }
 
-    DOCUMENT_CONTENT {
-        uuid id PK
-        uuid document_id FK
-        text extracted_text
-        text extraction_quality
-        int char_count
-        timestamptz created_at
-        timestamptz updated_at
-    }
+  DOCUMENT_CONTENT {
+    uuid id PK
+    uuid document_id FK
+    text extracted_text
+    text extraction_quality
+    int char_count
+    timestamptz created_at
+    timestamptz updated_at
+  }
 
-    AI_REQUEST {
-        uuid id PK
-        uuid user_id FK
-        uuid document_id FK
-        text type
-        text status
-        text prompt
-        text failure_reason
-        timestamptz created_at
-        timestamptz updated_at
-    }
+  AI_REQUEST {
+    uuid id PK
+    uuid user_id FK
+    uuid document_id FK
+    text type
+    text status
+    text prompt
+    text failure_reason
+    timestamptz created_at
+    timestamptz updated_at
+  }
 
-    AI_OUTPUT {
-        uuid id PK
-        uuid ai_request_id FK
-        text content
-        boolean edited
-        timestamptz created_at
-        timestamptz updated_at
-    }
+  AI_OUTPUT {
+    uuid id PK
+    uuid ai_request_id FK
+    text content
+    boolean edited
+    timestamptz created_at
+    timestamptz updated_at
+  }
 
-    REPORT {
-        uuid id PK
-        uuid document_id FK
-        uuid user_id FK
-        text title
-        text content
-        text status
-        timestamptz created_at
-        timestamptz updated_at
-    }
+  REPORT {
+    uuid id PK
+    uuid document_id FK
+    uuid user_id FK
+    text title
+    text content
+    text status
+    timestamptz created_at
+    timestamptz updated_at
+  }
 
-    ACTIVITY {
-        uuid id PK
-        uuid user_id FK
-        uuid client_id FK
-        uuid document_id FK
-        text action_type
-        text summary
-        jsonb metadata
-        timestamptz created_at
-    }
+  ACTIVITY {
+    uuid id PK
+    uuid user_id FK
+    uuid client_id FK
+    uuid document_id FK
+    text action_type
+    text summary
+    jsonb metadata
+    timestamptz created_at
+  }
 
-    REFRESH_TOKEN {
-        uuid id PK
-        uuid user_id FK
-        text token_hash UK
-        timestamptz expires_at
-        timestamptz revoked_at
-        timestamptz created_at
-    }
+  REFRESH_TOKEN {
+    uuid id PK
+    uuid user_id FK
+    text token_hash UK
+    timestamptz expires_at
+    timestamptz revoked_at
+    timestamptz created_at
+  }
 ```
 
-> **Cardinality summary:** User 1—* Client; Client 1—* Document; Document 1—0..1 DocumentContent; Document 1—*
+> **Cardinality summary:** User 1—*Client; Client 1—* Document; Document 1—0..1 DocumentContent; Document 1—*
 > AIRequest;
 > AIRequest 1—0..1 AIOutput; Document 1—* Report; User 1—* {AIRequest, Report, Activity, RefreshToken}. Activity
 > optionally references a Client and/or Document (nullable FKs).

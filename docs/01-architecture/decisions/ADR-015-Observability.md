@@ -1,8 +1,7 @@
 # ADR-015 — Observability
 
 **Status:** Accepted (baseline)
-**Date:** 2026-07-14
-**Owner:** Founding Engineer / Principal Architect
+**Date:** 2026-07-14 **Owner:** Founding Engineer / Principal Architect
 **Related Documents:
 ** [ARCHITECTURE §9.7](../ARCHITECTURE.md#9-cross-cutting-concerns) · [SECURITY §16](../SECURITY.md#16-logging-and-audit) · [AI_ARCHITECTURE §14](../AI_ARCHITECTURE.md#14-ai-observability) · [SRS NFR-013/014](../../00-product/SRS.md#9-non-functional-requirements)
 
@@ -22,12 +21,11 @@ need an observability baseline that is useful yet cheap and privacy-preserving f
 Establish a **baseline observability** approach: structured application logging, meaningful error logging, basic health
 and error-rate visibility, a request **correlation id** (`traceId`) propagated to RFC 7807 error responses
 ([API_SPEC §2.12](../API_SPEC.md#212-error-model--rfc-7807-problem-details)), and AI metrics (latency, token usage,
-cost,
-success/error rates) built from **metadata only** ([AI_ARCHITECTURE §14](../AI_ARCHITECTURE.md#14-ai-observability)).
-**Sensitive content is never logged** — no passwords/tokens/secrets, no document text, no AI prompt/response content
+cost, success/error rates) built from **metadata only**
+([AI_ARCHITECTURE §14](../AI_ARCHITECTURE.md#14-ai-observability)). **Sensitive content is never logged** — no
+passwords/tokens/secrets, no document text, no AI prompt/response content
 ([SECURITY §16](../SECURITY.md#16-logging-and-audit)). The user-facing, immutable **Activity timeline** provides the
-audit
-trail ([NFR-012](../../00-product/SRS.md#9-non-functional-requirements)).
+audit trail ([NFR-012](../../00-product/SRS.md#9-non-functional-requirements)).
 
 ---
 

@@ -4,9 +4,9 @@
 > **Owner:** Principal AI Architect
 > **Last updated:** 2026-07-15
 > **Upstream (frozen):
-** [AI_ARCHITECTURE](../01-architecture/AI_ARCHITECTURE.md) · [ADR-003](../01-architecture/decisions/ADR-003-AI-Provider-Abstraction.md) · [SECURITY](../01-architecture/SECURITY.md) · [ARCHITECTURE](../01-architecture/ARCHITECTURE.md) · [SRS](../00-product/SRS.md)
+> ** [AI_ARCHITECTURE](../01-architecture/AI_ARCHITECTURE.md) · [ADR-003](../01-architecture/decisions/ADR-003-AI-Provider-Abstraction.md) · [SECURITY](../01-architecture/SECURITY.md) · [ARCHITECTURE](../01-architecture/ARCHITECTURE.md) · [SRS](../00-product/SRS.md)
 > **Related:
-** [PROMPTS](./PROMPTS.md) · [EVALUATION](./EVALUATION.md) · [RAG](./RAG.md) · [CLAUDE.md](../../CLAUDE.md)
+> ** [PROMPTS](./PROMPTS.md) · [EVALUATION](./EVALUATION.md) · [RAG](./RAG.md) · [CLAUDE.md](../../CLAUDE.md)
 
 ---
 
@@ -32,9 +32,8 @@ The governing principle of this document:
 > deferral has failed and the choice has become irreversible in practice — whatever the architecture diagram says.
 
 It is **not** a prompt document, **not** a RAG document, **not** an evaluation report, and **not** implementation. It
-contains **no vendor names, no pricing, no benchmarks, no SDK or API detail, no credentials, no environment
-definitions, and no prompt text**. It governs *how providers are selected, governed, and swapped* — never how one is
-integrated.
+contains **no vendor names, no pricing, no benchmarks, no SDK or API detail, no credentials, no environment definitions,
+and no prompt text**. It governs *how providers are selected, governed, and swapped* — never how one is integrated.
 
 ### Relationship to the AI documents
 
@@ -98,14 +97,14 @@ enforceable rules that follow.
   [Guiding Architectural Rules](../01-architecture/ARCHITECTURE.md#guiding-architectural-rules) and
   [PD-010](../00-product/PRODUCT_DECISIONS.md#3-accepted-product-decisions).*
 - **Provider selection MUST be configurable, not hard-coded.** *A choice compiled into the product is a choice that
-  requires a release to revisit — and one that cannot differ safely between environments
-  ([ADR-003](../01-architecture/decisions/ADR-003-AI-Provider-Abstraction.md)).*
+  requires a release to revisit — and one that cannot differ safely between
+  environments ([ADR-003](../01-architecture/decisions/ADR-003-AI-Provider-Abstraction.md)).*
 - **Provider behavior MUST be evaluated against documented capabilities.** *A capability that is assumed rather than
   demonstrated is discovered in production, on a real client's document. The capability model (§4) is the thing a
   candidate is measured against.*
 - **Providers MUST support the product's security and privacy constraints.** *These constraints are not negotiable
-  against convenience, price, or quality. A provider that cannot meet them is not a cheaper option; it is not an option
-  ([SECURITY §10](../01-architecture/SECURITY.md#10-ai-security)).*
+  against convenience, price, or quality. A provider that cannot meet them is not a cheaper option; it is not an
+  option ([SECURITY §10](../01-architecture/SECURITY.md#10-ai-security)).*
 - **Providers SHOULD be swappable without requiring product redesign.** *This is the test of whether the abstraction is
   real. If swapping requires reworking features, portability was a claim rather than a property — and the deferral of
   [DD-002](../00-product/PRODUCT_DECISIONS.md#4-deferred-decisions) bought nothing.*
@@ -113,15 +112,15 @@ enforceable rules that follow.
   Undocumented, those accommodations are indistinguishable from requirements to the next maintainer, who preserves them
   faithfully into a migration that did not need them.*
 - **Provider failure MUST degrade gracefully.** *Failure is certain, so it is designed rather than discovered. The user
-  is told honestly and offered a way forward; the product never disguises a provider's failure as an answer
-  ([AI_ARCHITECTURE §12](../01-architecture/AI_ARCHITECTURE.md#12-ai-failure-handling),
+  is told honestly and offered a way forward; the product never disguises a provider's failure as an
+  answer ([AI_ARCHITECTURE §12](../01-architecture/AI_ARCHITECTURE.md#12-ai-failure-handling),
   [BR-033](../00-product/SRS.md#5-business-rules)).*
 - **New providers MUST undergo review before use.** *A provider admitted informally becomes load-bearing before anyone
   decides it should be. Review is where the decision is made deliberately rather than discovered later (Provider Review
   Process).*
 - **Provider decisions MUST remain traceable.** *A provider whose rationale is unrecorded cannot be re-evaluated,
-  defended, or safely reversed; it survives on the fact that it is already there — which is the weakest possible reason
-  (§12).*
+  defended, or safely reversed; it survives on the fact that it is already there — which is the weakest possible
+  reason (§12).*
 
 **Why these rules exist.** Vendor lock-in is rarely chosen. It accumulates: one convenient SDK call outside the port,
 one capability assumed rather than demonstrated, one accommodation made and never written down. Each is individually
@@ -310,8 +309,8 @@ others — every safeguard upstream assumes we know what answered.
 Multi-provider support exists for **resilience and portability**. It is not a feature, not a selling point, and not an
 invitation to accumulate providers.
 
-- **A primary provider serves each capability.** One provider is the deliberate, recorded choice for a given capability
-  — the default state is *one*, and it is the simplest thing that works.
+- **A primary provider serves each capability.** One provider is the deliberate, recorded choice for a given
+  capability — the default state is *one*, and it is the simplest thing that works.
 - **Fallback providers exist to be ready, not to be used.** A fallback is **Approved but idle** (§5), declared in
   advance with its trigger conditions (§7). Its value is that it can be activated without a decision being made under
   pressure — a fallback first considered during an incident is not a fallback.
@@ -395,8 +394,8 @@ accepted. A "no" is a finding to resolve, not a detail to defer.
 **Review outcomes** — each review resolves to exactly one:
 
 - **Approved** — the provider is fit for the proposed stage and capability; the decision and rationale are recorded.
-- **Refinement required** — the intent is sound but something must change first: an undocumented assumption, an
-  unstated fallback, missing observability.
+- **Refinement required** — the intent is sound but something must change first: an undocumented assumption, an unstated
+  fallback, missing observability.
 - **Security review required** — a security or privacy question is unresolved; it is routed to the security review
   process ([SECURITY](../01-architecture/SECURITY.md#ai-changes--review-required-for)). This outcome **blocks**: a
   threshold cannot be waived by another reviewer.
@@ -406,8 +405,8 @@ accepted. A "no" is a finding to resolve, not a detail to defer.
   returns as a finding. **A capability is never approved on a published claim alone.**
 - **ADR required** — the decision is significant, precedent-setting, or hard to reverse (adopting the first provider and
   resolving [DD-002](../00-product/PRODUCT_DECISIONS.md#4-deferred-decisions) is exactly this). It is recorded as an ADR
-  alongside [ADR-003](../01-architecture/decisions/ADR-003-AI-Provider-Abstraction.md), which the choice operates
-  inside and does not replace.
+  alongside [ADR-003](../01-architecture/decisions/ADR-003-AI-Provider-Abstraction.md), which the choice operates inside
+  and does not replace.
 
 **Provider governance is continuous.** A provider is not decided once. It is judged, watched, and re-judged: approval is
 a statement about what was true at review, and providers change underneath products silently. The stages (§5) exist so

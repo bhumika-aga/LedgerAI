@@ -4,9 +4,9 @@
 > **Owner:** Founding Engineer / Principal QA Architect
 > **Last updated:** 2026-07-14
 > **Upstream (frozen):
-** [PRD](../00-product/PRD.md) · [SRS](../00-product/SRS.md) · [Architecture](../01-architecture/ARCHITECTURE.md) · [Database](../01-architecture/DATABASE.md) · [API Spec](../01-architecture/API_SPEC.md) · [Security](../01-architecture/SECURITY.md) · [AI Architecture](../01-architecture/AI_ARCHITECTURE.md)
+> ** [PRD](../00-product/PRD.md) · [SRS](../00-product/SRS.md) · [Architecture](../01-architecture/ARCHITECTURE.md) · [Database](../01-architecture/DATABASE.md) · [API Spec](../01-architecture/API_SPEC.md) · [Security](../01-architecture/SECURITY.md) · [AI Architecture](../01-architecture/AI_ARCHITECTURE.md)
 > **Related:
-** [IMPLEMENTATION_PLAN](./IMPLEMENTATION_PLAN.md) · [CLAUDE.md](../../CLAUDE.md) · [IMPLEMENTATION_STATUS](./IMPLEMENTATION_STATUS.md)
+> ** [IMPLEMENTATION_PLAN](./IMPLEMENTATION_PLAN.md) · [CLAUDE.md](../../CLAUDE.md) · [IMPLEMENTATION_STATUS](./IMPLEMENTATION_STATUS.md)
 
 ---
 
@@ -26,10 +26,9 @@ must cover* and defines [Definition of Test Complete](#14-definition-of-test-com
 
 ### Relationship to Implementation Plan
 
-The plan mandates **test-as-you-build** and vertical
-slices ([PLAN §2](./IMPLEMENTATION_PLAN.md#2-engineering-principles)).
-This document operationalizes that: each slice ships with the tests appropriate to its layer, written alongside the
-feature — never retrofitted.
+The plan mandates **test-as-you-build** and vertical slices
+([PLAN §2](./IMPLEMENTATION_PLAN.md#2-engineering-principles)). This document operationalizes that: each slice ships
+with the tests appropriate to its layer, written alongside the feature — never retrofitted.
 
 ### Relationship to CLAUDE.md
 
@@ -101,8 +100,7 @@ Pyramid -. complemented by . - AIEVAL
 | **AI Evaluation Tests** | Verify AI *output quality* (grounding, hallucination, format) — a **separate**, non-deterministic track ([§7](#7-ai-testing-strategy)). |
 
 Effort concentrates at the base (cheap, fast, precise); higher layers are fewer but broader. AI evaluation is
-deliberately
-off the deterministic pyramid.
+deliberately off the deterministic pyramid.
 
 ---
 
@@ -118,9 +116,9 @@ Unit tests are the foundation and carry the **highest coverage expectation** ([T
 | **Utility classes**           | Pure helpers with clear inputs/outputs and edge cases.                                                                                                                                                                                                    |
 | **Mappers (entity ↔ DTO)**    | Correct field mapping; crucially, that **sensitive/internal fields never leak** into DTOs ([API_SPEC §17](../01-architecture/API_SPEC.md#17-common-dtos)).                                                                                                |
 
-**Should be unit tested:** anything with logic, branching, rules, or transformation.
-**Should NOT be unit tested:** trivial getters/setters, framework glue, or configuration with no logic — testing this
-adds maintenance cost without confidence. Prefer integration tests where the value *is* the wiring.
+**Should be unit tested:** anything with logic, branching, rules, or transformation. **Should NOT be unit tested:**
+trivial getters/setters, framework glue, or configuration with no logic — testing this adds maintenance cost without
+confidence. Prefer integration tests where the value *is* the wiring.
 
 ---
 
@@ -168,18 +166,18 @@ API tests verify the **contract** in [API_SPEC.md](../01-architecture/API_SPEC.m
 Verify the pipeline around the model, with the **AI provider mocked at the port
 ** ([ADR-003](../01-architecture/decisions/ADR-003-AI-Provider-Abstraction.md)):
 
-- **Orchestration** — the AI Request lifecycle (`REQUESTED → IN_PROGRESS → COMPLETED | FAILED`) transitions
-  correctly ([SRS §7.2](../00-product/SRS.md#72-ai-request-lifecycle)); actions only run on `READY`
+- **Orchestration** — the AI Request lifecycle (`REQUESTED → IN_PROGRESS → COMPLETED | FAILED`) transitions correctly
+  ([SRS §7.2](../00-product/SRS.md#72-ai-request-lifecycle)); actions only run on `READY`
   documents ([BR-010](../00-product/SRS.md#5-business-rules)).
-- **Prompt construction** — prompts assemble from the correct separated
-  channels ([AI_ARCHITECTURE §8](../01-architecture/AI_ARCHITECTURE.md#8-prompt-architecture)) with only the minimal
-  necessary content ([NFR-018](../00-product/SRS.md#9-non-functional-requirements)).
+- **Prompt construction** — prompts assemble from the correct separated channels
+  ([AI_ARCHITECTURE §8](../01-architecture/AI_ARCHITECTURE.md#8-prompt-architecture)) with only the minimal necessary
+  content ([NFR-018](../00-product/SRS.md#9-non-functional-requirements)).
 - **Provider abstraction** — business logic calls the **port**, never a provider SDK; adapters map
   requests/responses/errors correctly.
-- **Retries** — bounded retry on transient failure; graceful `FAILED` beyond the
-  limit ([AI_ARCHITECTURE §11–12](../01-architecture/AI_ARCHITECTURE.md#11-ai-output-validation)).
-- **Output validation** — empty/malformed/unsafe outputs are rejected, never persisted as
-  success ([AI_ARCHITECTURE §11](../01-architecture/AI_ARCHITECTURE.md#11-ai-output-validation)).
+- **Retries** — bounded retry on transient failure; graceful `FAILED` beyond the limit
+  ([AI_ARCHITECTURE §11–12](../01-architecture/AI_ARCHITECTURE.md#11-ai-output-validation)).
+- **Output validation** — empty/malformed/unsafe outputs are rejected, never persisted as success
+  ([AI_ARCHITECTURE §11](../01-architecture/AI_ARCHITECTURE.md#11-ai-output-validation)).
 
 These are ordinary deterministic tests using **stubbed** provider responses — no live provider calls.
 
@@ -189,16 +187,16 @@ Assess the **quality** of real AI output on curated inputs, as a **separate trac
 provider/model/prompt change), not on every unit-test run:
 
 - **Grounding** — outputs reflect the source document ([BR-030](../00-product/SRS.md#5-business-rules)).
-- **Hallucination** — rate of unsupported claims; honest "not found" over
-  fabrication ([BR-033](../00-product/SRS.md#5-business-rules)).
+- **Hallucination** — rate of unsupported claims; honest "not found" over fabrication
+  ([BR-033](../00-product/SRS.md#5-business-rules)).
 - **Formatting** — output conforms to the expected shape per capability.
-- **Acceptance rate** — how often output is usable as-is vs. heavily
-  edited ([PRD §11](../00-product/PRD.md#11-success-metrics)).
+- **Acceptance rate** — how often output is usable as-is vs. heavily edited
+  ([PRD §11](../00-product/PRD.md#11-success-metrics)).
 - **Latency** — response time against expectations ([NFR-001/002](../00-product/SRS.md#9-non-functional-requirements)).
 - **Consistency** — stability of quality across repeated runs and releases.
 
-Provider/model/prompt changes MUST be evaluated before
-rollout ([AI Review Process](../01-architecture/AI_ARCHITECTURE.md#ai-review-process)).
+Provider/model/prompt changes MUST be evaluated before rollout
+([AI Review Process](../01-architecture/AI_ARCHITECTURE.md#ai-review-process)).
 
 ---
 
@@ -225,8 +223,7 @@ Frontend testing focuses on user-observable behavior, not internal component str
 ## 9. End-to-End Testing
 
 A small number of E2E tests exercise complete journeys against the running system, proving the modules integrate into
-the
-product's core loop.
+the product's core loop.
 
 ```mermaid
 flowchart LR
@@ -361,6 +358,5 @@ is strengthened before any risky change — never treated as a one-time, end-of-
 
 *This strategy defines how LedgerAI is tested — philosophy, layers, and gates — not test code or tooling. It MUST remain
 consistent with the frozen Product Vision, Product Decisions, PRD, SRS, Architecture, Database, API Spec, Security, and
-AI
-Architecture. AI output quality is evaluated separately from deterministic application testing, per
+AI Architecture. AI output quality is evaluated separately from deterministic application testing, per
 [AI_ARCHITECTURE](../01-architecture/AI_ARCHITECTURE.md#ai-evaluation-strategy).*
