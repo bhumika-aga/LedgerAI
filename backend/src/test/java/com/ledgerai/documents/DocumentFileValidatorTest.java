@@ -27,7 +27,7 @@ class DocumentFileValidatorTest {
         java.time.Duration.ofMinutes(5), 16));
     
     private ValidationFailedException reject(UploadCommand command) {
-        return catchThrowableOfType(() -> validator.validateAndDetectType(command), ValidationFailedException.class);
+        return catchThrowableOfType(ValidationFailedException.class, () -> validator.validateAndDetectType(command));
     }
     
     @Test

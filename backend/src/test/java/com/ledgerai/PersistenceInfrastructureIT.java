@@ -62,15 +62,15 @@ class PersistenceInfrastructureIT {
         }
         
         assertThat(flyway).isNotNull();
+        // The migration history is fully applied with nothing pending — asserted independently of the
+        // current migration count so the smoke test does not go stale as feature slices add migrations.
         assertThat(flyway.info().applied()).isNotEmpty();
-        assertThat(flyway.info().current().getVersion().getVersion()).isEqualTo("1");
+        assertThat(flyway.info().pending()).isEmpty();
+        assertThat(flyway.info().current()).isNotNull();
         
         assertThat(entityManagerFactory).isNotNull();
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
-        try {
+        try (EntityManager entityManager = entityManagerFactory.createEntityManager()) {
             assertThat(entityManager.isOpen()).isTrue();
-        } finally {
-            entityManager.close();
         }
     }
 }
