@@ -71,18 +71,22 @@ class SearchServiceTest {
     }
     
     @Test
-    void aBlankQueryIsRejectedWith422() {
-        assertThatThrownBy(() -> service().search("   ", PageRequest.of(0, 20)))
-            .isInstanceOf(ValidationFailedException.class)
-            .satisfies(e -> assertThat(((ValidationFailedException) e).getFieldErrors()).containsKey("q"));
-        verifyNoInteractions(searchRepository);
+    void aBlankQueryReturnsAnEmptyPage() {
+        // VR-006 / FR-SRCH-006 / API_SPEC §14.1: an empty query is valid and yields a helpful empty state
+        // (an empty page), never a 422. No database round-trip and no user lookup are needed.
+        PageResponse<SearchResultResponse> page = service().search("   ", PageRequest.of(0, 20));
+        
+        assertThat(page.content()).isEmpty();
+        assertThat(page.totalElements()).isZero();
+        verifyNoInteractions(searchRepository, currentUserProvider);
     }
     
     @Test
-    void aMissingQueryIsRejectedWith422() {
-        assertThatThrownBy(() -> service().search(null, PageRequest.of(0, 20)))
-            .isInstanceOf(ValidationFailedException.class);
-        verifyNoInteractions(searchRepository);
+    void aMissingQueryReturnsAnEmptyPage() {
+        PageResponse<SearchResultResponse> page = service().search(null, PageRequest.of(0, 20));
+        
+        assertThat(page.content()).isEmpty();
+        verifyNoInteractions(searchRepository, currentUserProvider);
     }
     
     @Test

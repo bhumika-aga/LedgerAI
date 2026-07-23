@@ -70,11 +70,12 @@ class SearchControllerTest {
     }
     
     @Test
-    void anInvalidQueryIs422WithAFieldError() throws Exception {
+    void anOversizedQueryIs422WithAFieldError() throws Exception {
+        // VR-006: only an over-length query is a 422; a blank query is a valid empty search (empty page).
         when(searchService.search(any(), any()))
-            .thenThrow(new ValidationFailedException(Map.of("q", "A search query is required.")));
+            .thenThrow(new ValidationFailedException(Map.of("q", "Must be at most 256 characters.")));
         
-        mockMvc.perform(get("/api/v1/search").param("q", "  ").with(signedIn()))
+        mockMvc.perform(get("/api/v1/search").param("q", "x".repeat(300)).with(signedIn()))
             .andExpect(status().isUnprocessableEntity())
             .andExpect(jsonPath("$.type").value("/problems/validation-error"))
             .andExpect(jsonPath("$.validationErrors[0].field").value("q"));

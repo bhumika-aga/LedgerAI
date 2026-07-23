@@ -105,11 +105,22 @@ class SearchIT {
     }
     
     @Test
-    void aBlankQueryIs422() {
+    void aBlankQueryReturnsAnEmptyPage() throws Exception {
+        // VR-006 / FR-SRCH-006 / API_SPEC §14.1: an empty query is valid and yields a helpful empty state.
         String token = registerAndGetToken("blank-search@example.com");
+        
+        ResponseEntity<String> response = search(token, "%20");
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(objectMapper.readTree(response.getBody()).at("/content").size()).isZero();
+    }
+    
+    @Test
+    void anOversizedQueryIs422() {
+        String token = registerAndGetToken("long-search@example.com");
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(token);
-        assertThat(restTemplate.exchange("/api/v1/search?q=%20", HttpMethod.GET,
+        // VR-006: only a query over the configured maximum length is rejected (422).
+        assertThat(restTemplate.exchange("/api/v1/search?q=" + "x".repeat(300), HttpMethod.GET,
             new HttpEntity<>(headers), String.class).getStatusCode())
             .isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY);
     }

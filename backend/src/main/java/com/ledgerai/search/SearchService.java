@@ -12,20 +12,25 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 /**
- * Global Search business rules (API_SPEC §14; FR-SRCH). Keyword search over the extracted text of the
- * caller's own, non-deleted documents — reusing the OCR-produced {@code document_content} and its existing
- * full-text index (DATABASE §9). No semantic search, ranking model, or new index is introduced.
+ * Global Search business rules (API_SPEC §14; SRS §4.11 FR-SRCH). Keyword search over the extracted text
+ * of the caller's own, non-deleted documents — reusing the OCR-produced {@code document_content} and its
+ * existing full-text index (DATABASE §9). No semantic search, ranking model, or new index is introduced.
  *
  * <p><strong>Ownership</strong> is enforced at the query via {@link CurrentUserProvider} + the repository's
- * owner-scoped SQL (the caller only ever searches documents under clients they own, BR-004/006) — the same
+ * owner-scoped SQL (the caller only ever searches documents under clients they own, BR-005) — the same
  * owner-scoping-at-the-query approach the client list and activity timeline use; no ownership logic is
- * duplicated. <strong>Validation</strong> (VR-006): the {@code q} keywords are required and bounded; a
- * missing/blank or oversized query is a {@code 422} field error (API_SPEC §14.1), surfaced through the shared
- * validation model. A valid query with no matches yields an empty page (FR-SRCH-006).
+ * duplicated.
+ *
+ * <p><strong>Query validation (VR-006).</strong> The documented semantics are: an <em>over-length</em>
+ * query is rejected with a {@code 422} field error; an <em>empty</em> query is valid and yields a
+ * <em>helpful empty state</em> — an empty page, not an error (VR-006, FR-SRCH-006, API_SPEC §14.1). A valid
+ * non-empty query with no matches likewise yields an empty page. Only the length bound is a
+ * {@code [Assumption]} and is externalized as configuration.
  */
 @Service
 public class SearchService {
@@ -46,26 +51,26 @@ public class SearchService {
      */
     @Transactional(readOnly = true)
     public PageResponse<SearchResultResponse> search(String q, Pageable pageable) {
-        String query = validateQuery(q);
-        UUID userId = currentUserProvider.requireUserId();
-        // Search defines no `sort` parameter (API_SPEC §14.1); relevance is fixed in the query, so strip any
-        // incoming sort — a native full-text query cannot accept dynamic sorting, and none is documented.
-        Pageable unsorted = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize());
-        Page<SearchResultProjection> page = searchRepository.search(userId, query, unsorted);
-        return PageResponse.from(page, hit -> toResult(hit, query));
-    }
-    
-    private String validateQuery(String q) {
-        String trimmed = q == null ? "" : q.strip();
-        if (trimmed.isEmpty()) {
-            // `q` is required keywords (API_SPEC §14.1); a missing/blank query is invalid (VR-006 → 422).
-            throw new ValidationFailedException(Map.of("q", "A search query is required."));
-        }
-        if (trimmed.length() > properties.maxQueryLength()) {
+        String query = q == null ? "" : q.strip();
+        // VR-006: reject only an over-length query (API_SPEC §14.1 → 422). Everything else is a valid search.
+        if (query.length() > properties.maxQueryLength()) {
             throw new ValidationFailedException(
                 Map.of("q", "Must be at most " + properties.maxQueryLength() + " characters."));
         }
-        return trimmed;
+        
+        // Search defines no `sort` parameter (API_SPEC §14.1); relevance is fixed in the query, so strip any
+        // incoming sort — a native full-text query cannot accept dynamic sorting, and none is documented.
+        Pageable unsorted = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize());
+        
+        // VR-006 / FR-SRCH-006: an empty query is valid and returns a helpful empty state (an empty page),
+        // never an error. No database round-trip is needed.
+        if (query.isEmpty()) {
+            return new PageResponse<>(List.of(), unsorted.getPageNumber(), unsorted.getPageSize(), 0L, 0, false);
+        }
+        
+        UUID userId = currentUserProvider.requireUserId();
+        Page<SearchResultProjection> page = searchRepository.search(userId, query, unsorted);
+        return PageResponse.from(page, hit -> toResult(hit, query));
     }
     
     private SearchResultResponse toResult(SearchResultProjection hit, String query) {
