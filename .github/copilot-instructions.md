@@ -133,8 +133,7 @@ AI behavior is governed, not improvised. The owning documents are
   resist prompt injection ([SECURITY §10](../docs/01-architecture/SECURITY.md)).
 - **Never send more context than the task requires,** and never cross per-user isolation to assemble it.
 - **AI quality is measured, not asserted.** A behavior change is evaluated
-  per [EVALUATION.md](../docs/04-ai/EVALUATION.md);
-  Copilot does not decide that AI output is "good enough."
+  per [EVALUATION.md](../docs/04-ai/EVALUATION.md); Copilot does not decide that AI output is "good enough."
 
 ---
 
@@ -176,8 +175,8 @@ These are the antipatterns that cause architectural drift ([CLAUDE.md §10](../C
 Before generating a suggestion, Copilot should confirm:
 
 1. **Is this behavior documented?** If it is not in
-   the [SRS](../docs/00-product/SRS.md)/[PRD](../docs/00-product/PRD.md),
-   do not invent it — surface that it is undocumented.
+   the [SRS](../docs/00-product/SRS.md)/[PRD](../docs/00-product/PRD.md), do not invent it — surface that it is
+   undocumented.
 2. **Which module and document own it?** Place the change where its owner is, not where the cursor is
    ([§5](#5-module-boundaries)).
 3. **Does it fit the existing pattern?** Match the established structure, ports, DTOs, and error handling
