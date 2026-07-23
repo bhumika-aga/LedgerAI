@@ -10,6 +10,7 @@ import {
 } from "../features/clients";
 import { DocumentDetailPage, DocumentListPage } from "../features/documents";
 import { ProfilePage } from "../features/profile";
+import { ReportDetailPage, ReportsListPage } from "../features/reports";
 import { SearchPage } from "../features/search";
 import { AppLayout } from "../shared/layout/AppLayout";
 import { HealthPage } from "../system/health/HealthPage";
@@ -97,6 +98,22 @@ export function AppRouter() {
             element={
               <RequireAuth>
                 <SearchPage />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/reports"
+            element={
+              <RequireAuth>
+                <ReportsListPage />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/reports/:reportId"
+            element={
+              <RequireAuth>
+                <ReportDetailPage />
               </RequireAuth>
             }
           />

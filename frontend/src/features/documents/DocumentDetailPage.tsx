@@ -2,6 +2,7 @@ import { Alert, Button, Chip, Divider, Stack, Typography } from "@mui/material";
 import { Link as RouterLink, useNavigate, useParams } from "react-router-dom";
 
 import { DocumentSummaryPanel } from "../ai";
+import { DocumentReportsPanel } from "../reports";
 import { getDownload } from "./documentsApi";
 import { useDeleteDocument, useDocument, useOcrStatus } from "./useDocuments";
 
@@ -109,6 +110,14 @@ export function DocumentDetailPage() {
       {/* AI summary (API_SPEC §10). Lives on the document it describes; the panel gates itself until the
           document is READY (BR-010). */}
       <DocumentSummaryPanel
+        documentId={document.id}
+        documentStatus={document.status}
+      />
+
+      <Divider />
+
+      {/* Reports (API_SPEC §13). Generated from this document; the panel gates itself until READY (BR-010). */}
+      <DocumentReportsPanel
         documentId={document.id}
         documentStatus={document.status}
       />

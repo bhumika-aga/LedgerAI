@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { renderWithProviders } from "../../test/renderWithProviders";
 import * as aiApi from "../ai/aiApi";
+import * as reportsApi from "../reports/reportsApi";
 import { DocumentDetailPage } from "./DocumentDetailPage";
 import * as documentsApi from "./documentsApi";
 
@@ -10,6 +11,17 @@ vi.mock("./documentsApi");
 // The detail page embeds the AI summary panel (API_SPEC §10); stub its API so the page test stays
 // scoped to document behavior. Default: no summary yet (404), so the panel shows its "generate" state.
 vi.mock("../ai/aiApi");
+// It also embeds the reports panel (API_SPEC §13); stub its API — default: no reports for this document.
+vi.mock("../reports/reportsApi");
+
+const emptyPage = {
+  content: [],
+  page: 0,
+  size: 20,
+  totalElements: 0,
+  totalPages: 0,
+  hasNext: false,
+};
 
 const document: documentsApi.Document = {
   id: "33333333-3333-3333-3333-333333333333",
@@ -48,6 +60,8 @@ describe("DocumentDetailPage", () => {
       isAxiosError: true,
       response: { status: 404 },
     });
+    // Default: no reports for this document — the reports panel renders its empty state.
+    vi.mocked(reportsApi.listReports).mockResolvedValue(emptyPage);
   });
 
   afterEach(() => {

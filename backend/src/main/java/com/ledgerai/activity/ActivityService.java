@@ -91,4 +91,14 @@ public class ActivityService {
         activityRepository.save(Activity.record(ActivityType.SUMMARY_GENERATED, userId, clientId, documentId,
             "Generated an AI summary", null));
     }
+    
+    /**
+     * Records {@code REPORT_CREATED} (API_SPEC §13.1). Called from the report-generation transaction, so it
+     * commits together with the new report (DATABASE §11).
+     */
+    @Transactional
+    public void recordReportCreated(UUID userId, UUID clientId, UUID documentId) {
+        activityRepository.save(Activity.record(ActivityType.REPORT_CREATED, userId, clientId, documentId,
+            "Generated a report", null));
+    }
 }

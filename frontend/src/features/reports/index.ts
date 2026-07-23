@@ -1,6 +1,8 @@
 /**
- * Reports feature boundary (FRONTEND_CODING_STANDARDS §3): report generation, editing, and export.
- * Owns its own pages, components, and hooks; other features never import its internals. Public
- * surface only — empty until the reports slice is implemented.
+ * Reports feature boundary (FRONTEND_CODING_STANDARDS §3): report generation, listing, viewing, editing,
+ * export (client-side), and deletion. Owns its own pages, components, API layer, and hooks; other features
+ * consume only this public surface, never its internals.
  */
-export {};
+export { DocumentReportsPanel } from "./DocumentReportsPanel";
+export { ReportDetailPage } from "./ReportDetailPage";
+export { ReportsListPage } from "./ReportsListPage";

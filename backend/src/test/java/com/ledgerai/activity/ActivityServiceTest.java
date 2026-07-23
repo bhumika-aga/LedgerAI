@@ -120,4 +120,16 @@ class ActivityServiceTest {
         assertThat(activity.getDocumentId()).isEqualTo(DOCUMENT_ID);
         assertThat(activity.getClientId()).isNull();
     }
+    
+    @Test
+    void recordReportCreatedPersistsAReportCreatedRow() {
+        service.recordReportCreated(USER_ID, null, DOCUMENT_ID);
+        
+        ArgumentCaptor<Activity> saved = captureSaved();
+        verify(activityRepository).save(saved.capture());
+        Activity activity = saved.getValue();
+        assertThat(activity.getActionType()).isEqualTo(ActivityType.REPORT_CREATED);
+        assertThat(activity.getDocumentId()).isEqualTo(DOCUMENT_ID);
+        assertThat(activity.getClientId()).isNull();
+    }
 }

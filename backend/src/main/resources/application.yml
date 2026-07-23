@@ -129,6 +129,15 @@ ai:
 search:
   max-query-length: ${SEARCH_MAX_QUERY_LENGTH:256}
 
+# Report validation limits (VR-008). API_SPEC §13 rejects invalid user-supplied parameters with 422, but the
+# concrete title/content bounds are a VR-008 [Assumption] not finalized — so, like the profile (VR-003),
+# client (VR-004), document (VR-005), and search (VR-006) limits, they are tunable configuration rather than
+# product commitments in code. Report content is AI-generated via the shared AI port (no report-specific
+# provider config); reports are hard-deleted (DATABASE §8).
+reports:
+  max-title-length: ${REPORTS_MAX_TITLE_LENGTH:200}
+  max-content-length: ${REPORTS_MAX_CONTENT_LENGTH:100000}
+
 # Baseline observability (ADR-015): expose only the health endpoint required by the Phase 0
 # foundation. Broader endpoints, metrics, and per-environment configuration are added by the
 # slices that introduce them. Secrets and environment-specific values are always externalized.
