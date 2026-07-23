@@ -2,6 +2,8 @@ package com.ledgerai.ai;
 
 import com.ledgerai.ai.domain.AiRequest;
 import com.ledgerai.ai.domain.AiRequestType;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
@@ -18,4 +20,11 @@ import java.util.UUID;
 public interface AiRequestRepository extends JpaRepository<AiRequest, UUID> {
     
     Optional<AiRequest> findFirstByDocumentIdAndTypeOrderByCreatedAtDesc(UUID documentId, AiRequestType type);
+    
+    /**
+     * A document's chat thread (API_SPEC §11.2): all {@code CHAT} requests for the document, paged. The
+     * chronological ordering (default {@code createdAt,asc}) is carried by the {@link Pageable}. Ownership
+     * is already established upstream via the document, so this keys on {@code documentId} + {@code type}.
+     */
+    Page<AiRequest> findByDocumentIdAndType(UUID documentId, AiRequestType type, Pageable pageable);
 }

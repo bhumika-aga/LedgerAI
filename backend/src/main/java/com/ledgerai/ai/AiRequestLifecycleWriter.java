@@ -35,6 +35,16 @@ public class AiRequestLifecycleWriter {
         return requestRepository.save(AiRequest.createSummary(userId, documentId));
     }
     
+    /**
+     * Creates a new {@code CHAT} request at {@code REQUESTED} carrying the user's question (AI Chat,
+     * SRS §4.8). Parallel to {@link #createRequested} for summaries — the same lifecycle, a different
+     * {@link AiRequestType} and a retained prompt.
+     */
+    @Transactional
+    public AiRequest createChatRequested(UUID userId, UUID documentId, String question) {
+        return requestRepository.save(AiRequest.createChat(userId, documentId, question));
+    }
+    
     @Transactional
     public void markInProgress(UUID requestId) {
         AiRequest request = require(requestId);

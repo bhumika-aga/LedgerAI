@@ -132,4 +132,16 @@ class ActivityServiceTest {
         assertThat(activity.getDocumentId()).isEqualTo(DOCUMENT_ID);
         assertThat(activity.getClientId()).isNull();
     }
+    
+    @Test
+    void recordChatMessageSentPersistsAChatMessageSentRow() {
+        service.recordChatMessageSent(USER_ID, null, DOCUMENT_ID);
+        
+        ArgumentCaptor<Activity> saved = captureSaved();
+        verify(activityRepository).save(saved.capture());
+        Activity activity = saved.getValue();
+        assertThat(activity.getActionType()).isEqualTo(ActivityType.CHAT_MESSAGE_SENT);
+        assertThat(activity.getDocumentId()).isEqualTo(DOCUMENT_ID);
+        assertThat(activity.getClientId()).isNull();
+    }
 }

@@ -101,4 +101,16 @@ public class ActivityService {
         activityRepository.save(Activity.record(ActivityType.REPORT_CREATED, userId, clientId, documentId,
             "Generated a report", null));
     }
+    
+    /**
+     * Records {@code CHAT_MESSAGE_SENT} (API_SPEC §11.1 — "emits chat activity"). Called from the chat
+     * completion transaction so it commits together with the request/output (the AI-generation atomic
+     * unit, DATABASE §11). The exchange is document-scoped, so {@code clientId} is left null (as with the
+     * summary event).
+     */
+    @Transactional
+    public void recordChatMessageSent(UUID userId, UUID clientId, UUID documentId) {
+        activityRepository.save(Activity.record(ActivityType.CHAT_MESSAGE_SENT, userId, clientId, documentId,
+            "Asked a question about a document", null));
+    }
 }

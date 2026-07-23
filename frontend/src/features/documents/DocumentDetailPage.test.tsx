@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { renderWithProviders } from "../../test/renderWithProviders";
 import * as aiApi from "../ai/aiApi";
+import * as chatApi from "../chat/chatApi";
 import * as reportsApi from "../reports/reportsApi";
 import { DocumentDetailPage } from "./DocumentDetailPage";
 import * as documentsApi from "./documentsApi";
@@ -13,6 +14,8 @@ vi.mock("./documentsApi");
 vi.mock("../ai/aiApi");
 // It also embeds the reports panel (API_SPEC §13); stub its API — default: no reports for this document.
 vi.mock("../reports/reportsApi");
+// …and the chat panel (API_SPEC §11); stub its API — default: an empty thread for this document.
+vi.mock("../chat/chatApi");
 
 const emptyPage = {
   content: [],
@@ -62,6 +65,8 @@ describe("DocumentDetailPage", () => {
     });
     // Default: no reports for this document — the reports panel renders its empty state.
     vi.mocked(reportsApi.listReports).mockResolvedValue(emptyPage);
+    // Default: an empty chat thread — the chat panel renders its empty state.
+    vi.mocked(chatApi.getChatHistory).mockResolvedValue(emptyPage);
   });
 
   afterEach(() => {

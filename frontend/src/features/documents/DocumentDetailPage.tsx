@@ -2,6 +2,7 @@ import { Alert, Button, Chip, Divider, Stack, Typography } from "@mui/material";
 import { Link as RouterLink, useNavigate, useParams } from "react-router-dom";
 
 import { DocumentSummaryPanel } from "../ai";
+import { DocumentChatPanel } from "../chat";
 import { DocumentReportsPanel } from "../reports";
 import { getDownload } from "./documentsApi";
 import { useDeleteDocument, useDocument, useOcrStatus } from "./useDocuments";
@@ -110,6 +111,15 @@ export function DocumentDetailPage() {
       {/* AI summary (API_SPEC §10). Lives on the document it describes; the panel gates itself until the
           document is READY (BR-010). */}
       <DocumentSummaryPanel
+        documentId={document.id}
+        documentStatus={document.status}
+      />
+
+      <Divider />
+
+      {/* AI chat (API_SPEC §11). Document-scoped question/answer thread; the panel gates itself until
+          READY (BR-010). */}
+      <DocumentChatPanel
         documentId={document.id}
         documentStatus={document.status}
       />

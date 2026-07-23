@@ -120,6 +120,11 @@ ai:
     model: ${AI_ANTHROPIC_MODEL:claude-opus-4-8}
     max-tokens: ${AI_ANTHROPIC_MAX_TOKENS:1024}
     max-document-chars: ${AI_ANTHROPIC_MAX_DOCUMENT_CHARS:24000}
+  # AI Chat question validation (VR-007). The question is required (checked at the boundary); the maximum
+  # length is a VR-007 [Assumption] not finalized in the SRS/architecture, so it is tunable configuration
+  # rather than a product commitment in code. Chat reuses the shared AI port and prompt architecture.
+  chat:
+    max-question-length: ${AI_CHAT_MAX_QUESTION_LENGTH:4000}
 
 # Global Search validation (VR-006). API_SPEC §14.1 rejects an invalid/oversized query with 422, but the
 # concrete maximum length is a VR-006 [Assumption] not finalized in the SRS/architecture — so, like the

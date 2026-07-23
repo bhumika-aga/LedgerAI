@@ -73,6 +73,28 @@ public class AiRequest {
     }
     
     /**
+     * A new AI Chat request for a document (AI Chat, SRS §4.8; DATABASE §3.1 chat note), entering the
+     * lifecycle at {@code REQUESTED}. The user's {@code question} is retained as the request
+     * {@code prompt} (the documented {@code prompt?} field — chat/email carry it, VR-007), so a chat
+     * exchange records both the question and, on completion, its grounded answer ({@link AiOutput}).
+     * Only created when the source document is {@code READY} (BR-010); that precondition is enforced by
+     * the service, not this factory.
+     */
+    public static AiRequest createChat(UUID userId, UUID documentId, String question) {
+        AiRequest request = new AiRequest();
+        request.id = UUID.randomUUID();
+        request.userId = userId;
+        request.documentId = documentId;
+        request.type = AiRequestType.CHAT;
+        request.status = AiRequestStatus.REQUESTED;
+        request.prompt = question;
+        Instant now = Instant.now();
+        request.createdAt = now;
+        request.updatedAt = now;
+        return request;
+    }
+    
+    /**
      * SRS §7.2: Requested → InProgress (generation started). Only legal from {@code REQUESTED}.
      */
     public void markInProgress() {
