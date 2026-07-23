@@ -145,6 +145,14 @@ export function DocumentDetailPage() {
         >
           Download
         </Button>
+        {/* AI email draft (API_SPEC §12), launched with this document as optional context. */}
+        <Button
+          variant="text"
+          component={RouterLink}
+          to={`/emails/new?documentId=${document.id}`}
+        >
+          Draft an email
+        </Button>
         <Button
           variant="text"
           color="error"

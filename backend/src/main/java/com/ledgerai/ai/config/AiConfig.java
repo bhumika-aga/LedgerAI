@@ -8,6 +8,6 @@ import org.springframework.context.annotation.Configuration;
  * externalized settings only; holds no behavior.
  */
 @Configuration
-@EnableConfigurationProperties({AiProperties.class, ChatProperties.class})
+@EnableConfigurationProperties({AiProperties.class, ChatProperties.class, EmailProperties.class})
 public class AiConfig {
 }

@@ -95,6 +95,28 @@ public class AiRequest {
     }
     
     /**
+     * A new AI Email request (AI Email Generation, SRS §4.9), entering the lifecycle at {@code REQUESTED}.
+     * Email context is optional (API_SPEC §12.1), so {@code documentId} may be {@code null} (the column is
+     * nullable, DATABASE §5.5); the referenced client is context-only and has no column on this entity, so
+     * it is not stored here. The user's {@code instruction} is retained as the request {@code prompt} (the
+     * documented {@code prompt?} field — chat/email carry it, VR-007). A referenced document must be
+     * {@code READY} (BR-010); that precondition is enforced by the service, not this factory.
+     */
+    public static AiRequest createEmail(UUID userId, UUID documentId, String instruction) {
+        AiRequest request = new AiRequest();
+        request.id = UUID.randomUUID();
+        request.userId = userId;
+        request.documentId = documentId;
+        request.type = AiRequestType.EMAIL;
+        request.status = AiRequestStatus.REQUESTED;
+        request.prompt = instruction;
+        Instant now = Instant.now();
+        request.createdAt = now;
+        request.updatedAt = now;
+        return request;
+    }
+    
+    /**
      * SRS §7.2: Requested → InProgress (generation started). Only legal from {@code REQUESTED}.
      */
     public void markInProgress() {

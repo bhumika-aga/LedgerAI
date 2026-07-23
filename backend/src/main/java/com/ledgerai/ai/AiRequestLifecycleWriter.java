@@ -45,6 +45,16 @@ public class AiRequestLifecycleWriter {
         return requestRepository.save(AiRequest.createChat(userId, documentId, question));
     }
     
+    /**
+     * Creates a new {@code EMAIL} request at {@code REQUESTED} carrying the user's instruction (AI Email,
+     * SRS §4.9). Parallel to the summary/chat creators — the same lifecycle, a different
+     * {@link AiRequestType}, and an optional {@code documentId} (email context is optional, API_SPEC §12.1).
+     */
+    @Transactional
+    public AiRequest createEmailRequested(UUID userId, UUID documentId, String instruction) {
+        return requestRepository.save(AiRequest.createEmail(userId, documentId, instruction));
+    }
+    
     @Transactional
     public void markInProgress(UUID requestId) {
         AiRequest request = require(requestId);

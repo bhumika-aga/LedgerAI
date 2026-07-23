@@ -144,4 +144,16 @@ class ActivityServiceTest {
         assertThat(activity.getDocumentId()).isEqualTo(DOCUMENT_ID);
         assertThat(activity.getClientId()).isNull();
     }
+    
+    @Test
+    void recordEmailGeneratedPersistsAnEmailGeneratedRowWithOptionalContext() {
+        service.recordEmailGenerated(USER_ID, CLIENT_ID, DOCUMENT_ID);
+        
+        ArgumentCaptor<Activity> saved = captureSaved();
+        verify(activityRepository).save(saved.capture());
+        Activity activity = saved.getValue();
+        assertThat(activity.getActionType()).isEqualTo(ActivityType.EMAIL_GENERATED);
+        assertThat(activity.getClientId()).isEqualTo(CLIENT_ID);
+        assertThat(activity.getDocumentId()).isEqualTo(DOCUMENT_ID);
+    }
 }

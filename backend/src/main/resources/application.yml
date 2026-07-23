@@ -125,6 +125,11 @@ ai:
   # rather than a product commitment in code. Chat reuses the shared AI port and prompt architecture.
   chat:
     max-question-length: ${AI_CHAT_MAX_QUESTION_LENGTH:4000}
+  # AI Email instruction validation (VR-007). The instruction is required (checked at the boundary); the
+  # maximum length is a VR-007 [Assumption] not finalized, so it is tunable configuration. Email reuses the
+  # shared AI port and prompt architecture; client/document context is optional and the draft is never sent.
+  email:
+    max-instruction-length: ${AI_EMAIL_MAX_INSTRUCTION_LENGTH:4000}
 
 # Global Search validation (VR-006). API_SPEC §14.1 rejects an invalid/oversized query with 422, but the
 # concrete maximum length is a VR-006 [Assumption] not finalized in the SRS/architecture — so, like the

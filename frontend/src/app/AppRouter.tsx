@@ -9,6 +9,7 @@ import {
   ClientListPage,
 } from "../features/clients";
 import { DocumentDetailPage, DocumentListPage } from "../features/documents";
+import { EmailGenerationPage } from "../features/email";
 import { ProfilePage } from "../features/profile";
 import { ReportDetailPage, ReportsListPage } from "../features/reports";
 import { SearchPage } from "../features/search";
@@ -114,6 +115,14 @@ export function AppRouter() {
             element={
               <RequireAuth>
                 <ReportDetailPage />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/emails/new"
+            element={
+              <RequireAuth>
+                <EmailGenerationPage />
               </RequireAuth>
             }
           />

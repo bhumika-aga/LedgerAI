@@ -14,8 +14,10 @@ package com.ledgerai.activity.domain;
  * follows the established {@code <ENTITY>_<PAST-PARTICIPLE>} convention of the other events rather than
  * inventing new behavior — see the engineering note in IMPLEMENTATION_STATUS.
  *
- * <p>{@code EMAIL_GENERATED} remains absent because AI Email is not built yet. {@code action_type} has no
- * DB {@code CHECK} (DATABASE §5.8), so adding a value needs no schema change.
+ * <p>Unlike the chat label, {@code EMAIL_GENERATED} <em>is</em> named explicitly by the documentation
+ * (DATABASE §5.8 examples; API_SPEC §12.1 "Emits {@code EMAIL_GENERATED}"), so it introduces no naming
+ * decision. {@code action_type} has no DB {@code CHECK} (DATABASE §5.8), so adding a value needs no schema
+ * change.
  */
 public enum ActivityType {
     CLIENT_CREATED,
@@ -23,5 +25,6 @@ public enum ActivityType {
     DOCUMENT_DELETED,
     SUMMARY_GENERATED,
     CHAT_MESSAGE_SENT,
+    EMAIL_GENERATED,
     REPORT_CREATED
 }

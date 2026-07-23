@@ -113,4 +113,16 @@ public class ActivityService {
         activityRepository.save(Activity.record(ActivityType.CHAT_MESSAGE_SENT, userId, clientId, documentId,
             "Asked a question about a document", null));
     }
+    
+    /**
+     * Records {@code EMAIL_GENERATED} (API_SPEC §12.1). Called from the email completion transaction so it
+     * commits together with the request/output (the AI-generation atomic unit, DATABASE §11). Email context
+     * is optional, so {@code clientId} and {@code documentId} are whatever the request referenced (either
+     * may be null); a referenced client makes the draft visible in that client's timeline view.
+     */
+    @Transactional
+    public void recordEmailGenerated(UUID userId, UUID clientId, UUID documentId) {
+        activityRepository.save(Activity.record(ActivityType.EMAIL_GENERATED, userId, clientId, documentId,
+            "Generated an email draft", null));
+    }
 }
