@@ -47,7 +47,4 @@ public class InMemoryStoragePort implements StoragePort {
         return objects.containsKey(storageReference);
     }
     
-    public int storedCount() {
-        return objects.size();
-    }
 }

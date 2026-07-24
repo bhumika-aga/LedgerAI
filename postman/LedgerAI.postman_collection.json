@@ -1,0 +1,1355 @@
+{
+  "info": {
+    "name": "LedgerAI API",
+    "_postman_id": "10f7ae1d-d3f8-4f2d-a933-0fed0e78d65b",
+    "description": "LedgerAI MVP API (API_SPEC). All resource paths are under {{baseUrl}} (/api/v1). Run Auth \u2192 Register (or Login) first: it saves {{accessToken}} for the collection-level Bearer auth. Typical flow: Register \u2192 Create client \u2192 Upload document \u2192 poll OCR status \u2192 Summary/Chat/Email/Report \u2192 Search \u2192 Activity. Example responses are contract shapes from API_SPEC \u2014 run against a live instance to capture real values.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{accessToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080/api/v1"
+    },
+    {
+      "key": "host",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "accessToken",
+      "value": ""
+    },
+    {
+      "key": "clientId",
+      "value": ""
+    },
+    {
+      "key": "documentId",
+      "value": ""
+    },
+    {
+      "key": "reportId",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "1 \u00b7 Authentication",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "register"]
+            },
+            "description": "API_SPEC \u00a75.1 \u2014 create an account. Stores the returned accessToken into the environment.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"pro@example.com\",\n  \"password\": \"correct-horse\",\n  \"fullName\": \"Ada Pro\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": [
+            {
+              "name": "201 Created",
+              "originalRequest": {},
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"user\": {\n    \"id\": \"11111111-1111-1111-1111-111111111111\",\n    \"email\": \"pro@example.com\",\n    \"fullName\": \"Ada Pro\",\n    \"professionalDetails\": null,\n    \"preferences\": null,\n    \"createdAt\": \"2026-07-24T10:00:00Z\",\n    \"updatedAt\": \"2026-07-24T10:00:00Z\"\n  },\n  \"tokens\": {\n    \"accessToken\": \"<jwt>\",\n    \"tokenType\": \"Bearer\",\n    \"expiresIn\": 900\n  }\n}"
+            }
+          ],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const b = pm.response.json();",
+                  "if (b && b.tokens && b.tokens.accessToken) {",
+                  "  pm.environment.set('accessToken', b.tokens.accessToken);",
+                  "  pm.collectionVariables.set('accessToken', b.tokens.accessToken);",
+                  "}",
+                  "pm.test('status is ' + (pm.request.url.toString().endsWith('register') ? 201 : 200), function(){",
+                  "  pm.expect([200,201]).to.include(pm.response.code); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            },
+            "description": "API_SPEC \u00a75.2 \u2014 obtain a new access token (refresh cookie set httpOnly).",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"pro@example.com\",\n  \"password\": \"correct-horse\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {},
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"user\": {\n    \"id\": \"11111111-1111-1111-1111-111111111111\",\n    \"email\": \"pro@example.com\",\n    \"fullName\": \"Ada Pro\",\n    \"professionalDetails\": null,\n    \"preferences\": null,\n    \"createdAt\": \"2026-07-24T10:00:00Z\",\n    \"updatedAt\": \"2026-07-24T10:00:00Z\"\n  },\n  \"tokens\": {\n    \"accessToken\": \"<jwt>\",\n    \"tokenType\": \"Bearer\",\n    \"expiresIn\": 900\n  }\n}"
+            },
+            {
+              "name": "422 invalid",
+              "originalRequest": {},
+              "status": "Unprocessable Entity",
+              "code": 422,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"/problems/validation-error\",\n  \"title\": \"Unprocessable Entity\",\n  \"status\": 422,\n  \"detail\": \"One or more fields are invalid.\",\n  \"validationErrors\": [\n    {\n      \"field\": \"email\",\n      \"message\": \"must be a well-formed email address\"\n    }\n  ]\n}"
+            }
+          ],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const b = pm.response.json();",
+                  "if (b && b.tokens && b.tokens.accessToken) {",
+                  "  pm.environment.set('accessToken', b.tokens.accessToken);",
+                  "  pm.collectionVariables.set('accessToken', b.tokens.accessToken);",
+                  "}",
+                  "pm.test('status is ' + (pm.request.url.toString().endsWith('register') ? 201 : 200), function(){",
+                  "  pm.expect([200,201]).to.include(pm.response.code); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Refresh",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/auth/refresh",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "refresh"]
+            },
+            "description": "API_SPEC \u00a75.3 \u2014 rotate tokens using the httpOnly refresh cookie (no body, no bearer).",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {},
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"tokens\": {\n    \"accessToken\": \"<jwt>\",\n    \"tokenType\": \"Bearer\",\n    \"expiresIn\": 900\n  }\n}"
+            }
+          ],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const b = pm.response.json();",
+                  "if (b && b.tokens && b.tokens.accessToken) {",
+                  "  pm.environment.set('accessToken', b.tokens.accessToken);",
+                  "  pm.collectionVariables.set('accessToken', b.tokens.accessToken);",
+                  "}",
+                  "pm.test('status is ' + (pm.request.url.toString().endsWith('register') ? 201 : 200), function(){",
+                  "  pm.expect([200,201]).to.include(pm.response.code); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/auth/logout",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "logout"]
+            },
+            "description": "API_SPEC \u00a75.4 \u2014 revoke the refresh token (requires the access token)."
+          },
+          "response": [
+            {
+              "name": "204 No Content",
+              "originalRequest": {},
+              "status": "No Content",
+              "code": 204,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "2 \u00b7 User Profile",
+      "item": [
+        {
+          "name": "Get my profile",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "me"]
+            },
+            "description": "API_SPEC \u00a76"
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {},
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"11111111-1111-1111-1111-111111111111\",\n  \"email\": \"pro@example.com\",\n  \"fullName\": \"Ada Pro\",\n  \"professionalDetails\": null,\n  \"preferences\": null,\n  \"createdAt\": \"2026-07-24T10:00:00Z\",\n  \"updatedAt\": \"2026-07-24T10:00:00Z\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update my profile",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "me"]
+            },
+            "description": "API_SPEC \u00a76 \u2014 partial update (VR-003).",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"Ada P. Pro\",\n  \"professionalDetails\": \"Chartered Accountant\",\n  \"preferences\": {\n    \"theme\": \"light\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {},
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"11111111-1111-1111-1111-111111111111\",\n  \"email\": \"pro@example.com\",\n  \"fullName\": \"Ada Pro\",\n  \"professionalDetails\": null,\n  \"preferences\": null,\n  \"createdAt\": \"2026-07-24T10:00:00Z\",\n  \"updatedAt\": \"2026-07-24T10:00:00Z\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "3 \u00b7 Client Management",
+      "item": [
+        {
+          "name": "List clients",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/clients?page=0&size=20&status=ACTIVE",
+              "host": ["{{baseUrl}}"],
+              "path": ["clients"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "20"
+                },
+                {
+                  "key": "status",
+                  "value": "ACTIVE"
+                }
+              ]
+            },
+            "description": "API_SPEC \u00a77 \u2014 owner-scoped, paged, optional status/q filters."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {},
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"content\": [\n    {\n      \"id\": \"22222222-2222-2222-2222-222222222222\",\n      \"name\": \"Acme Corp\",\n      \"contactDetails\": \"ap@acme.com\",\n      \"notes\": null,\n      \"status\": \"ACTIVE\",\n      \"archivedAt\": null,\n      \"createdAt\": \"2026-07-24T10:05:00Z\",\n      \"updatedAt\": \"2026-07-24T10:05:00Z\"\n    }\n  ],\n  \"page\": 0,\n  \"size\": 20,\n  \"totalElements\": 1,\n  \"totalPages\": 1,\n  \"hasNext\": false\n}"
+            }
+          ]
+        },
+        {
+          "name": "Create client",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/clients",
+              "host": ["{{baseUrl}}"],
+              "path": ["clients"]
+            },
+            "description": "API_SPEC \u00a77 \u2014 VR-004. Emits CLIENT_CREATED. Stores clientId.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Acme Corp\",\n  \"contactDetails\": \"ap@acme.com\",\n  \"notes\": null\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "name": "201 Created",
+              "originalRequest": {},
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"22222222-2222-2222-2222-222222222222\",\n  \"name\": \"Acme Corp\",\n  \"contactDetails\": \"ap@acme.com\",\n  \"notes\": null,\n  \"status\": \"ACTIVE\",\n  \"archivedAt\": null,\n  \"createdAt\": \"2026-07-24T10:05:00Z\",\n  \"updatedAt\": \"2026-07-24T10:05:00Z\"\n}"
+            }
+          ],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const b=pm.response.json(); if(b&&b.id){pm.environment.set('clientId',b.id);pm.collectionVariables.set('clientId',b.id);}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get client",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/clients/{{clientId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["clients", "{{clientId}}"]
+            },
+            "description": "API_SPEC \u00a77 \u2014 404 if not owned."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {},
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"22222222-2222-2222-2222-222222222222\",\n  \"name\": \"Acme Corp\",\n  \"contactDetails\": \"ap@acme.com\",\n  \"notes\": null,\n  \"status\": \"ACTIVE\",\n  \"archivedAt\": null,\n  \"createdAt\": \"2026-07-24T10:05:00Z\",\n  \"updatedAt\": \"2026-07-24T10:05:00Z\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update client",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/clients/{{clientId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["clients", "{{clientId}}"]
+            },
+            "description": "API_SPEC \u00a77",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Acme Corporation\",\n  \"contactDetails\": \"finance@acme.com\",\n  \"notes\": \"VIP\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {},
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"22222222-2222-2222-2222-222222222222\",\n  \"name\": \"Acme Corp\",\n  \"contactDetails\": \"ap@acme.com\",\n  \"notes\": null,\n  \"status\": \"ACTIVE\",\n  \"archivedAt\": null,\n  \"createdAt\": \"2026-07-24T10:05:00Z\",\n  \"updatedAt\": \"2026-07-24T10:05:00Z\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Archive client",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/clients/{{clientId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["clients", "{{clientId}}"]
+            },
+            "description": "API_SPEC \u00a77 \u2014 soft-delete (status=ARCHIVED)."
+          },
+          "response": [
+            {
+              "name": "204 No Content",
+              "originalRequest": {},
+              "status": "No Content",
+              "code": 204,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "4 \u00b7 Documents",
+      "item": [
+        {
+          "name": "Upload document",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/clients/{{clientId}}/documents",
+              "host": ["{{baseUrl}}"],
+              "path": ["clients", "{{clientId}}", "documents"]
+            },
+            "description": "API_SPEC \u00a78.1 \u2014 multipart 'file'. VR-005 (type/size validated from bytes). Emits DOCUMENT_UPLOADED. Stores documentId.",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "201 Created",
+              "originalRequest": {},
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"33333333-3333-3333-3333-333333333333\",\n  \"clientId\": \"22222222-2222-2222-2222-222222222222\",\n  \"originalFilename\": \"statement.pdf\",\n  \"mimeType\": \"application/pdf\",\n  \"sizeBytes\": 12345,\n  \"status\": \"UPLOADED\",\n  \"extractionMethod\": null,\n  \"failureReason\": null,\n  \"createdAt\": \"2026-07-24T10:10:00Z\",\n  \"updatedAt\": \"2026-07-24T10:10:00Z\"\n}"
+            }
+          ],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const b=pm.response.json(); if(b&&b.id){pm.environment.set('documentId',b.id);pm.collectionVariables.set('documentId',b.id);}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "List documents for client",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/clients/{{clientId}}/documents?page=0&size=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["clients", "{{clientId}}", "documents"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "20"
+                }
+              ]
+            },
+            "description": "API_SPEC \u00a78.2"
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {},
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"content\": [\n    {\n      \"id\": \"33333333-3333-3333-3333-333333333333\",\n      \"clientId\": \"22222222-2222-2222-2222-222222222222\",\n      \"originalFilename\": \"statement.pdf\",\n      \"mimeType\": \"application/pdf\",\n      \"sizeBytes\": 12345,\n      \"status\": \"UPLOADED\",\n      \"extractionMethod\": null,\n      \"failureReason\": null,\n      \"createdAt\": \"2026-07-24T10:10:00Z\",\n      \"updatedAt\": \"2026-07-24T10:10:00Z\"\n    }\n  ],\n  \"page\": 0,\n  \"size\": 20,\n  \"totalElements\": 1,\n  \"totalPages\": 1,\n  \"hasNext\": false\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get document",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/documents/{{documentId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["documents", "{{documentId}}"]
+            },
+            "description": "API_SPEC \u00a78.3"
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {},
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"33333333-3333-3333-3333-333333333333\",\n  \"clientId\": \"22222222-2222-2222-2222-222222222222\",\n  \"originalFilename\": \"statement.pdf\",\n  \"mimeType\": \"application/pdf\",\n  \"sizeBytes\": 12345,\n  \"status\": \"UPLOADED\",\n  \"extractionMethod\": null,\n  \"failureReason\": null,\n  \"createdAt\": \"2026-07-24T10:10:00Z\",\n  \"updatedAt\": \"2026-07-24T10:10:00Z\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Download link",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/documents/{{documentId}}/download",
+              "host": ["{{baseUrl}}"],
+              "path": ["documents", "{{documentId}}", "download"]
+            },
+            "description": "API_SPEC \u00a78.5 \u2014 short-lived signed URL metadata."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {},
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"downloadUrl\": \"https://storage.example/signed?...\",\n  \"expiresAt\": \"2026-07-24T10:15:00Z\",\n  \"mimeType\": \"application/pdf\",\n  \"originalFilename\": \"statement.pdf\",\n  \"sizeBytes\": 12345\n}"
+            }
+          ]
+        },
+        {
+          "name": "Delete document",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/documents/{{documentId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["documents", "{{documentId}}"]
+            },
+            "description": "API_SPEC \u00a78.4 \u2014 soft-delete; emits DOCUMENT_DELETED."
+          },
+          "response": [
+            {
+              "name": "204 No Content",
+              "originalRequest": {},
+              "status": "No Content",
+              "code": 204,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "5 \u00b7 OCR",
+      "item": [
+        {
+          "name": "Get OCR status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/documents/{{documentId}}/ocr-status",
+              "host": ["{{baseUrl}}"],
+              "path": ["documents", "{{documentId}}", "ocr-status"]
+            },
+            "description": "API_SPEC \u00a79 \u2014 poll target: UPLOADED\u2192PROCESSING\u2192READY/FAILED."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {},
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"documentId\": \"33333333-3333-3333-3333-333333333333\",\n  \"status\": \"READY\",\n  \"extractionMethod\": \"NATIVE\",\n  \"extractionQuality\": \"HIGH\",\n  \"failureReason\": null\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "6 \u00b7 AI Summary",
+      "item": [
+        {
+          "name": "Generate summary",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/documents/{{documentId}}/summary",
+              "host": ["{{baseUrl}}"],
+              "path": ["documents", "{{documentId}}", "summary"]
+            },
+            "description": "API_SPEC \u00a710.1 \u2014 grounded; 201; 409 if not READY; 422 no text; 503 provider down. Emits SUMMARY_GENERATED.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"regenerate\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "name": "201 Created",
+              "originalRequest": {},
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"44444444-4444-4444-4444-444444444444\",\n  \"type\": \"SUMMARY\",\n  \"status\": \"COMPLETED\",\n  \"documentId\": \"33333333-3333-3333-3333-333333333333\",\n  \"prompt\": null,\n  \"content\": \"...AI-generated content...\",\n  \"edited\": false,\n  \"failureReason\": null,\n  \"createdAt\": \"2026-07-24T10:15:00Z\",\n  \"updatedAt\": \"2026-07-24T10:15:00Z\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get summary",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/documents/{{documentId}}/summary",
+              "host": ["{{baseUrl}}"],
+              "path": ["documents", "{{documentId}}", "summary"]
+            },
+            "description": "API_SPEC \u00a710.2 \u2014 poll target; 404 if none."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {},
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"44444444-4444-4444-4444-444444444444\",\n  \"type\": \"SUMMARY\",\n  \"status\": \"COMPLETED\",\n  \"documentId\": \"33333333-3333-3333-3333-333333333333\",\n  \"prompt\": null,\n  \"content\": \"...AI-generated content...\",\n  \"edited\": false,\n  \"failureReason\": null,\n  \"createdAt\": \"2026-07-24T10:15:00Z\",\n  \"updatedAt\": \"2026-07-24T10:15:00Z\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Edit summary",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/documents/{{documentId}}/summary",
+              "host": ["{{baseUrl}}"],
+              "path": ["documents", "{{documentId}}", "summary"]
+            },
+            "description": "API_SPEC \u00a710.3 \u2014 human-in-the-loop (BR-031).",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"My reviewed summary.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {},
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"44444444-4444-4444-4444-444444444444\",\n  \"type\": \"SUMMARY\",\n  \"status\": \"COMPLETED\",\n  \"documentId\": \"33333333-3333-3333-3333-333333333333\",\n  \"prompt\": null,\n  \"content\": \"My reviewed summary.\",\n  \"edited\": true,\n  \"failureReason\": null,\n  \"createdAt\": \"2026-07-24T10:15:00Z\",\n  \"updatedAt\": \"2026-07-24T10:15:00Z\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "7 \u00b7 AI Chat",
+      "item": [
+        {
+          "name": "Ask a question",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/documents/{{documentId}}/chat",
+              "host": ["{{baseUrl}}"],
+              "path": ["documents", "{{documentId}}", "chat"]
+            },
+            "description": "API_SPEC \u00a711.1 \u2014 grounded Q&A; 201; 409 not READY; 422 empty question; 503 provider down. Emits CHAT_MESSAGE_SENT.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"question\": \"What is the balance sheet total?\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "name": "201 Created",
+              "originalRequest": {},
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"44444444-4444-4444-4444-444444444444\",\n  \"type\": \"CHAT\",\n  \"status\": \"COMPLETED\",\n  \"documentId\": \"33333333-3333-3333-3333-333333333333\",\n  \"prompt\": \"What is the balance sheet total?\",\n  \"content\": \"...AI-generated content...\",\n  \"edited\": false,\n  \"failureReason\": null,\n  \"createdAt\": \"2026-07-24T10:15:00Z\",\n  \"updatedAt\": \"2026-07-24T10:15:00Z\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get chat thread",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/documents/{{documentId}}/chat?page=0&size=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["documents", "{{documentId}}", "chat"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "20"
+                }
+              ]
+            },
+            "description": "API_SPEC \u00a711.2 \u2014 chronological (createdAt,asc)."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {},
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"content\": [\n    {\n      \"id\": \"44444444-4444-4444-4444-444444444444\",\n      \"type\": \"CHAT\",\n      \"status\": \"COMPLETED\",\n      \"documentId\": \"33333333-3333-3333-3333-333333333333\",\n      \"prompt\": \"What is the balance sheet total?\",\n      \"content\": \"...AI-generated content...\",\n      \"edited\": false,\n      \"failureReason\": null,\n      \"createdAt\": \"2026-07-24T10:15:00Z\",\n      \"updatedAt\": \"2026-07-24T10:15:00Z\"\n    }\n  ],\n  \"page\": 0,\n  \"size\": 20,\n  \"totalElements\": 1,\n  \"totalPages\": 1,\n  \"hasNext\": false\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "8 \u00b7 AI Email",
+      "item": [
+        {
+          "name": "Generate email draft",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/ai/emails",
+              "host": ["{{baseUrl}}"],
+              "path": ["ai", "emails"]
+            },
+            "description": "API_SPEC \u00a712.1 \u2014 draft only, never sent (BR-034). clientId/documentId optional. Emits EMAIL_GENERATED.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"instruction\": \"Write a follow-up about the overdue invoice.\",\n  \"clientId\": \"{{clientId}}\",\n  \"documentId\": \"{{documentId}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "name": "201 Created",
+              "originalRequest": {},
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"44444444-4444-4444-4444-444444444444\",\n  \"type\": \"EMAIL\",\n  \"status\": \"COMPLETED\",\n  \"documentId\": \"33333333-3333-3333-3333-333333333333\",\n  \"prompt\": \"Write a follow-up about the overdue invoice.\",\n  \"content\": \"Dear Acme Corp, ...\",\n  \"edited\": false,\n  \"failureReason\": null,\n  \"createdAt\": \"2026-07-24T10:15:00Z\",\n  \"updatedAt\": \"2026-07-24T10:15:00Z\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "9 \u00b7 Reports",
+      "item": [
+        {
+          "name": "Generate report",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/documents/{{documentId}}/reports",
+              "host": ["{{baseUrl}}"],
+              "path": ["documents", "{{documentId}}", "reports"]
+            },
+            "description": "API_SPEC \u00a713.1 \u2014 single-document; DRAFT. Emits REPORT_CREATED. Stores reportId.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Q4 Review\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "name": "201 Created",
+              "originalRequest": {},
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"55555555-5555-5555-5555-555555555555\",\n  \"documentId\": \"33333333-3333-3333-3333-333333333333\",\n  \"title\": \"Q4 Review\",\n  \"content\": \"...report body...\",\n  \"status\": \"DRAFT\",\n  \"createdAt\": \"2026-07-24T10:20:00Z\",\n  \"updatedAt\": \"2026-07-24T10:20:00Z\"\n}"
+            }
+          ],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const b=pm.response.json(); if(b&&b.id){pm.environment.set('reportId',b.id);pm.collectionVariables.set('reportId',b.id);}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "List reports",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/reports?documentId={{documentId}}&status=DRAFT&page=0",
+              "host": ["{{baseUrl}}"],
+              "path": ["reports"],
+              "query": [
+                {
+                  "key": "documentId",
+                  "value": "{{documentId}}"
+                },
+                {
+                  "key": "status",
+                  "value": "DRAFT"
+                },
+                {
+                  "key": "page",
+                  "value": "0"
+                }
+              ]
+            },
+            "description": "API_SPEC \u00a713.2 \u2014 owner-scoped, paged, optional filters, newest-first."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {},
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"content\": [\n    {\n      \"id\": \"55555555-5555-5555-5555-555555555555\",\n      \"documentId\": \"33333333-3333-3333-3333-333333333333\",\n      \"title\": \"Q4 Review\",\n      \"content\": \"...report body...\",\n      \"status\": \"DRAFT\",\n      \"createdAt\": \"2026-07-24T10:20:00Z\",\n      \"updatedAt\": \"2026-07-24T10:20:00Z\"\n    }\n  ],\n  \"page\": 0,\n  \"size\": 20,\n  \"totalElements\": 1,\n  \"totalPages\": 1,\n  \"hasNext\": false\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get report",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/reports/{{reportId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["reports", "{{reportId}}"]
+            },
+            "description": "API_SPEC \u00a713.3"
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {},
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"55555555-5555-5555-5555-555555555555\",\n  \"documentId\": \"33333333-3333-3333-3333-333333333333\",\n  \"title\": \"Q4 Review\",\n  \"content\": \"...report body...\",\n  \"status\": \"DRAFT\",\n  \"createdAt\": \"2026-07-24T10:20:00Z\",\n  \"updatedAt\": \"2026-07-24T10:20:00Z\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update report",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/reports/{{reportId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["reports", "{{reportId}}"]
+            },
+            "description": "API_SPEC \u00a713.4 \u2014 editable (BR-031).",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Q4 Review (final)\",\n  \"content\": \"...edited...\",\n  \"status\": \"SAVED\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {},
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"55555555-5555-5555-5555-555555555555\",\n  \"documentId\": \"33333333-3333-3333-3333-333333333333\",\n  \"title\": \"Q4 Review\",\n  \"content\": \"...report body...\",\n  \"status\": \"SAVED\",\n  \"createdAt\": \"2026-07-24T10:20:00Z\",\n  \"updatedAt\": \"2026-07-24T10:20:00Z\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Delete report",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/reports/{{reportId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["reports", "{{reportId}}"]
+            },
+            "description": "API_SPEC \u00a713.5 \u2014 hard delete."
+          },
+          "response": [
+            {
+              "name": "204 No Content",
+              "originalRequest": {},
+              "status": "No Content",
+              "code": 204,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "10 \u00b7 Global Search",
+      "item": [
+        {
+          "name": "Search",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/search?q=balance sheet&page=0&size=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["search"],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "balance sheet"
+                },
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "20"
+                }
+              ]
+            },
+            "description": "API_SPEC \u00a714 \u2014 PostgreSQL full-text; owner-scoped; relevance-ranked; empty q \u2192 empty page; over-length \u2192 422."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {},
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"content\": [\n    {\n      \"documentId\": \"33333333-3333-3333-3333-333333333333\",\n      \"clientId\": \"22222222-2222-2222-2222-222222222222\",\n      \"title\": \"statement.pdf\",\n      \"snippet\": \"...balance sheet total 987654...\",\n      \"matchContext\": \"...\",\n      \"updatedAt\": \"2026-07-24T10:12:00Z\"\n    }\n  ],\n  \"page\": 0,\n  \"size\": 20,\n  \"totalElements\": 1,\n  \"totalPages\": 1,\n  \"hasNext\": false\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "11 \u00b7 Activity Timeline",
+      "item": [
+        {
+          "name": "Get activity timeline",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/activities?clientId=&page=0&size=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["activities"],
+              "query": [
+                {
+                  "key": "clientId",
+                  "value": ""
+                },
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "20"
+                }
+              ]
+            },
+            "description": "API_SPEC \u00a715 \u2014 read-only, newest-first; optional clientId for the per-client view."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {},
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"content\": [\n    {\n      \"id\": \"66666666-6666-6666-6666-666666666666\",\n      \"actionType\": \"DOCUMENT_UPLOADED\",\n      \"summary\": \"Uploaded document \\\"statement.pdf\\\"\",\n      \"clientId\": \"22222222-2222-2222-2222-222222222222\",\n      \"documentId\": \"33333333-3333-3333-3333-333333333333\",\n      \"metadata\": null,\n      \"createdAt\": \"2026-07-24T10:10:00Z\"\n    }\n  ],\n  \"page\": 0,\n  \"size\": 20,\n  \"totalElements\": 1,\n  \"totalPages\": 1,\n  \"hasNext\": false\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "12 \u00b7 Health",
+      "item": [
+        {
+          "name": "Health check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{host}}/actuator/health",
+              "host": ["{{host}}"],
+              "path": ["actuator", "health"]
+            },
+            "description": "ADR-015 \u2014 Actuator health (note: NOT under /api/v1). Adjust {{baseUrl}} host if needed.",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {},
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"UP\"\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

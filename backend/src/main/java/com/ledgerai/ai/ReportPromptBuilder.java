@@ -32,8 +32,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class ReportPromptBuilder {
     
-    // System Instructions channel (AI_ARCHITECTURE §8) — fixed, non-negotiable behavior independent of the
-    // document content. Derived from the documented AI design/quality rules; no vendor concepts.
     private static final String SYSTEM_INSTRUCTIONS = """
         You are LedgerAI, an assistant that helps accounting professionals \
         (Chartered Accountants, CPAs, auditors) turn financial documents into structured reports.

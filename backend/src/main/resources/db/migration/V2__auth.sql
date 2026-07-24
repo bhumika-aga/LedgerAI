@@ -2,7 +2,8 @@
 -- Additive, one logical change: the identity and refresh-token tables. No future tables (ADR-016).
 
 -- Case-insensitive email (DATABASE §5.1): citext.
-CREATE EXTENSION IF NOT EXISTS citext;
+CREATE
+EXTENSION IF NOT EXISTS citext;
 
 -- "user" is a reserved word in PostgreSQL; the singular table name is mandated by the naming
 -- conventions (DATABASE §Naming Conventions → Tables), so it is quoted.

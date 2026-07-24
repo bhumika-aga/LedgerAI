@@ -90,7 +90,7 @@ class OwnershipGuardTest {
     void requireOwnedRejectsAnAbsentResource() {
         signedIn();
         
-        assertThatThrownBy(() -> guard.requireOwned(Optional.<OwnedThing>empty(), OwnedThing::ownerId))
+        assertThatThrownBy(() -> guard.requireOwned(Optional.empty(), OwnedThing::ownerId))
             .isInstanceOf(ResourceNotFoundException.class);
     }
     
@@ -101,7 +101,7 @@ class OwnershipGuardTest {
         Throwable nonOwned = catchThrowable(
             () -> guard.requireOwned(Optional.of(new OwnedThing(UUID.randomUUID())), OwnedThing::ownerId));
         Throwable absent = catchThrowable(
-            () -> guard.requireOwned(Optional.<OwnedThing>empty(), OwnedThing::ownerId));
+            () -> guard.requireOwned(Optional.empty(), OwnedThing::ownerId));
         
         // Indistinguishable by type and by message — no existence is disclosed (SECURITY §5).
         assertThat(nonOwned).isInstanceOf(ResourceNotFoundException.class);

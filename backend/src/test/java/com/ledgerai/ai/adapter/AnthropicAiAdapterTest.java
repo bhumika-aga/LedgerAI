@@ -24,21 +24,21 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
  * {@link AiUnavailableException} — so no provider type escapes the port.
  */
 class AnthropicAiAdapterTest {
-
+    
     private static final AiProperties PROPERTIES = new AiProperties(
         "https://api.anthropic.com", "2023-06-01", "test-key", "claude-opus-4-8", 1024, 24000);
-
+    
     private RestClient.Builder builder;
     private MockRestServiceServer server;
     private AnthropicAiAdapter adapter;
-
+    
     @BeforeEach
     void setUp() {
         builder = RestClient.builder();
         server = MockRestServiceServer.bindTo(builder).build();
         adapter = new AnthropicAiAdapter(builder, PROPERTIES);
     }
-
+    
     @Test
     void mapsThePromptChannelsAndHeadersOntoTheMessagesRequest() {
         server.expect(requestTo("https://api.anthropic.com/v1/messages"))
@@ -53,30 +53,30 @@ class AnthropicAiAdapterTest {
             .andRespond(withSuccess(
                 "{\"content\":[{\"type\":\"text\",\"text\":\"A grounded summary.\"}]}",
                 MediaType.APPLICATION_JSON));
-
+        
         AiCompletion completion = adapter.generate(new AiPrompt("system instructions", "grounded document"));
-
+        
         assertThat(completion.text()).isEqualTo("A grounded summary.");
         server.verify();
     }
-
+    
     @Test
     void returnsTheFirstTextBlockWhenSeveralAreReturned() {
         server.expect(requestTo("https://api.anthropic.com/v1/messages"))
             .andRespond(withSuccess(
                 "{\"content\":[{\"type\":\"text\",\"text\":\"First.\"},{\"type\":\"text\",\"text\":\"Second.\"}]}",
                 MediaType.APPLICATION_JSON));
-
+        
         AiCompletion completion = adapter.generate(new AiPrompt("s", "u"));
-
+        
         assertThat(completion.text()).isEqualTo("First.");
     }
-
+    
     @Test
     void translatesAProviderErrorIntoAiUnavailableException() {
         server.expect(requestTo("https://api.anthropic.com/v1/messages"))
             .andRespond(withServerError());
-
+        
         assertThatThrownBy(() -> adapter.generate(new AiPrompt("s", "u")))
             .isInstanceOf(AiUnavailableException.class);
     }

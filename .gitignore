@@ -1,2 +1,14 @@
+# IDE / editor
 .idea
 .vscode
+
+# Backend build output (Maven)
+backend/target/
+
+# Frontend build output & dependencies (Vite / npm)
+frontend/node_modules/
+frontend/dist/
+frontend/.env.local
+
+# OS
+.DS_Store

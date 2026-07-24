@@ -30,9 +30,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class ChatPromptBuilder {
     
-    // System Instructions channel (AI_ARCHITECTURE §8) — fixed behavior independent of the question or
-    // document. Derived from the documented AI design/quality rules (BR-030/BR-033, FR-CHAT-002/003); no
-    // vendor concepts.
     private static final String SYSTEM_INSTRUCTIONS = """
         You are LedgerAI, an assistant that answers questions for accounting professionals \
         (Chartered Accountants, CPAs, auditors) strictly from a single financial document they provide.

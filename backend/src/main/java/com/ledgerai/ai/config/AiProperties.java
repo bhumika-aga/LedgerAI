@@ -23,10 +23,15 @@ import org.springframework.boot.context.properties.bind.DefaultValue;
  */
 @ConfigurationProperties(prefix = "ai.anthropic")
 public record AiProperties(
-    @DefaultValue("https://api.anthropic.com") String apiUrl,
-    @DefaultValue("2023-06-01") String apiVersion,
+    @DefaultValue("https://api.anthropic.com")
+    String apiUrl,
+    @DefaultValue("2023-06-01")
+    String apiVersion,
     String apiKey,
-    @DefaultValue("claude-opus-4-8") String model,
-    @DefaultValue("1024") int maxTokens,
-    @DefaultValue("24000") int maxDocumentChars) {
+    @DefaultValue("claude-opus-4-8")
+    String model,
+    @DefaultValue("1024")
+    int maxTokens,
+    @DefaultValue("24000")
+    int maxDocumentChars) {
 }

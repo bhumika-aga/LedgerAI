@@ -37,11 +37,11 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @ActiveProfiles("test")
 @Testcontainers(disabledWithoutDocker = true)
 class AiSummaryPersistenceIT {
-
+    
     @Container
     @ServiceConnection
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16-alpine");
-
+    
     @Autowired
     private AiRequestRepository requestRepository;
     @Autowired
@@ -54,10 +54,10 @@ class AiSummaryPersistenceIT {
     private UserAccountRepository userRepository;
     @Autowired
     private TestEntityManager entityManager;
-
+    
     private UUID userId;
     private UUID documentId;
-
+    
     @BeforeEach
     void createOwningDocument() {
         userId = userRepository.saveAndFlush(
@@ -66,7 +66,7 @@ class AiSummaryPersistenceIT {
         documentId = documentRepository.saveAndFlush(
             Document.create(clientId, "statement.pdf", "application/pdf", 1234L, "ref-1")).getId();
     }
-
+    
     @Test
     void persistsAndReloadsACompletedRequestWithItsEditableOutput() {
         AiRequest request = AiRequest.createSummary(userId, documentId);
@@ -75,33 +75,33 @@ class AiSummaryPersistenceIT {
         requestRepository.saveAndFlush(request);
         outputRepository.saveAndFlush(AiOutput.create(request.getId(), "Grounded summary."));
         entityManager.clear();
-
+        
         AiRequest reloaded = requestRepository.findById(request.getId()).orElseThrow();
         assertThat(reloaded.getStatus()).isEqualTo(AiRequestStatus.COMPLETED);
         assertThat(reloaded.getDocumentId()).isEqualTo(documentId);
-
+        
         AiOutput output = outputRepository.findByAiRequestId(request.getId()).orElseThrow();
         assertThat(output.getContent()).isEqualTo("Grounded summary.");
         assertThat(output.isEdited()).isFalse();
     }
-
+    
     @Test
     void enforcesOneOutputPerRequest() {
         AiRequest request = requestRepository.saveAndFlush(AiRequest.createSummary(userId, documentId));
         outputRepository.saveAndFlush(AiOutput.create(request.getId(), "first"));
-
+        
         // UNIQUE(ai_request_id) — the 1:1 relationship (DATABASE §5.6).
         assertThatThrownBy(() -> outputRepository.saveAndFlush(
             AiOutput.create(request.getId(), "second"))).isNotNull();
     }
-
+    
     @Test
     void cascadesOutputWhenTheOwningRequestIsRemoved() {
         AiRequest request = requestRepository.saveAndFlush(AiRequest.createSummary(userId, documentId));
         outputRepository.saveAndFlush(AiOutput.create(request.getId(), "text"));
         entityManager.flush();
         entityManager.clear();
-
+        
         // FK ai_output → ai_request ON DELETE CASCADE (DATABASE §5.6).
         entityManager.getEntityManager()
             .createNativeQuery("DELETE FROM ai_request WHERE id = :id")
@@ -109,17 +109,17 @@ class AiSummaryPersistenceIT {
             .executeUpdate();
         entityManager.flush();
         entityManager.clear();
-
+        
         assertThat(outputRepository.findByAiRequestId(request.getId())).isEmpty();
     }
-
+    
     @Test
     void cascadesRequestAndOutputWhenTheDocumentIsRemoved() {
         AiRequest request = requestRepository.saveAndFlush(AiRequest.createSummary(userId, documentId));
         outputRepository.saveAndFlush(AiOutput.create(request.getId(), "text"));
         entityManager.flush();
         entityManager.clear();
-
+        
         // FK ai_request → document ON DELETE CASCADE (DATABASE §5.5), which then cascades to ai_output.
         entityManager.getEntityManager()
             .createNativeQuery("DELETE FROM document WHERE id = :id")
@@ -127,7 +127,7 @@ class AiSummaryPersistenceIT {
             .executeUpdate();
         entityManager.flush();
         entityManager.clear();
-
+        
         assertThat(requestRepository.findById(request.getId())).isEmpty();
         assertThat(outputRepository.findByAiRequestId(request.getId())).isEmpty();
     }

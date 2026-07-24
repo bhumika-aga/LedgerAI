@@ -20,11 +20,11 @@ import org.springframework.stereotype.Component;
 @Component
 @Profile("test")
 public class InMemoryAiPort implements AiPort {
-
+    
     private volatile Mode mode = Mode.SUCCESS;
     private volatile String text = "AI-generated summary of the document.";
     private volatile AiPrompt lastPrompt;
-
+    
     @Override
     public AiCompletion generate(AiPrompt prompt) {
         this.lastPrompt = prompt;
@@ -34,29 +34,29 @@ public class InMemoryAiPort implements AiPort {
             case SUCCESS -> new AiCompletion(text);
         };
     }
-
+    
     public void succeedWith(String text) {
         this.mode = Mode.SUCCESS;
         this.text = text;
     }
-
+    
     public void returnEmpty() {
         this.mode = Mode.EMPTY;
     }
-
+    
     public void beUnavailable() {
         this.mode = Mode.UNAVAILABLE;
     }
-
+    
     public AiPrompt lastPrompt() {
         return lastPrompt;
     }
-
+    
     public void reset() {
         this.mode = Mode.SUCCESS;
         this.text = "AI-generated summary of the document.";
         this.lastPrompt = null;
     }
-
+    
     public enum Mode {SUCCESS, EMPTY, UNAVAILABLE}
 }

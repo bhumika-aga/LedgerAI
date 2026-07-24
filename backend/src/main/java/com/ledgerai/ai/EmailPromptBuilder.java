@@ -31,9 +31,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class EmailPromptBuilder {
     
-    // System Instructions channel (AI_ARCHITECTURE §8) — fixed behaviour independent of the instruction or
-    // context. Derived from the documented AI design/quality rules (BR-031/BR-032/BR-034, FR-EMAIL-002); no
-    // vendor concepts.
     private static final String SYSTEM_INSTRUCTIONS = """
         You are LedgerAI, an assistant that drafts professional client emails for accounting \
         professionals (Chartered Accountants, CPAs, auditors).
